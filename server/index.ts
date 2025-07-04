@@ -23,6 +23,11 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 
+// Health check endpoint for EasyPanel
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Serve static files from uploads directory
 app.use('/uploads', express.static('uploads'));
 
@@ -76,7 +81,7 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  const port = 3002;
+  const port = parseInt(process.env.PORT || "3101");
 
   server.listen({
     port,
