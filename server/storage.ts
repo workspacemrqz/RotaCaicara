@@ -1404,3 +1404,5 @@ export const storage = new DatabaseStorage();
     console.log("Database initialization skipped - database may not be available yet:", error instanceof Error ? error.message : 'Unknown error');
   }
 })();
+
+export * from './schema';
