@@ -15,6 +15,7 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   icon: text("icon").notNull(),
+  color: text("color").default("#006C84"),
   backgroundImage: text("background_image"),
   active: boolean("active").default(true),
 });
@@ -94,6 +95,39 @@ export const banners = pgTable("banners", {
   active: boolean("active").default(true),
   order: integer("order").default(0),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const settings = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  site_name: text("site_name").notNull().default("Rota Caiçara"),
+  locality: text("locality").notNull().default("São Sebastião"),
+  headline1: text("headline1").notNull().default("DESCUBRA AS MELHORES EMPRESAS"),
+  headline2: text("headline2").notNull().default("DE SÃO SEBASTIÃO"),
+  headline3: text("headline3").notNull().default("CONECTANDO VOCÊ AOS MELHORES"),
+  headline4: text("headline4").notNull().default("NEGÓCIOS DA CIDADE"),
+  tagline1: text("tagline1").notNull().default("Conectando você aos melhores negócios da cidade"),
+  tagline2: text("tagline2").notNull().default("Descubra, conecte-se, prospere"),
+  tagline3: text("tagline3").notNull().default("Sua empresa na palma da mão"),
+  tagline4: text("tagline4").notNull().default("O futuro do comércio local"),
+  phone: text("phone").notNull().default("(12) 99999-0000"),
+  email: text("email").notNull().default("contato@rotacaicara.com.br"),
+  address: text("address").notNull().default("São Sebastião, SP"),
+  instagram_url: text("instagram_url").notNull().default("https://instagram.com/rotacaicara"),
+  whatsapp_url: text("whatsapp_url").notNull().default("https://wa.me/5512999999999"),
+  facebook_url: text("facebook_url").notNull().default("https://facebook.com/rotacaicara"),
+  whatsapp: text("whatsapp"),
+  website: text("website"),
+  instagram: text("instagram"),
+  facebook: text("facebook"),
+  faq1_question: text("faq1_question").notNull().default("Como funciona o cadastro?"),
+  faq1_answer: text("faq1_answer").notNull().default("É simples e gratuito. Basta preencher o formulário com os dados do seu negócio."),
+  faq2_question: text("faq2_question").notNull().default("Quanto custa para anunciar?"),
+  faq2_answer: text("faq2_answer").notNull().default("O cadastro básico é gratuito. Temos planos premium com recursos adicionais."),
+  faq3_question: text("faq3_question").notNull().default("Como edito meu anúncio?"),
+  faq3_answer: text("faq3_answer").notNull().default("Entre em contato conosco através do WhatsApp ou email para alterações."),
+  faq4_question: text("faq4_question").notNull().default("Posso ter mais de um negócio cadastrado?"),
+  faq4_answer: text("faq4_answer").notNull().default("Sim, você pode cadastrar múltiplos negócios usando o mesmo formulário."),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 
 export const siteSettings = pgTable("site_settings", {
@@ -236,6 +270,14 @@ export const analytics = pgTable("analytics", {
   visitedAt: timestamp("visited_at").defaultNow(),
 });
 
+export const sessions = pgTable("sessions", {
+  id: serial("id").primaryKey(),
+  sessionId: text("session_id").notNull().unique(),
+  data: json("data"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const news = pgTable("news", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
@@ -284,6 +326,8 @@ export type Business = typeof businesses.$inferSelect;
 export type BusinessRegistration = typeof businessRegistrations.$inferSelect;
 export type Banner = typeof banners.$inferSelect;
 export type SiteSetting = typeof siteSettings.$inferSelect;
+export type Setting = typeof settings.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type Faq = typeof faqs.$inferSelect;
 export type AdminLog = typeof adminLogs.$inferSelect;

@@ -1282,64 +1282,22 @@ async function seedDatabase() {
 
     console.log("Seeding database...");
 
-    // Insert categories
+    // Insert categories - All 14 Rota Caiçara categories
     const categoryData = [
-      {
-        name: "PARA SUA REFEIÇÃO",
-        slug: "para-sua-refeicao",
-        description:
-          "Restaurantes, lanchonetes, padarias e estabelecimentos gastronômicos",
-        icon: "utensils",
-        color: "#FF6B6B",
-        backgroundImage: null,
-        active: true,
-      },
-      {
-        name: "PARA SUA CASA",
-        slug: "para-sua-casa",
-        description: "Móveis, decoração, construção e itens para o lar",
-        icon: "home",
-        color: "#4ECDC4",
-        backgroundImage: null,
-        active: true,
-      },
-      {
-        name: "PARA SUA SAÚDE",
-        slug: "para-sua-saude",
-        description: "Farmácias, clínicas, academias e serviços de bem-estar",
-        icon: "heart",
-        color: "#45B7D1",
-        backgroundImage: null,
-        active: true,
-      },
-      {
-        name: "PARA SEU ESTILO",
-        slug: "para-seu-estilo",
-        description: "Moda, beleza, salões e acessórios",
-        icon: "shirt",
-        color: "#96CEB4",
-        backgroundImage: null,
-        active: true,
-      },
-      {
-        name: "PARA SEU TRANSPORTE",
-        slug: "para-seu-transporte",
-        description: "Oficinas, postos, concessionárias e serviços automotivos",
-        icon: "car",
-        color: "#FFEAA7",
-        backgroundImage: null,
-        active: true,
-      },
-      {
-        name: "PARA SEUS SERVIÇOS",
-        slug: "para-seus-servicos",
-        description:
-          "Serviços profissionais, consultoria e assistência técnica",
-        icon: "briefcase",
-        color: "#DDA0DD",
-        backgroundImage: null,
-        active: true,
-      },
+      { name: "PARA SUA REFEIÇÃO", slug: "para-sua-refeicao", icon: "🍽️", color: "#006C84", active: true },
+      { name: "PARA SUA CASA", slug: "para-sua-casa", icon: "🏠", color: "#006C84", active: true },
+      { name: "PARA SUA EMPRESA", slug: "para-sua-empresa", icon: "🏭", color: "#006C84", active: true },
+      { name: "PARA SUA SAÚDE", slug: "para-sua-saude", icon: "💚", color: "#006C84", active: true },
+      { name: "PARA SEU AUTOMÓVEL", slug: "para-seu-automovel", icon: "🚗", color: "#006C84", active: true },
+      { name: "PARA SUA BELEZA", slug: "para-sua-beleza", icon: "💄", color: "#006C84", active: true },
+      { name: "PARA SEU BEBÊ", slug: "para-seu-bebe", icon: "👶", color: "#006C84", active: true },
+      { name: "PARA SEU PET", slug: "para-seu-pet", icon: "🐕", color: "#006C84", active: true },
+      { name: "PARA SUA EDUCAÇÃO", slug: "para-sua-educacao", icon: "✏️", color: "#006C84", active: true },
+      { name: "PARA SEU CORPO", slug: "para-seu-corpo", icon: "🏋️", color: "#006C84", active: true },
+      { name: "PARA SUA FESTA", slug: "para-sua-festa", icon: "🎂", color: "#006C84", active: true },
+      { name: "PARA SUA VIAGEM", slug: "para-sua-viagem", icon: "🏖️", color: "#006C84", active: true },
+      { name: "PARA SUA DIVERSÃO", slug: "para-sua-diversao", icon: "🎭", color: "#006C84", active: true },
+      { name: "NOVIDADES NA CIDADE", slug: "novidades-na-cidade", icon: "⭐", color: "#006C84", active: true }
     ];
 
     const insertedCategories = await db
@@ -1393,23 +1351,33 @@ async function seedDatabase() {
     const defaultSettings = {
       siteName: "Rota Caiçara",
       locality: "São Sebastião",
-      tagline1: "Descubra os melhores negócios da sua região",
-      description: "Conectando você aos negócios locais",
+      headline1: "DESCUBRA AS MELHORES EMPRESAS",
+      headline2: "DE SÃO SEBASTIÃO",
+      headline3: "CONECTANDO VOCÊ AOS MELHORES",
+      headline4: "NEGÓCIOS DA CIDADE",
+      tagline1: "Conectando você aos melhores negócios da cidade",
+      tagline2: "Descubra, conecte-se, prospere",
+      tagline3: "Sua empresa na palma da mão",
+      tagline4: "O futuro do comércio local",
       phone: "(12) 99999-0000",
       email: "contato@rotacaicara.com.br",
       address: "São Sebastião, SP",
-      faq1Question: "Como funciona o cadastro?",
-      faq1Answer:
-        "É simples e gratuito. Basta preencher o formulário com os dados do seu negócio.",
-      faq2Question: "Quanto custa para anunciar?",
-      faq2Answer:
-        "O cadastro básico é gratuito. Temos planos premium com recursos adicionais.",
-      faq3Question: "Como edito meu anúncio?",
-      faq3Answer:
-        "Entre em contato conosco através do WhatsApp ou email para alterações.",
-      faq4Question: "Posso ter mais de um negócio cadastrado?",
-      faq4Answer:
-        "Sim, você pode cadastrar múltiplos negócios usando o mesmo formulário.",
+      logoUrl: "https://i.ibb.co/LhhDX2hz/Logo-1.jpg",
+      instagramUrl: "https://instagram.com/rotacaicara",
+      whatsappUrl: "https://wa.me/5512999999999",
+      facebookUrl: "https://facebook.com/rotacaicara",
+      footerDescription: "Conectando você às melhores empresas da cidade com sustentabilidade e qualidade.",
+      advertiseHeadline: "SUA MARCA EM DESTAQUE ENTRE AS MELHORES",
+      advertiseSubtitle1: "Onde excelência encontra visibilidade!",
+      advertiseSubtitle2: "Junte-se à nossa comunidade sustentável e fortaleça sua reputação empresarial com divulgação multicanal eficiente e impactante.",
+      faq1Question: "Posso parcelar no cartão?",
+      faq1Answer: "Sim, aceitamos parcelamento no cartão de crédito para facilitar seu investimento em marketing.",
+      faq2Question: "Quanto tempo leva para ativar o anúncio?",
+      faq2Answer: "Após aprovação, seu anúncio fica ativo em até 24 horas úteis.",
+      faq3Question: "Como retirar o certificado?",
+      faq3Answer: "O certificado digital será enviado por email após aprovação do seu cadastro.",
+      faq4Question: "Empresas de outras cidades podem anunciar?",
+      faq4Answer: "Sim, desde que atendam nossa região ou ofereçam serviços para nossos usuários locais.",
     };
 
     await db.insert(siteSettings).values(defaultSettings);
@@ -1423,11 +1391,16 @@ async function seedDatabase() {
 // Use DatabaseStorage instead of MemStorage
 export const storage = new DatabaseStorage();
 
-// Initialize database with seed data - make it optional to not break deployment
+// Initialize database with migration and seed data
 (async () => {
   try {
+    // Run database initialization first
+    const { initializeDatabase } = await import('./database-init');
+    await initializeDatabase();
+    
+    // Then seed the database
     await seedDatabase();
   } catch (error) {
-    console.log("Database seeding skipped - database may not be available yet:", error.message);
+    console.log("Database initialization skipped - database may not be available yet:", error instanceof Error ? error.message : 'Unknown error');
   }
 })();
