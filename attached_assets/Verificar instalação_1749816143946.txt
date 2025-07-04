@@ -1,4 +1,0 @@
-root@srv864082:~# node --version
-npm --version
-v20.19.2
-10.8.2

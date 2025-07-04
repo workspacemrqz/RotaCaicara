@@ -1,7 +1,0 @@
-root@srv864082:/var/www/rotacaicara# nano /etc/nginx/sites-available/rotacaicara
-root@srv864082:/var/www/rotacaicara# ln -s /etc/nginx/sites-available/rotacaicara /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-nginx -t
-systemctl reload nginx
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
