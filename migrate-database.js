@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 
 // Configurações dos bancos
 const SOURCE_DB = 'postgresql://mrqz:%40Workspacen8n@31.97.30.149:5432/rotacaicara';
-const TARGET_DB = 'postgres://mrqz:@Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable';
+const TARGET_DB = 'postgres://mrqz:%40Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable';
 
 async function migrateDatabase() {
   const sourcePool = new Pool({ connectionString: SOURCE_DB });
