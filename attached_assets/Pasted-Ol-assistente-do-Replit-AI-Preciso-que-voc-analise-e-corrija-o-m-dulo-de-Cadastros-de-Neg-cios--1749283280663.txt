@@ -1,0 +1,44 @@
+Olá, assistente do Replit AI. Preciso que você analise e corrija o módulo de “Cadastros de Negócios” no meu projeto EcoTrackSolution. Os requisitos são os seguintes:
+
+Abrir Modal de Edição
+
+Atualmente, o botão de edição renderiza um <Edit /> sem efeito.
+
+Implemente um componente <Dialog open={editRegistrationDialogOpen} onOpenChange={setEditRegistrationDialogOpen}> … </Dialog> em client/src/pages/admin.tsx.
+
+Dentro do <Dialog>, insira um formulário idêntico ao usado para criação/atualização de negócios, com campos: nome, descrição, categoria, contato e demais campos existentes.
+
+Ao abrir, pré-popule cada campo com os valores de editingRegistration usando a estratégia de formulário (por exemplo, defaultValues do React Hook Form ou reset(editingRegistration)).
+
+As ações do formulário devem chamar a mutação de atualização de registro (updateRegistration.mutateAsync({ ...editingRegistration, camposAtualizados })).
+
+Após salvar, feche o diálogo com setEditRegistrationDialogOpen(false) e atualize a lista de registros.
+
+Remover Ícone de Visualização
+
+Apague o <Button> contendo <Eye className="w-4 h-4" /> e sua chamada handleViewRegistration.
+
+Limpe importações: remova Eye de import { Eye, Edit, CheckCircle }.
+
+Alterar Botão de Publicação
+
+Substitua o ícone <CheckCircle className="w-4 h-4" /> pelo texto estático “PUBLICAR”, mantendo classes de estilo (size, className, disabled conforme registration.processed).
+
+Ajuste o import: remova CheckCircle.
+
+Verificar Estado e Imports
+
+Certifique-se de que editRegistrationDialogOpen e editingRegistration estão definidos via useState.
+
+Garanta que handleEditRegistration chama corretamente setEditingRegistration(registration) e setEditRegistrationDialogOpen(true).
+
+Remova referências a viewRegistrationDialogOpen se o botão de visualização não for mais usado.
+
+Testes Funcionais
+
+Após as alterações, reinicie o servidor no Replit.
+
+Valide três cenários:
+a) Clicar em “Editar” abre o modal com dados existentes.
+b) Modificar campos e clicar em “Salvar” atualiza o registro e fecha o modal.
+c) Botão “PUBLICAR” substitui o ícone, chama handlePublishRegistration e aplica o status de publicação corretamente.

@@ -1,0 +1,137 @@
+Olá, IA do replit.com,
+
+desejo que você **implemente** na aba **Configurações do Site** do painel admin a **capacidade de alterar** dinamicamente todos os elementos listados abaixo. Utilize as identificações (IDs) de cada objeto para mapear e renderizar os campos de edição na interface de administração.
+
+---
+
+1. **Texto do logotipo**
+
+   * **Local**: frase 'Rota Caiçara'
+   * **ID**: `site-logo-title`
+   * **Tipo de campo**: input de texto simples
+
+2. **Telefone do rodapé**
+
+   * **Valor atual**: `(12) 3923-4567`
+   * **ID**: `footer-contact-phone`
+   * **Tipo de campo**: input de texto com máscara
+
+3. **Email do rodapé**
+
+   * **Valor atual**: `contato@redeecoar.com.br`
+   * **ID**: `footer-contact-email`
+   * **Tipo de campo**: input de email
+
+4. **Frase do rodapé**
+
+   * **Valor atual**: `Conectando você às melhores empresas da cidade com sustentabilidade e qualidade.`
+   * **ID**: `footer-tagline`
+   * **Tipo de campo**: textarea
+
+5. **Link WhatsApp do rodapé**
+
+   * **Valor atual**: `https://wa.me/5512992344567`
+   * **ID**: `footer-whatsapp-link`
+   * **Tipo de campo**: input de URL
+
+6. **Link Instagram do rodapé**
+
+   * **Valor atual**: `https://instagram.com/rotacaicara`
+   * **ID**: `footer-instagram-link`
+   * **Tipo de campo**: input de URL
+
+7. **Link Facebook do rodapé**
+
+   * **Valor atual**: `https://facebook.com/rotacaicara`
+   * **ID**: `footer-facebook-link`
+   * **Tipo de campo**: input de URL
+
+8. **Título principal (Home)**
+
+   * **Valor atual**: `DESCUBRA AS MELHORES EMPRESAS DE SÃO SEBASTIÃO`
+   * **ID**: `hero-title`
+   * **Tipo de campo**: input de texto
+
+9. **Subtítulo principal (Home)**
+
+   * **Valor atual**: `Conectando você aos melhores negócios da cidade`
+   * **ID**: `hero-subtitle`
+   * **Tipo de campo**: input de texto
+
+10. **Título da página 'Anunciar'**
+
+    * **Valor atual**: `SUA MARCA EM DESTAQUE ENTRE AS MELHORES`
+    * **ID**: `advertise-title`
+    * **Tipo de campo**: input de texto
+
+11. **Subtítulo da página 'Anunciar'**
+
+    * **Valor atual**: `Onde excelência encontra visibilidade!`
+    * **ID**: `advertise-subtitle`
+    * **Tipo de campo**: input de texto
+
+12. **Descrição da página 'Anunciar'**
+
+    * **Valor atual**: `Junte-se à nossa comunidade sustentável e fortaleça sua reputação empresarial com divulgação multicanal eficiente e impactante.`
+    * **ID**: `advertise-description`
+    * **Tipo de campo**: textarea
+
+13. **FAQ 1 – Pergunta**
+
+    * **Valor atual**: `Posso parcelar no cartão?`
+    * **ID**: `faq1-question`
+    * **Tipo de campo**: input de texto
+
+14. **FAQ 1 – Resposta**
+
+    * **Valor atual**: `Sim! Oferecemos parcelamento em até 10x de R$ 29,70 sem juros.`
+    * **ID**: `faq1-answer`
+    * **Tipo de campo**: textarea
+
+15. **FAQ 2 – Pergunta**
+
+    * **Valor atual**: `Quanto tempo leva para ativar o anúncio?`
+    * **ID**: `faq2-question`
+    * **Tipo de campo**: input de texto
+
+16. **FAQ 2 – Resposta**
+
+    * **Valor atual**: `Seu anúncio fica ativo em até 24 horas após a confirmação do pagamento.`
+    * **ID**: `faq2-answer`
+    * **Tipo de campo**: textarea
+
+17. **FAQ 3 – Pergunta**
+
+    * **Valor atual**: `Como retirar o certificado?`
+    * **ID**: `faq3-question`
+    * **Tipo de campo**: input de texto
+
+18. **FAQ 3 – Resposta**
+
+    * **Valor atual**: `O certificado digital é enviado por email e WhatsApp após a ativação.`
+    * **ID**: `faq3-answer`
+    * **Tipo de campo**: textarea
+
+19. **FAQ 4 – Pergunta**
+
+    * **Valor atual**: `Empresas de outras cidades podem anunciar?`
+    * **ID**: `faq4-question`
+    * **Tipo de campo**: input de texto
+
+20. **FAQ 4 – Resposta**
+
+    * **Valor atual**: `Este guia é específico para São José dos Campos. Consulte sobre franquias para outras cidades.`
+    * **ID**: `faq4-answer`
+    * **Tipo de campo**: textarea
+
+---
+
+**Instruções avançadas:**
+
+* Crie campos de formulário com rótulos claros correspondentes ao conteúdo atual.
+* Garanta validação de tipo (por exemplo, email, URL, máscara de telefone).
+* Salve cada alteração no banco de dados do site via chamadas à API interna.
+* Ao renderizar o painel, carregue os valores atuais para cada campo.
+* Forneça feedback visual de sucesso ou erro na atualização de cada item.
+
+**Objetivo final:** Permitir que um administrador ajuste facilmente todos esses elementos sem editar diretamente o código-fonte.

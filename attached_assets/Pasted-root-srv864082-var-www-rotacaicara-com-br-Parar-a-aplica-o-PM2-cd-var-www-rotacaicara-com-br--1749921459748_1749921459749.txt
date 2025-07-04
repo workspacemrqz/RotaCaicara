@@ -1,0 +1,79 @@
+root@srv864082:/var/www/rotacaicara.com.br# # Parar a aplicação PM2
+cd /var/www/rotacaicara.com.br
+pm2 delete rotacaicara
+
+# Verificar se o .env está correto
+cat .env
+[PM2] Applying action deleteProcessId on app [rotacaicara](ids: [ 0 ])
+[PM2] [rotacaicara](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+DATABASE_URL=postgresql://neondb_owner:npg_q9pCnLTuYo6l@ep-long-feather-acf901dd-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require
+NODE_ENV=production
+PORT=3002
+root@srv864082:/var/www/rotacaicara.com.br# # Recriar o arquivo .env
+cat > .env << 'EOF'
+DATABASE_URL=postgresql://neondb_owner:npg_q9pCnLTuYo6l@ep-long-feather-acf901dd-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require
+NODE_ENV=production
+PORT=3002
+EOF
+root@srv864082:/var/www/rotacaicara.com.br# # Iniciar a aplicação corretamente
+pm2 start dist/index.js --name "rotacaicara" --env production
+pm2 save
+[PM2] Starting /var/www/rotacaicara.com.br/dist/index.js in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ rotacaicara    │ default     │ 1.0.0   │ fork    │ 20171    │ 0s     │ 0    │ online    │ 0%       │ 11.3mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+root@srv864082:/var/www/rotacaicara.com.br# # Verificar status
+pm2 status
+
+# Testar a aplicação
+curl -I http://localhost:3002
+
+# Ver logs se houver erro
+pm2 logs rotacaicara
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ rotacaicara    │ default     │ 1.0.0   │ fork    │ 20171    │ 4s     │ 0    │ online    │ 0%       │ 91.7mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+curl: (7) Failed to connect to localhost port 3002 after 0 ms: Connection refused
+[TAILING] Tailing last 15 lines for [rotacaicara] process (change the value with --lines option)
+/root/.pm2/logs/rotacaicara-out.log last 15 lines:
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+
+/root/.pm2/logs/rotacaicara-error.log last 15 lines:
+0|rotacaic | file:///var/www/rotacaicara.com.br/dist/index.js:261
+0|rotacaic |   throw new Error(
+0|rotacaic |         ^
+0|rotacaic | 
+0|rotacaic | Error: DATABASE_URL must be set. Did you forget to provision a database?
+0|rotacaic |     at file:///var/www/rotacaicara.com.br/dist/index.js:261:9
+0|rotacaic |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+0|rotacaic |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+0|rotacaic |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+0|rotacaic | 
+0|rotacaic | Node.js v20.19.2
+0|rotacaic | Error: DATABASE_URL must be set. Did you forget to provision a database?
+0|rotacaic |     at file:///var/www/rotacaicara.com.br/dist/index.js:261:9
+0|rotacaic |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)

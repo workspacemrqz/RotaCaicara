@@ -1,0 +1,212 @@
+1. Bug crítico: Auto-save disparado sem clicar em “Confirmar”
+O que acontece
+Mesmo sem você pressionar o botão, assim que muda de etapa ou de campo, a aplicação dispara o PUT /api/businesses/:id e salva automaticamente.
+
+Provável causa
+No seu BusinessFormWizard (ou useForm), existe um useEffect, onBlur ou callback de mudança de etapa que chama o método de “salvar” ao invés de esperar o clique.
+
+Como corrigir
+Na definição do seu FormWizard, remova qualquer onStepChange, onFieldChange ou onBlur que invoque saveBusiness().
+
+Garanta que o único ponto de chamada de API seja dentro do handler do botão:
+
+ts
+Copiar
+async function handleConfirm() {
+  await api.put(`/api/businesses/${id}`, form.values);
+  queryClient.invalidateQueries('businesses');
+}
+Desabilite o botão “Confirmar” até que todos os campos estejam validados (isDirty && isValid).
+
+Teste manualmente: abra DevTools → aba Network → só deve aparecer PUT quando you clicar em “Confirmar”.
+
+2. “Alterar Cadastro” deve seguir mesmo padrão multi-step e não falhar
+O que acontece
+– O botão “Alterar Cadastro” existe, mas:
+
+Não abre o wizard de etapas.
+
+Se abre, ao clicar em “Confirmar Alterações” dá erro 500.
+
+Provável causa
+O formulário de cadastro de “business-registrations” foi montado apenas como um form de uma etapa.
+
+O endpoint PUT /api/business-registrations/:id ou seu payload está fora do esquema Zod, gerando erro.
+
+Como corrigir
+Multi-step
+
+Replique o seu BusinessFormWizard para RegistrationFormWizard com as mesmas 2–3 etapas.
+
+Cada etapa mantém seu próprio pedaço de estado interno, sem auto-save até o último passo.
+
+Fix do endpoint
+
+Verifique em server/routes.ts se você tem:
+
+ts
+Copiar
+app.put('/api/business-registrations/:id', async (req, res) => {
+  const data = insertBusinessRegistrationSchema.parse(req.body);
+  const updated = await storage.updateBusinessRegistration(id, data);
+  res.json(updated);
+});
+Abra o console do servidor (logs) e veja qual campo está falhando no Zod.
+
+Ajuste o Zod (e o schema do Drizzle, se usar) para aceitar exatamente os campos que o form envia (incluindo instagram, facebook, imageUrl etc).
+
+Testes
+
+Escreva um teste de integração com Supertest: faça PUT /api/business-registrations/:id com um payload mínimo válido e verifique que o status é 200 e o JSON de resposta.
+
+3. Erro 500 ao salvar Categoria
+O que acontece
+Após implementar o seletor de ícone, todo PUT /api/categories/:id retorna 500 { message: "Failed to update category" }.
+
+Provável causa
+O backend updateCategory() não está aceitando o novo formato de dados (talvez iconName em vez de icon, ou falta de mapeamento do campo no drip Drizzle/Zod).
+
+Seu payload JSON não bate com o ZodSchema do route.
+
+Como corrigir
+Confirme o payload
+
+No DevTools veja exatamente o body enviado (nome do campo, tipo string, slug etc).
+
+Ajuste o Zod
+
+Em shared/schema.ts (ou onde estiver definido), inclua:
+
+ts
+Copiar
+export const updateCategorySchema = z.object({
+  name: z.string(),
+  slug: z.string(),
+  iconName: z.string().nonempty(),
+  isActive: z.boolean(),
+});
+Ajuste o route
+
+Em server/routes.ts:
+
+ts
+Copiar
+app.put('/api/categories/:id', (req, res) => {
+  const data = updateCategorySchema.parse(req.body);
+  const updated = storage.updateCategory(id, data);
+  res.json(updated);
+});
+Storage
+
+Confirme em MemStorage e em DbStorage que o método updateCategory(id, data) grava category.iconName = data.iconName (e ignora color).
+
+4. Grid de 40 ícones + remoção do color-picker (Categorias)
+O que falta
+Ainda aparece o seletor de cor.
+
+Não há modal/grid de ícones.
+
+Como corrigir
+Esconder cor
+
+Remova <ColorPicker/> do JSX de CategoryForm.
+
+Criar modal
+
+Adicione um componente IconSelectorModal que recebe:
+
+tsx
+Copiar
+interface IconSelectorModalProps {
+  open: boolean;
+  icons: Array<{ name: string; svg: ReactNode }>;
+  onSelect: (name: string) => void;
+  onClose: () => void;
+}
+Exiba icons.map(i => <button onClick={()=>onSelect(i.name)}>{i.svg}</button>) num grid CSS.
+
+Integração
+
+No CategoryForm:
+
+tsx
+Copiar
+<IconPreview name={form.values.iconName} />
+<Button onClick={() => setModalOpen(true)}>Selecionar Ícone</Button>
+<IconSelectorModal
+  open={modalOpen}
+  icons={commerceIcons}
+  onSelect={name => {
+    form.setFieldValue('iconName', name);
+    setModalOpen(false);
+  }}
+  onClose={()=>setModalOpen(false)}
+/>
+5. Front não reflete as alterações de Settings (FAQs, headlines, taglines, redes)
+O que acontece
+Você altera no admin, salva, mas nada muda no site público além de siteName e phone.
+
+Provável causa
+O SettingsContext carrega só algumas chaves (informações básicas + contato), mas ignora headlines/taglines/faqs/socials.
+
+O Footer/Header consomem diretamente variáveis locais, não o context atualizado.
+
+Como corrigir
+Context completo
+
+No SettingsContext, faça:
+
+ts
+Copiar
+const data = await api.get('/api/admin/settings');
+setSettings(data);
+e tipagem:
+
+ts
+Copiar
+interface Settings {
+  siteName: string;
+  location: string;
+  headlines: string[];
+  taglines: string[];
+  contact: { phone:string; email:string; address:string };
+  socials: { instagramUrl:string; whatsappUrl:string; facebookUrl:string };
+  faqs: Array<{ question:string; answer:string }>;
+}
+Atualização pós-PUT
+
+Depois do PUT, chame queryClient.invalidateQueries('settings') ou setSettings(newData) manualmente.
+
+Components
+
+Hero da home: leia settings.headlines[0] e settings.taglines[0].
+
+Seção FAQ (novo componente público) itere settings.faqs.
+
+Footer: use settings.socials.instagramUrl etc. e exiba ícones <FaInstagram /> com <a href>.
+
+Remova de todos os componentes qualquer string hard-coded (“Conectando…”, “FAQ” etc) e troque por settings.taglines[1], ou por chaves nomeadas se preferir maior clareza no schema (settings.subtitles.subtitle2).
+
+6. Checklist final e deploy incremental
+Triage de logs
+
+No servidor, adicione logs pontuais (console.log) no início de cada route PUT para ver o body recebido e onde cai a exceção.
+
+Testes de ponta a ponta
+
+Crie um pequeno script Cypress ou Playwright que:
+
+Abra o form de edição de negócio → preencha tudo → confirme → confira Network.
+
+Abra o form de cadastro → multi-step → confirme → confira.
+
+Abra Categorias → selecione ícone → confirme → Home veja ícone.
+
+Abra Configurações → modifique FAQs → salve → Home veja FAQs.
+
+Deploy
+
+Com tudo verde nos testes, gere o build (npm run build) e faça o deploy no Replit.
+
+Valide novamente em produção.
+

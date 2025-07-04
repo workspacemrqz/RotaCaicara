@@ -1,0 +1,279 @@
+root@srv864082:~# cd /var/www/site1.com
+root@srv864082:/var/www/site1.com# rm -rf node_modules
+npm install
+npm run build
+pm2 start npm --name site1 -- start
+pm2 logs site1
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+
+added 511 packages, and audited 512 packages in 9s
+
+68 packages are looking for funding
+  run `npm fund` for details
+
+8 vulnerabilities (1 low, 7 moderate)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (3) src/main.tsxBrowserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+transforming (4) src/App.tsx
+/images/global-bg.svg referenced in /images/global-bg.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+✓ 2186 modules transformed.
+../dist/public/index.html                   0.87 kB │ gzip:   0.52 kB
+../dist/public/assets/index-Cc_GPKSy.css   77.34 kB │ gzip:  13.83 kB
+../dist/public/assets/index-Dt12bmJH.js   675.38 kB │ gzip: 204.89 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.62s
+▲ [WARNING] Duplicate key "tagline1" in object literal [duplicate-object-key]
+
+    server/storage.ts:403:6:
+      403 │       tagline1: "Descubra os melhores negócios da sua região",
+          ╵       ~~~~~~~~
+
+  The original key "tagline1" is here:
+
+    server/storage.ts:393:6:
+      393 │       tagline1: "Conectando você aos melhores negócios da cidade",
+          ╵       ~~~~~~~~
+
+1 warning
+
+  dist/index.js  50.3kb
+
+⚡ Done in 6ms
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ site1    │ default     │ N/A     │ fork    │ 0        │ 0      │ 15   │ errored   │ 0%       │ 0b       │ root     │ disabled │
+│ 1  │ site1    │ default     │ N/A     │ fork    │ 12397    │ 0s     │ 0    │ online    │ 0%       │ 18.1mb   │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 15 lines for [site1] process (change the value with --lines option)
+/root/.pm2/logs/site1-out.log last 15 lines:
+0|site1    | > rest-express@1.0.0 start
+0|site1    | > NODE_ENV=production node dist/index.js
+0|site1    | 
+0|site1    | 
+0|site1    | > rest-express@1.0.0 start
+0|site1    | > NODE_ENV=production node dist/index.js
+0|site1    | 
+0|site1    | 
+0|site1    | > rest-express@1.0.0 start
+0|site1    | > NODE_ENV=production node dist/index.js
+0|site1    | 
+0|site1    | 
+0|site1    | > rest-express@1.0.0 start
+0|site1    | > NODE_ENV=production node dist/index.js
+0|site1    | 
+
+/root/.pm2/logs/site1-error.log last 15 lines:
+0|site1    | npm error syscall open
+0|site1    | npm error path /root/package.json
+0|site1    | npm error errno -2
+0|site1    | npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/root/package.json'
+0|site1    | npm error enoent This is related to npm not being able to find a file.
+0|site1    | npm error enoent
+0|site1    | npm error A complete log of this run can be found in: /root/.npm/_logs/2025-06-13T08_40_38_179Z-debug-0.log
+0|site1    | npm error code ENOENT
+0|site1    | npm error syscall open
+0|site1    | npm error path /root/package.json
+0|site1    | npm error errno -2
+0|site1    | npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/root/package.json'
+0|site1    | npm error enoent This is related to npm not being able to find a file.
+0|site1    | npm error enoent
+0|site1    | npm error A complete log of this run can be found in: /root/.npm/_logs/2025-06-13T08_40_38_314Z-debug-0.log
+
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2
+1|site1  | > rest-express@1.0.0 start
+1|site1  | > NODE_ENV=production node dist/index.js
+1|site1  | file:///var/www/site1.com/dist/index.js:261
+1|site1  |   throw new Error(
+1|site1  |         ^
+1|site1  | Error: DATABASE_URL must be set. Did you forget to provision a database?
+1|site1  |     at file:///var/www/site1.com/dist/index.js:261:9
+1|site1  |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+1|site1  |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+1|site1  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+1|site1  | Node.js v20.19.2

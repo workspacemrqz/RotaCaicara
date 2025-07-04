@@ -1,0 +1,141 @@
+Atualização Dinâmica do Header e Footer via Painel Admin (Replit.com)
+
+---
+
+**Objetivo:**
+Criar um prompt de engenharia avançada para a IA do Replit.com, instruindo-a a modificar o código-fonte do frontend do projeto **EcoTrackSolution** conforme especificações detalhadas, sempre indicando o **arquivo**, **linha**, **elemento/ID** e **o que deve ser alterado**.
+
+---
+
+### 1. Remover animação de underline em Header
+
+* **Arquivo**: `client/src/components/header.tsx`
+* **Linhas**: 8–11
+* **Elemento / ID**: `<h1 id="site-logo-title">Rota Caiçara</h1>` e `<p id="site-subtitle">São Sebastião</p>` (se existir)
+* **Descrição da tarefa:**
+
+  * Eliminar qualquer pseudo-elemento `::after` ou classe de Tailwind que aplique `underline` ou `animate-underline`.
+  * No CSS global (`src/styles/header.css` ou `tailwind.config.ts`), remova as regras associadas:
+
+    ```css
+    .site-header h1::after,
+    .site-header p::after {
+      content: none !important;
+    }
+    ```
+
+### 2. Remover contorno (border) das imagens de logo
+
+* **Arquivos**:
+
+  * Header: `client/src/components/header.tsx` (linha 9)
+  * Footer: `client/src/components/footer.tsx` (linha 16)
+* **IDs**:
+
+  * Header: `header-logo-image`
+  * Footer: `footer-logo-image`
+* **Descrição da tarefa:**
+
+  * Nos JSX, eliminar classes `border-2`, `border-primary`, ou semelhantes.
+  * Resultado esperado:
+
+    ```diff
+    - <img id="header-logo-image" src={siteLogoUrl} className="border-2 border-primary rounded-full" />
+    + <img id="header-logo-image" src={siteLogoUrl} className="rounded-full" />
+    ```
+
+### 3. Extrair URL da logo para configuração dinâmica
+
+* **Arquivos-alvo**:
+
+  * `client/src/components/header.tsx`
+  * `client/src/components/footer.tsx`
+* **Variável**: `siteLogoUrl`
+* **Instrução:**
+
+  * Substituir `src="/assets/logo-*.png"` por `src={siteConfig.siteLogoUrl}`.
+  * Garantir que `siteConfig` seja fornecido pelo hook ou contexto `useSiteConfig()` implementado no admin.
+
+### 4. Adicionar seção de upload de imagem no painel Admin → Configurações do Site
+
+* **Arquivo**: `client/src/pages/admin/ConfigSite.tsx`
+* **Linhas a incluir**: imediatamente após os campos existentes, antes do botão Atualizar
+* **IDs**:
+
+  * Input: `siteLogoUpload`
+  * Preview: `siteLogoPreview`
+  * Botão: `siteConfigUpdateBtn`
+* **JSX sugerido:**
+
+  ```tsx
+  <label htmlFor="siteLogoUpload">Logo do Site:</label>
+  <input type="file" id="siteLogoUpload" accept="image/*" onChange={handleFileChange} />
+  {previewUrl && <img id="siteLogoPreview" src={previewUrl} alt="Preview do logo" className="mt-2 h-24" />}
+  <button id="siteConfigUpdateBtn" onClick={handleUpdate} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+    Atualizar
+  </button>
+  ```
+
+### 5. Envio de arquivo e atualização via API
+
+* **Arquivo**: `client/src/lib/api.ts`
+* **Função**: `updateSiteConfig`
+* **Descrição:**
+
+  * Aceitar `FormData` com campo `siteLogo`.
+  * Chamada:
+
+    ```ts
+    export async function updateSiteConfig(formData: FormData) {
+      return fetch('/api/admin/site-config', { method: 'POST', body: formData });
+    }
+    ```
+
+### 6. Aplicar efeito de reflexo animado via CSS
+
+* **Arquivos de estilo**: `src/styles/images.css` ou dentro de `global.css`
+* **IDs-alvo**:
+
+  * `#header-logo-image`
+  * `#footer-logo-image`
+* **CSS sugerido:**
+
+  ```css
+  #header-logo-image, #footer-logo-image {
+    position: relative;
+    overflow: hidden;
+  }
+  #header-logo-image::after, #footer-logo-image::after {
+    content: '';
+    position: absolute;
+    top: -150%; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.4) skewY(-30deg);
+    animation: reflect 2.5s infinite;
+  }
+  @keyframes reflect {
+    from { top: -150%; }
+    to { top: 200%; }
+  }
+  ```
+
+### 7. Verificação de atualizações somente ao clicar em “Atualizar”
+
+* **Arquivo**: `client/src/pages/admin/ConfigSite.tsx`
+* **ID do botão**: `siteConfigUpdateBtn`
+* **Descrição:**
+
+  * Implementar `handleUpdate()` para enviar apenas ao clicar.
+  * Garantir feedback visual via `alert()` ou componente `toast`.
+
+---
+
+**Instruções**
+
+1. Aplique cada modificação exatamente nos arquivos e linhas indicados.
+2. Insira IDs e classes conforme especificado para garantir consistência.
+3. Teste o painel Admin em localhost para verificar upload, preview e atualização.
+4. Verifique no frontend que as animações e bordas foram removidas e que o efeito de reflexo funciona corretamente.
+5. Documente todas as mudanças em um commit separado, com mensagem clara: “feat: dynamic site logo e custom admin config”.
+
+---

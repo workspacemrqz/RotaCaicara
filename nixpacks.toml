@@ -1,0 +1,52 @@
+[phases.install]
+# Configuração da fase de instalação
+dependsOn = ["setup"]
+
+[phases.install.nixPkgs]
+# Pacotes necessários do Nix
+packages = ["nodejs_20", "npm"]
+
+[phases.install.nixpkgsArchive]
+# Usar a versão estável do Nix
+archive = "nixos-24.05"
+
+[phases.install.aptPkgs]
+# Pacotes adicionais do APT se necessário
+packages = []
+
+[phases.install.cmds]
+# Comandos para instalação de dependências
+cmds = [
+  "npm ci --production=false",
+  "npm install -g typescript",
+  "npm install -g esbuild"
+]
+
+[phases.build]
+# Configuração da fase de build
+dependsOn = ["install"]
+
+[phases.build.cmds]
+# Comandos para build do projeto
+cmds = [
+  "npm run build"
+]
+
+[phases.start]
+# Configuração da fase de start
+dependsOn = ["build"]
+
+[phases.start.cmds]
+# Comando para iniciar a aplicação
+cmds = [
+  "npm run start"
+]
+
+[variables]
+# Variáveis de ambiente
+NODE_ENV = "production"
+PORT = "3101"
+
+[providers]
+# Configurações específicas do provedor
+nixpacks = "1.33.0" 

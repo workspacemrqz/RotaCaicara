@@ -1,0 +1,57 @@
+oot@srv864082:/var/www/rotacaicara.com.br# # Ativar configuração do Nginx
+ln -s /etc/nginx/sites-available/rotacaicara /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default 2>/dev/null || true
+nginx -t
+systemctl reload nginx
+
+# Instalar certificado SSL
+apt install snapd
+snap install core; snap refresh core
+snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
+
+# Configurar HTTPS com Let's Encrypt
+certbot --nginx -d rotacaicara.com.br -d www.rotacaicara.com.br
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/rotacaicara': File exists
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+snapd is already the newest version (2.67.1+22.04).
+0 upgraded, 0 newly installed, 0 to remove and 9 not upgraded.
+snap "core" is already installed, see 'snap help refresh'
+snap "core" has no updates available
+snap "certbot" is already installed, see 'snap help refresh'
+ln: failed to create symbolic link '/usr/bin/certbot': File exists
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Certificate not yet due for renewal
+
+You have an existing certificate that has exactly the same domains or certificate name you requested and isn't close to expiry.
+(ref: /etc/letsencrypt/renewal/rotacaicara.com.br.conf)
+
+What would you like to do?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: Attempt to reinstall this existing certificate
+2: Renew & replace the certificate (may be subject to CA rate limits)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+Renewing an existing certificate for rotacaicara.com.br and www.rotacaicara.com.br
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/rotacaicara.com.br/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/rotacaicara.com.br/privkey.pem
+This certificate expires on 2025-09-12.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for rotacaicara.com.br to /etc/nginx/sites-enabled/rotacaicara
+Successfully deployed certificate for www.rotacaicara.com.br to /etc/nginx/sites-enabled/rotacaicara
+Your existing certificate has been successfully renewed, and the new certificate has been installed.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

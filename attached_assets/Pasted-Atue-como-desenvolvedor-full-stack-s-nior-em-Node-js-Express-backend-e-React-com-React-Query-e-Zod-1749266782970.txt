@@ -1,0 +1,37 @@
+Atue como desenvolvedor full-stack sênior em Node.js/Express (backend) e React com React Query e Zod (frontend). Você recebeu o repositório EcoTrackSolution completo. Sua missão é corrigir de uma vez por todas o fluxo de edição de “Negócios”, garantindo que ao clicar em “Atualizar negócio”:
+
+1. **Body Parsing no Express**  
+   - Em `server/index.ts`, logo após `const app = express();`, insira:  
+     ```js
+     app.use(express.json());
+     ```  
+   - Mantenha em seguida o middleware de CORS e, só depois, chame `registerRoutes(app)`.
+
+2. **Rotas de Update**  
+   - Em `server/routes.ts`, confirme que o endpoint `PATCH /api/businesses/:id` existe **abaixo** do body parser, que chama `storage.updateBusiness(id, req.body)` e faz `res.json(business)`.  
+   - Remova discrepâncias entre métodos PUT/ PATCH ou rotas “/api/admin/businesses” vs “/api/businesses” — o frontend usa PATCH em `/api/businesses/:id`.
+
+3. **Retorno JSON no Cliente**  
+   - Em `client/src/lib/queryClient.ts`, ajuste `apiRequest` para, após `throwIfResNotOk(res)`, fazer:  
+     ```ts
+     return await res.json();
+     ```  
+     em vez de `return res;`, para que `mutateAsync` receba o objeto atualizado.
+
+4. **Refatoração da Mutação**  
+   - Em `client/src/pages/admin.tsx`, na definição de `updateBusiness`, mude a `mutationFn` para usar `await` e trate o `data` corretamente, assim:  
+     ```ts
+     const updateBusiness = useMutation(async ({ id, data }) => {
+       const updated = await apiRequest("PATCH", `/api/businesses/${id}`, data);
+       return updated;
+     }, {
+       onSuccess: (business) => { /* invalidate queries, fechar modal e resetar form */ },
+       onError: (err) => { /* toast de erro sem fechar modal */ },
+     });
+     ```
+
+5. **Teste e Verificação**  
+   - Verifique que `handleBusinessSubmit` executa `await updateBusiness.mutateAsync(...)` antes de qualquer `reset()` ou `closeModal()`.  
+   - Confirme que `queryClient.invalidateQueries(["/api/businesses"])` roda após onSuccess e reflete imediatamente no frontend.
+
+Por fim, envie **exatamente** os trechos de código alterados em `server/index.ts`, `server/routes.ts`, `client/src/lib/queryClient.ts` e `client/src/pages/admin.tsx`, incluindo as linhas de import necessárias e comentários (máx. 2 linhas) explicando cada mudança. 

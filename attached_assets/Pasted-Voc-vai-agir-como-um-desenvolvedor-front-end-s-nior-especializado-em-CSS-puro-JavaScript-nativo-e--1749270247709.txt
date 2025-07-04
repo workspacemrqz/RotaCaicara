@@ -1,0 +1,65 @@
+Você vai agir como um desenvolvedor front-end sênior especializado em CSS puro, JavaScript nativo e SVG inline, sem usar nenhuma biblioteca de terceiros, imagens externas ou vídeos. Você tem acesso ao repositório EcoTrackSolution completo. Sua tarefa é implementar de forma completa as seguintes animações em loop, entregar somente os diffs de código para cada arquivo alterado e incluir comentários sucintos de no máximo duas linhas explicando cada mudança. Após cada alteração, valide manualmente o resultado em desktop e mobile antes de prosseguir:
+
+1. Fundo de gradiente animado no cabeçalho
+   Em client/src/pages/index.tsx, no elemento <header>:
+
+   * Defina no globls.css um keyframes gradientLoop que mude background-position de 0% 50% para 100% 50% em 15s linear infinite.
+   * Aplique no header: background: linear-gradient(270deg, #005F71, #00A8A8, #005F71); background-size: 600% 600%; animation: gradientLoop 15s linear infinite.
+
+2. Partículas CSS na seção de categorias
+   Em client/src/pages/index.tsx, na div container das categorias:
+
+   * Adicione pseudo-elementos ::before e ::after com content: ""; position: absolute; width/height: 8px; border-radius: 50%; background: rgba(0,0,0,0.1); animation float 8s ease-in-out infinite.
+   * Defina keyframes float que translateY de -10px a 10px e opacity entre 0.2 e 0.8.
+
+3. Morphing de SVG no logotipo
+   Em client/src/components/Header.tsx:
+
+   * Converta o logo em SVG inline, extraia o path principal.
+   * No globals.css, adicione keyframes morph que altere o atributo d do path via CSS (use propriedade offset-path ou animate tag <animate> para morphing em 20s ease-in-out infinite).
+   * Aplique animate no path selecionado.
+
+4. Pulsação em botões principais
+   Em client/src/components/Button.tsx:
+
+   * Defina keyframes pulse que escale de 1 para 1.05 e volte em 2s ease-in-out infinite.
+   * Aplique nos botões com prop variant="primary".
+
+5. Scroll loop em cards de destaque
+   Em client/src/pages/index.tsx:
+
+   * Envolva cards de featuredBusinesses num container overflow-hidden.
+   * Dentro, crie inner com display\:flex e use keyframes slideLoop que translateX de 0 a -50% em 30s linear infinite.
+
+6. Microinterações de hover no sidebar
+   Em client/src/components/Sidebar.tsx:
+
+   * Defina keyframes underlineGrow que width de 0 para 100% em 0.3s.
+   * Aplique nos NavLink: &\:hover\:after { animation: underlineGrow 0.3s forwards; }
+
+7. FadeInUp em cards no admin
+   Em client/src/pages/admin/negocios.tsx:
+
+   * Adicione keyframes fadeInUp que translateY de 20px para 0 e opacity de 0 para 1 em 0.5s ease-out.
+   * Em map de cards, adicione style={{ animation: `fadeInUp 0.5s ease-out forwards`, animationDelay: `${index * 0.1}s` }}.
+
+8. Brilho nos ícones do rodapé
+   Em client/src/components/Footer.tsx:
+
+   * Defina keyframes shine que translateX de -100% para 100% em 3s infinite.
+   * Em wrapper dos ícones, use mask-image linear-gradient e animation: shine 3s infinite.
+
+9. Loop de texto decorativo
+   Em client/src/pages/index.tsx abaixo do título CATEGORIAS:
+
+   * Insira <span class="loop-text"></span> e no globals.css defina .loop-text::after { content: "Explore"; animation: textLoop 12s steps(1) infinite; }
+   * Defina keyframes textLoop que mude content para "Explore", "Descubra", "Conecte" a cada 4s.
+
+10. Performance e will-change
+    Em globals.css, agrupe keyframes e adicione will-change: transform, opacity nos seletores animados.
+
+11. Documentação dos diffs e testes
+
+* Entregue apenas os diffs em markdown com trechos antes e depois.
+* Inclua comentário de até duas linhas explicando cada mudança.
+* Realize testes manuais em desktop e mobile e confirme FPS aceitável.

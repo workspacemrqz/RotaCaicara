@@ -1,0 +1,92 @@
+Estratégia de Correção e Finalização das Funcionalidades Faltantes
+
+1. Ícone de Categoria no Admin
+Backend: garanta que o modelo de Categoria (schema, ZodSchema, storage e routes) use o campo iconName:string e ignore o campo color.
+
+Frontend (Admin):
+
+No formulário de edição/criação de categoria, remova o campo de cor.
+
+Substitua o <Input name="iconName" /> por um componente que recebe iconName e renderiza <Icon name={iconName} /> em vez de texto puro.
+
+Adicione um preview: <IconPreview icon={form.values.iconName} />.
+
+2. Remover Auto-save em “Negócios”
+Local State Only: retire todo useEffect ou chamadas onBlur/onChange que acionam PUT /api/businesses/:id.
+
+Botão “Confirmar”:
+
+Mantenha todos os campos no state do formulário (ex: useFormik, react-hook-form ou state manual).
+
+No onClick do botão “Confirmar”, faça await api.put('/api/businesses/'+id, formValues).
+
+Após sucesso, atualize a lista local (por exemplo, refetch via React-Query ou atualize o array em Context).
+
+3. Editar “Cadastros Recebidos”
+UI: na listagem de business-registrations, adicione ao lado do “Excluir” um botão ✏️ Alterar Cadastro.
+
+Fluxo de Edição:
+
+Clique → modal/form pré-preenchido via GET /api/business-registrations/:id.
+
+Mantenha state local; remova auto-save.
+
+Clique em “Confirmar” → PUT /api/business-registrations/:id.
+
+Feche modal e refetch/list update automático.
+
+4. Modal de Ícones e Remoção de Cor (Categorias)
+Remover color-picker do formulário.
+
+Ícone: botão “Selecionar Ícone” abre modal com grid 4×10 de SVGs (JSON estático com 40 itens).
+
+Seleção: ao clicar em um SVG, grava iconName no form, fecha modal, exibe preview.
+
+5. Redes Sociais do Rodapé
+Settings Schema: inclua instagramUrl, whatsappUrl, facebookUrl.
+
+API:
+
+GET /api/admin/settings deve retornar esses 3 campos.
+
+PUT /api/admin/settings atualiza apenas os campos enviados.
+
+SettingsContext: ao montar, faça fetch de tudo (siteName, contact, socials, faqs, headlines, taglines).
+
+Footer: leia settings.instagramUrl etc.; para cada link, renderize o ícone social e <a href={url}>.
+
+6. FAQs, Taglines & Headlines Dinâmicos
+SettingsForm (Admin): crie inputs para:
+
+Headlines: headline1 … headline3 (defina quantos precisar)
+
+Taglines: tagline1 … tagline4
+
+FAQs: quatro pares questionN / answerN
+
+PUT /api/admin/settings: valide com Zod e atualize apenas os campos alterados.
+
+Home & Header/Footer:
+
+Hero da home consome headline1 e tagline1.
+
+Footer consome tagline3/headline2 conforme layout.
+
+Se necessário, adicione campo displayInHero: boolean em cada tagline/headline no settings para controlar onde aparece.
+
+7. Auditoria & Testes
+Inspeção de Código: pesquise por autoSave, onChange em todos os formulários e garanta que só existam chamadas de API em botões “Confirmar”/“Publicar”.
+
+Endpoints: confirme em server/routes.ts que todas as rotas de settings, businesses, business-registrations e categories usam o novo contrato (Zod + Drizzle).
+
+Componentes: verifique SettingsContext, CategoryForm, BusinessForm, RegistrationForm e IconSelector.
+
+Testes: escreva testes unitários e de integração (Jest + React Testing Library / Supertest) para cada fluxo crítico:
+
+Edição de negócio (sem autosave)
+
+Edição de cadastro
+
+Seleção de ícone
+
+Atualização de settings e propagação imediata

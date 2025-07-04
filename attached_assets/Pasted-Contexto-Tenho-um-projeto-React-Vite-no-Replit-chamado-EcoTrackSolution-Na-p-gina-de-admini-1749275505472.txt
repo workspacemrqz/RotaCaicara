@@ -1,0 +1,31 @@
+Contexto:
+Tenho um projeto React + Vite no Replit chamado “EcoTrackSolution”. 
+Na página de administração (`client/src/pages/admin.tsx`), implemento um wizard de três etapas para cadastrar novos negócios usando React Hook Form e Zod.
+- `currentStep` inicia em 1 e `totalSteps` = 3.
+- O diálogo abre com `<Dialog open={businessDialogOpen} onOpenChange={setBusinessDialogOpen}>`.
+- Os botões “Próximo” e “Anterior” ajustam `currentStep` corretamente.
+- No passo final, o botão “Adicionar Negócio” envia o form via `handleBusinessSubmit`, invocando `createBusiness.mutateAsync` e, em `onSuccess`, fecha o modal com `setBusinessDialogOpen(false)`.
+
+Problema:
+Após cadastrar um negócio, o diálogo fecha, mas `currentStep` **não** é resetado para 1. 
+Quando o usuário reabre o modal (“Adicionar Novo Negócio”), `currentStep` ainda vale 3, fazendo o wizard pular direto para a etapa dos campos “Website, Instagram, Facebook, Upload de Imagem, Destaque e Ativo”. 
+O usuário vê apenas “Anterior” e “Adicionar Negócio” e, ao clicar em “Adicionar”, dispara novamente a mutação de criação **sem** preencher os campos obrigatórios dos passos 1 e 2. 
+Isso faz o sistema “confirmar” o cadastro sem ter sido realmente confirmado pelo usuário, gerando inconsistência de UX e possíveis submissões inválidas.
+
+Objetivos da correção:
+1. Garantir que, sempre que o modal de criação for aberto (`businessDialogOpen` mudar para `true`), `currentStep` seja automaticamente definido para `1`.
+2. Opcionalmente, também resetar o formulário (`businessForm.reset()`) ao abrir, garantindo valores em branco.
+3. Manter a lógica de validação de passos e envio intacta, sem alterar `nextStep`, `prevStep` ou `handleBusinessSubmit`.
+4. Evitar a duplicação de código: usar `onOpenChange` do `<Dialog>` em vez de envolver o botão em um `onClick` manual.
+
+Solicitação:
+Por favor, aplique as seguintes modificações no arquivo **client/src/pages/admin.tsx**:
+- Em `<Dialog open={businessDialogOpen} onOpenChange={...}>`, substitua a função `setBusinessDialogOpen` pura por uma callback que:
+  1. Receba o parâmetro `open: boolean`.
+  2. Chame `setBusinessDialogOpen(open)`.
+  3. Se `open === true`, invoque `setCurrentStep(1)` e `businessForm.reset()`.
+- Salve o arquivo e reinicie o servidor no Replit.
+- Realize um teste de fluxo completo: abra o modal três vezes, confirme que cada vez inicia em “Etapa 1 de 3” e que “Adicionar Negócio” só aparece em “Etapa 3 de 3”.
+- Verifique que não haja regressão no cadastro de edição de negócio (mantendo `handleEditBusiness` intacto).
+
+Obrigado!

@@ -1,0 +1,61 @@
+root@srv864082:/var/www/rotacaicara.com.br# # Verificar logs do PM2 para ver o erro
+pm2 logs rotacaicara --lines 20
+
+# Verificar status detalhado
+pm2 describe rotacaicara
+
+# Se houver erro, reiniciar a aplicação
+pm2 restart rotacaicara
+
+# Verificar se a porta 3002 está sendo usada
+netstat -tlnp | grep :3002
+[TAILING] Tailing last 20 lines for [rotacaicara] process (change the value with --lines option)
+/root/.pm2/logs/rotacaicara-out.log last 20 lines:
+/root/.pm2/logs/rotacaicara-error.log last 20 lines:
+^C
+ Describing process with id 0 - name rotacaicara 
+┌───────────────────┬───────────────────────────────────────┐
+│ status            │ online                                │
+│ name              │ rotacaicara                           │
+│ namespace         │ default                               │
+│ version           │ N/A                                   │
+│ restarts          │ 0                                     │
+│ uptime            │ 10m                                   │
+│ script path       │ /usr/bin/node                         │
+│ script args       │ dist/index.js                         │
+│ error log path    │ /root/.pm2/logs/rotacaicara-error.log │
+│ out log path      │ /root/.pm2/logs/rotacaicara-out.log   │
+│ pid path          │ /root/.pm2/pids/rotacaicara-0.pid     │
+│ interpreter       │ none                                  │
+│ interpreter args  │ N/A                                   │
+│ script id         │ 0                                     │
+│ exec cwd          │ /var/www/rotacaicara                  │
+│ exec mode         │ fork_mode                             │
+│ node.js version   │ N/A                                   │
+│ node env          │ production                            │
+│ watch & reload    │ ✘                                     │
+│ unstable restarts │ 0                                     │
+│ created at        │ 2025-06-16T14:26:39.853Z              │
+└───────────────────┴───────────────────────────────────────┘
+ Divergent env variables from local env 
+┌────────────────┬──────────────────────────────────┐
+│ PWD            │ /var/www/rotacaicara             │
+│ SSH_CONNECTION │ 69.62.92.12 36492 69.62.92.12 22 │
+│ XDG_SESSION_ID │ 7                                │
+│ SSH_CLIENT     │ 69.62.92.12 36492 22             │
+│ SSH_TTY        │ /dev/pts/1                       │
+└────────────────┴──────────────────────────────────┘
+
+ Add your own code metrics: http://bit.ly/code-metrics
+ Use `pm2 logs rotacaicara [--lines 1000]` to display logs
+ Use `pm2 env 0` to display environment variables
+ Use `pm2 monit` to monitor CPU and Memory usage rotacaicara
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [rotacaicara](ids: [ 0 ])
+[PM2] [rotacaicara](0) ✓
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ rotacaicara    │ default     │ N/A     │ fork    │ N/A      │ 0s     │ 1    │ online    │ 0%       │ 0b       │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+root@srv864082:/var/www/rotacaicara.com.br# 

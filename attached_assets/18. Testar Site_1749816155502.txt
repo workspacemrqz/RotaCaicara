@@ -1,0 +1,2 @@
+Abri o site e apareceu uma pagina em branco escrito '' 502 Bad Gateway
+nginx/1.18.0 (Ubuntu) ''

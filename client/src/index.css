@@ -1,0 +1,974 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Background Variables */
+:root {
+  --global-bg-color: #00566A;
+  --global-bg-image: url('/images/global-bg.svg');
+  --overlay-dark: rgba(0, 0, 0, 0.6);
+  --overlay-light: rgba(0, 0, 0, 0.2);
+}
+
+/* Global Background Classes */
+.global-bg {
+  background-color: var(--global-bg-color);
+  background-image: var(--global-bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+}
+
+.global-bg-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay-dark);
+  z-index: 1;
+}
+
+.global-bg-light::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay-light);
+  z-index: 1;
+}
+
+.global-bg > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive background for mobile */
+@media (max-width: 768px) {
+  .global-bg {
+    background-attachment: scroll;
+    background-size: cover;
+  }
+}
+
+/* Animated gradient background for hero section */
+@keyframes gradientLoop {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating particles animation */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(-10px);
+    opacity: 0.2;
+  }
+  50% { 
+    transform: translateY(10px);
+    opacity: 0.8;
+  }
+}
+
+/* Button pulse animation */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Card slide loop animation */
+@keyframes slideLoop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Underline grow animation for hover effects */
+@keyframes underlineGrow {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+/* Fade in up animation for staggered card reveals */
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Reflection animation for logo images */
+@keyframes reflect {
+  from { top: -150%; }
+  to { top: 200%; }
+}
+
+/* Logo reflection effect */
+#header-logo-image, #footer-logo-image {
+  position: relative;
+  overflow: hidden;
+}
+
+#header-logo-image::after, #footer-logo-image::after {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+  transform: skewY(-15deg);
+  animation: reflect 2.5s infinite;
+  pointer-events: none;
+}
+
+/* Remove underline animations */
+.site-header h1::after,
+.site-header p::after {
+  content: none !important;
+}
+
+/* Shine effect for icons */
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Text content loop animation */
+@keyframes textLoop {
+  0%, 33% { content: "Explore"; }
+  34%, 66% { content: "Descubra"; }
+  67%, 100% { content: "Conecte"; }
+}
+
+/* Performance optimization with will-change */
+.animate-gradient {
+  will-change: background-position;
+  background: linear-gradient(270deg, #006C84, #005A6A, #006C84);
+  background-size: 600% 600%;
+  animation: gradientLoop 15s ease-in-out infinite;
+}
+
+.animate-float {
+  will-change: transform, opacity;
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-pulse-button {
+  will-change: transform;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-slide-loop {
+  will-change: transform;
+  animation: slideLoop 30s linear infinite;
+}
+
+.animate-fade-up {
+  will-change: transform, opacity;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Floating particles */
+.particles-container {
+  position: relative;
+}
+
+.particles-container::before,
+.particles-container::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 108, 132, 0.2);
+  animation: float 8s ease-in-out infinite;
+}
+
+.particles-container::before {
+  top: 20%;
+  left: 10%;
+  animation-delay: -2s;
+}
+
+.particles-container::after {
+  top: 60%;
+  right: 15%;
+  animation-delay: -4s;
+}
+
+/* Hover underline effect */
+.hover-underline {
+  position: relative;
+}
+
+.hover-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: #006C84;
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  animation: underlineGrow 0.3s forwards;
+}
+
+/* Shine effect for icons */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shine 3s infinite;
+}
+
+/* Loop text animation */
+.loop-text::after {
+  content: "Explore";
+  animation: textLoop 12s steps(1) infinite;
+}
+
+:root {
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 98%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 98%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: #006C84;
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Petroleo color system */
+  --petroleo: #006C84;
+  --petroleo-dark: #005A6A;
+  --offwhite: #F5F5F5;
+  --ecoar-blue: #006C84;
+  --ecoar-blue-dark: #005A6A;
+  --ecoar-dark: #006C84;
+  --ecoar-light: #F5F5F5;
+  
+  /* Contrast colors based on background */
+  --white-bg: #FFFFFF;
+  --offwhite-bg: #F5F5F5;
+  --contrast-light: #F5F5F5;
+  --contrast-dark: #006C84;
+  
+  /* Text colors for white backgrounds (#FFFFFF) - use #F5F5F5 */
+  --text-on-white: #F5F5F5;
+  --icon-on-white: #F5F5F5;
+  
+  /* Text colors for off-white backgrounds (#F5F5F5) - use #006C84 */
+  --text-on-offwhite: #006C84;
+  --icon-on-offwhite: #006C84;
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: #006C84;
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Petroleo color utilities */
+  .text-petroleo {
+    color: var(--petroleo);
+  }
+  
+  .text-petroleo-dark {
+    color: var(--petroleo-dark);
+  }
+  
+  .bg-petroleo {
+    background-color: var(--petroleo);
+  }
+  
+  .bg-petroleo-dark {
+    background-color: var(--petroleo-dark);
+  }
+  
+  .bg-offwhite {
+    background-color: var(--offwhite);
+  }
+  
+  .border-petroleo {
+    border-color: var(--petroleo);
+  }
+  
+  .hover\:bg-petroleo-dark:hover {
+    background-color: var(--petroleo-dark);
+  }
+  
+  .hover\:text-petroleo-dark:hover {
+    color: var(--petroleo-dark);
+  }
+  
+  /* Legacy ecoar colors (mapped to petroleo) */
+  .text-ecoar-blue {
+    color: var(--petroleo);
+  }
+  
+  .bg-ecoar-blue {
+    background-color: var(--petroleo);
+  }
+  
+  .bg-ecoar-blue-dark {
+    background-color: var(--petroleo-dark);
+  }
+  
+  .text-ecoar-dark {
+    color: var(--petroleo);
+  }
+  
+  .bg-ecoar-dark {
+    background-color: var(--petroleo);
+  }
+  
+  .bg-ecoar-light {
+    background-color: var(--offwhite);
+  }
+  
+  .border-ecoar-blue {
+    border-color: var(--petroleo);
+  }
+  
+  .hover\:bg-ecoar-blue-dark:hover {
+    background-color: var(--petroleo-dark);
+  }
+  
+  /* Fade-in animation */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .fade-in-slow {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+  .fade-in-fast {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Text on white backgrounds (#FFFFFF) - use #F8F8F8 */
+  .text-on-white {
+    color: var(--text-on-white);
+  }
+  
+  /* Text on off-white backgrounds (#F5F5F5) - use #006C84 */
+  .text-on-offwhite {
+    color: var(--text-on-offwhite);
+  }
+  
+  /* Icons on white backgrounds (#FFFFFF) - use #F5F5F5 */
+  .icon-on-white {
+    color: var(--icon-on-white);
+  }
+  
+  /* Icons on off-white backgrounds (#F5F5F5) - use #006C84 */
+  .icon-on-offwhite {
+    color: var(--icon-on-offwhite);
+  }
+  
+  /* Auto contrast classes for any background */
+  .auto-contrast-text {
+    color: var(--contrast-dark);
+  }
+  
+  .auto-contrast-icon {
+    color: var(--contrast-dark);
+  }
+  
+  /* Background-specific contrast utilities */
+  .bg-white .auto-contrast-text,
+  .bg-white .auto-contrast-icon {
+    color: var(--contrast-light);
+  }
+  
+  .bg-gray-50 .auto-contrast-text,
+  .bg-gray-50 .auto-contrast-icon,
+  .bg-ecoar-light .auto-contrast-text,
+  .bg-ecoar-light .auto-contrast-icon {
+    color: var(--contrast-dark);
+  }
+  
+  /* Specific background color utilities */
+  .bg-ffffff {
+    background-color: #FFFFFF;
+  }
+  
+  .bg-f8f8f8 {
+    background-color: #F8F8F8;
+  }
+  
+  /* Text color utilities for specific backgrounds */
+  .bg-ffffff .text-auto,
+  .bg-ffffff .icon-auto,
+  .bg-white .text-auto,
+  .bg-white .icon-auto {
+    color: #F8F8F8 !important;
+  }
+  
+  .bg-f8f8f8 .text-auto,
+  .bg-f8f8f8 .icon-auto {
+    color: #006C84 !important;
+  }
+  
+  /* Default contrast classes for normal body background */
+  .text-auto {
+    color: #006C84;
+  }
+  
+  .icon-auto {
+    color: #006C84;
+  }
+  
+  /* Force correct contrast on card elements */
+  .bg-ffffff {
+    background-color: #FFFFFF !important;
+  }
+  
+  .bg-f8f8f8 {
+    background-color: #F8F8F8 !important;
+  }
+
+  /* Smooth animations and transitions */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.8s ease-out forwards;
+    transform: translateX(50px);
+    opacity: 0;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.7s ease-out forwards;
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  .animate-bounce-gentle {
+    animation: bounceGentle 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 3s ease-in-out infinite;
+  }
+
+  /* Hover transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-transform {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 108, 132, 0.15);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 108, 132, 0.3);
+  }
+
+  /* Icon microinteractions */
+  .icon-hover {
+    transition: all 0.3s ease;
+  }
+
+  .icon-hover:hover {
+    transform: scale(1.1) rotate(5deg);
+    color: #006C84;
+  }
+
+  /* Parallax effect */
+  .parallax-section {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Keyframe animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounceGentle {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-8px);
+    }
+    60% {
+      transform: translateY(-4px);
+    }
+  }
+
+  @keyframes pulseSoft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Loading states */
+  .loading-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Staggered animations */
+  .animate-stagger-1 {
+    animation-delay: 0.1s;
+  }
+
+  .animate-stagger-2 {
+    animation-delay: 0.2s;
+  }
+
+  .animate-stagger-3 {
+    animation-delay: 0.3s;
+  }
+
+  .animate-stagger-4 {
+    animation-delay: 0.4s;
+  }
+
+  .animate-stagger-5 {
+    animation-delay: 0.5s;
+  }
+
+  .animate-stagger-6 {
+    animation-delay: 0.6s;
+  }
+
+  /* Responsive utilities and overflow fixes */
+  .container-safe {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .text-responsive {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .image-responsive {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* Mobile-first responsive breakpoints */
+  @media (max-width: 640px) {
+    .mobile-padding {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .mobile-text-sm {
+      font-size: 0.875rem;
+    }
+    
+    .mobile-grid-1 {
+      grid-template-columns: 1fr;
+    }
+    
+    .mobile-gap-4 {
+      gap: 1rem;
+    }
+    
+    .mobile-py-8 {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    /* Ensure category cards fit properly on mobile */
+    .category-card {
+      min-height: 120px;
+      height: auto;
+    }
+
+    .category-card h4 {
+      font-size: 0.75rem !important;
+      line-height: 1.1 !important;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    /* Ensure grid doesn't overflow */
+    .grid {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Header responsive fixes */
+    .responsive-container {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
+    /* Admin panel mobile optimizations */
+    .admin-card {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+    }
+
+    .admin-tab-trigger {
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-button-group {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .admin-button-group .btn {
+      width: 100%;
+      font-size: 0.875rem;
+      padding: 0.75rem;
+    }
+
+    /* Form inputs mobile spacing */
+    .form-grid-mobile {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .tablet-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tablet-text-base {
+      font-size: 1rem;
+    }
+  }
+
+  /* Prevent horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Responsive container classes */
+  .responsive-container {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .responsive-container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .responsive-container {
+      max-width: 80rem;
+    }
+  }
+
+  /* Standardized circular social media icons */
+  .social-icon-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .social-icon-circle:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .social-icon-circle:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* All social media icons use dark teal background */
+  .social-whatsapp,
+  .social-instagram,
+  .social-facebook,
+  .social-journal,
+  .social-location {
+    background: #005F71;
+  }
+
+  /* Icon sizing within circles */
+  .social-icon-circle svg,
+  .social-icon-circle i {
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+    line-height: 1;
+  }
+
+  /* Footer social media icons - off-white icons on dark teal background */
+  .social-whatsapp svg,
+  .social-whatsapp i,
+  .social-instagram svg,
+  .social-instagram i,
+  .social-facebook svg,
+  .social-facebook i,
+  .social-journal svg,
+  .social-journal i {
+    color: var(--offwhite);
+  }
+
+  /* Business card social media icons - off-white icons on dark teal background */
+  .social-location svg,
+  .social-location i {
+    color: var(--offwhite);
+  }
+
+  /* Mobile responsive social icons */
+  @media (max-width: 640px) {
+    .social-icon-circle {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+
+    .social-icon-circle svg,
+    .social-icon-circle i {
+      width: 1rem;
+      height: 1rem;
+      font-size: 1rem;
+    }
+  }
+
+  /* Large screen social icons */
+  @media (min-width: 1024px) {
+    .social-icon-circle {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .social-icon-circle svg,
+    .social-icon-circle i {
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 1.25rem;
+    }
+  }
+
+  /* Social icons container spacing */
+  .social-icons-container {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  @media (min-width: 640px) {
+    .social-icons-container {
+      gap: 1rem;
+    }
+  }
+
+  /* Large circular icons for feature sections */
+  .social-icon-circle-large {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .social-icon-circle-large:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .social-icon-circle-large svg,
+  .social-icon-circle-large i {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: white;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  /* Gradient variants for different contexts */
+  .social-gradient-primary {
+    background: linear-gradient(135deg, var(--petroleo) 0%, var(--petroleo-dark) 100%);
+  }
+
+  .social-gradient-secondary {
+    background: linear-gradient(135deg, var(--petroleo-dark) 0%, #004A5A 100%);
+  }
+
+  /* Mobile responsive large icons */
+  @media (max-width: 640px) {
+    .social-icon-circle-large {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+
+    .social-icon-circle-large svg,
+    .social-icon-circle-large i {
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 1.25rem;
+    }
+  }
+}

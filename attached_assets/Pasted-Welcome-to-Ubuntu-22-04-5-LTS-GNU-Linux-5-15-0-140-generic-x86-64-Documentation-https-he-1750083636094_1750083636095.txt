@@ -1,0 +1,309 @@
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-140-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Mon Jun 16 14:17:28 UTC 2025
+
+  System load:  0.42              Processes:             108
+  Usage of /:   2.6% of 96.73GB   Users logged in:       0
+  Memory usage: 4%                IPv4 address for eth0: 69.62.92.12
+  Swap usage:   0%                IPv6 address for eth0: 2a02:4780:14:e7f3::1
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '24.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+*** System restart required ***
+Last login: Mon Jun 16 14:15:48 2025 from 169.254.0.1
+root@srv864082:~# curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+apt install -y nodejs
+2025-06-16 14:17:30 - Installing pre-requisites
+Hit:1 http://mirror.ufam.edu.br/ubuntu jammy-backports InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:3 http://mirror.ufam.edu.br/ubuntu jammy InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:5 http://mirror.ufam.edu.br/ubuntu jammy-security InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Hit:7 http://mirror.ufam.edu.br/ubuntu jammy-updates InRelease
+Hit:8 http://archive.ubuntu.com/ubuntu jammy-security InRelease
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+ca-certificates is already the newest version (20240203~22.04.1).
+curl is already the newest version (7.81.0-1ubuntu1.20).
+gnupg is already the newest version (2.2.27-3ubuntu2.3).
+apt-transport-https is already the newest version (2.4.14).
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+Get:1 https://deb.nodesource.com/node_20.x nodistro InRelease [12.1 kB]
+Get:2 https://deb.nodesource.com/node_20.x nodistro/main amd64 Packages [11.5 kB]                                                              
+Hit:3 http://mirror.ufam.edu.br/ubuntu jammy-backports InRelease                                                 
+Hit:4 http://mirror.ufam.edu.br/ubuntu jammy InRelease                           
+Hit:5 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:6 http://mirror.ufam.edu.br/ubuntu jammy-security InRelease
+Hit:7 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:8 http://mirror.ufam.edu.br/ubuntu jammy-updates InRelease
+Hit:9 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Hit:10 http://archive.ubuntu.com/ubuntu jammy-security InRelease
+Fetched 23.7 kB in 1s (21.9 kB/s)
+Reading package lists... Done
+2025-06-16 14:17:35 - Repository configured successfully.
+2025-06-16 14:17:35 - To install Node.js, run: apt-get install nodejs -y
+2025-06-16 14:17:35 - You can use N|solid Runtime as a node.js alternative
+2025-06-16 14:17:35 - To install N|solid Runtime, run: apt-get install nsolid -y 
+
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  nodejs
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+Need to get 32.0 MB of archives.
+After this operation, 199 MB of additional disk space will be used.
+Get:1 https://deb.nodesource.com/node_20.x nodistro/main amd64 nodejs amd64 20.19.2-1nodesource1 [32.0 MB]
+Fetched 32.0 MB in 0s (87.3 MB/s)
+Selecting previously unselected package nodejs.
+(Reading database ... 100498 files and directories currently installed.)
+Preparing to unpack .../nodejs_20.19.2-1nodesource1_amd64.deb ...
+Unpacking nodejs (20.19.2-1nodesource1) ...#############........................................................................................................................................................] 
+Setting up nodejs (20.19.2-1nodesource1) ...##################################################..................................................................................................................] 
+Processing triggers for man-db (2.10.2-1) ...#############################################################################################################################......................................] 
+Scanning processes... [                                                                                                                                                                                            
+Scanning processes... [=                                                                                                                                                                                           Scanning processes... [===                                                                                                                                                                                         Scanning processes... [=====                                                                                                                                                                                       Scanning processes... [======                                                                                                                                                                                      Scanning processes... [========                                                                                                                                                                                    Scanning processes... [==========                                                                                                                                                                                  Scanning processes... [============                                                                                                                                                                                Scanning processes... [=============                                                                                                                                                                               Scanning processes... [===============                                                                                                                                                                             Scanning processes... [=================                                                                                                                                                                           Scanning processes... [==================                                                                                                                                                                          Scanning processes... [====================                                                                                                                                                                        Scanning processes... [======================                                                                                                                                                                      Scanning processes... [========================                                                                                                                                                                    Scanning processes... [=========================                                                                                                                                                                   Scanning processes... [===========================                                                                                                                                                                 Scanning processes... [=============================                                                                                                                                                               Scanning processes... [===============================                                                                                                                                                             Scanning processes... [================================                                                                                                                                                            Scanning processes... [==================================                                                                                                                                                          Scanning processes... [====================================                                                                                                                                                        Scanning processes... [=====================================                                                                                                                                                       Scanning processes... [=======================================                                                                                                                                                     Scanning processes... [=========================================                                                                                                                                                   Scanning processes... [===========================================                                                                                                                                                 Scanning processes... [============================================                                                                                                                                                Scanning processes... [==============================================                                                                                                                                              Scanning processes... [================================================                                                                                                                                            Scanning processes... [==================================================                                                                                                                                          Scanning processes... [===================================================                                                                                                                                         Scanning processes... [=====================================================                                                                                                                                       Scanning processes... [=======================================================                                                                                                                                     Scanning processes... [========================================================                                                                                                                                    Scanning processes... [==========================================================                                                                                                                                  Scanning processes... [============================================================                                                                                                                                Scanning processes... [==============================================================                                                                                                                              Scanning processes... [===============================================================                                                                                                                             Scanning processes... [=================================================================                                                                                                                           Scanning processes... [===================================================================                                                                                                                         Scanning processes... [====================================================================                                                                                                                        Scanning processes... [======================================================================                                                                                                                      Scanning processes... [========================================================================                                                                                                                    Scanning processes... [==========================================================================                                                                                                                  Scanning processes... [===========================================================================                                                                                                                 Scanning processes... [=============================================================================                                                                                                               Scanning processes... [===============================================================================                                                                                                             Scanning processes... [=================================================================================                                                                                                           Scanning processes... [==================================================================================                                                                                                          Scanning processes... [====================================================================================                                                                                                        Scanning processes... [======================================================================================                                                                                                      Scanning processes... [=======================================================================================                                                                                                     Scanning processes... [=========================================================================================                                                                                                   Scanning processes... [===========================================================================================                                                                                                 Scanning processes... [=============================================================================================                                                                                               Scanning processes... [==============================================================================================                                                                                              Scanning processes... [================================================================================================                                                                                            Scanning processes... [==================================================================================================                                                                                          Scanning processes... [====================================================================================================                                                                                        Scanning processes... [=====================================================================================================                                                                                       Scanning processes... [=======================================================================================================                                                                                     Scanning processes... [=========================================================================================================                                                                                   Scanning processes... [==========================================================================================================                                                                                  Scanning processes... [============================================================================================================                                                                                Scanning processes... [==============================================================================================================                                                                              Scanning processes... [================================================================================================================                                                                            Scanning processes... [=================================================================================================================                                                                           Scanning processes... [===================================================================================================================                                                                         Scanning processes... [=====================================================================================================================                                                                       Scanning processes... [=======================================================================================================================                                                                     Scanning processes... [========================================================================================================================                                                                    Scanning processes... [==========================================================================================================================                                                                  Scanning processes... [============================================================================================================================                                                                Scanning processes... [=============================================================================================================================                                                               Scanning processes... [===============================================================================================================================                                                             Scanning processes... [=================================================================================================================================                                                           Scanning processes... [===================================================================================================================================                                                         Scanning processes... [====================================================================================================================================                                                        Scanning processes... [======================================================================================================================================                                                      Scanning processes... [========================================================================================================================================                                                    Scanning processes... [=========================================================================================================================================                                                   Scanning processes... [===========================================================================================================================================                                                 Scanning processes... [=============================================================================================================================================                                               Scanning processes... [===============================================================================================================================================                                             Scanning processes... [================================================================================================================================================                                            Scanning processes... [==================================================================================================================================================                                          Scanning processes... [====================================================================================================================================================                                        Scanning processes... [======================================================================================================================================================                                      Scanning processes... [=======================================================================================================================================================                                     Scanning processes... [=========================================================================================================================================================                                   Scanning processes... [===========================================================================================================================================================                                 Scanning processes... [============================================================================================================================================================                                Scanning processes... [==============================================================================================================================================================                              Scanning processes... [================================================================================================================================================================                            Scanning processes... [==================================================================================================================================================================                          Scanning processes... [===================================================================================================================================================================                         Scanning processes... [=====================================================================================================================================================================                       Scanning processes... [=======================================================================================================================================================================                     Scanning processes... [=========================================================================================================================================================================                   Scanning processes... [==========================================================================================================================================================================                  Scanning processes... [============================================================================================================================================================================                Scanning processes... [==============================================================================================================================================================================              Scanning processes... [===============================================================================================================================================================================             Scanning processes... [=================================================================================================================================================================================           Scanning processes... [===================================================================================================================================================================================         Scanning processes... [=====================================================================================================================================================================================       Scanning processes... [======================================================================================================================================================================================      Scanning processes... [========================================================================================================================================================================================    Scanning processes... [==========================================================================================================================================================================================  Scanning processes... [============================================================================================================================================================================================Scanning processes...                                                                                                                                                                                               
+Scanning candidates... [                                                                                                                                                                                           Scanning candidates... [===============================                                                                                                                                                            Scanning candidates... [==============================================================                                                                                                                             Scanning candidates... [=============================================================================================                                                                                              Scanning candidates... [============================================================================================================================                                                               Scanning candidates... [===========================================================================================================================================================                                Scanning candidates... [===========================================================================================================================================================================================Scanning candidates...                                                                                                                                                                                              
+Scanning linux images... [                                                                                                                                                                                         Scanning linux images... [==============================================                                                                                                                                           Scanning linux images... [============================================================================================                                                                                             Scanning linux images... [==========================================================================================================================================                                               Scanning linux images... [=========================================================================================================================================================================================Scanning linux images...                                                                                                                                                                                            
+
+Restarting services...
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart getty@tty1.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+ systemctl restart user@0.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+root@srv864082:~# npm install -g pm2
+
+added 135 packages in 12s
+
+13 packages are looking for funding
+  run `npm fund` for details
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.4.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+npm notice To update run: npm install -g npm@11.4.2
+npm notice
+root@srv864082:~# ufw allow ssh && ufw allow 80 && ufw allow 443 && ufw --force enable
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated (v6)
+Firewall is active and enabled on system startup
+root@srv864082:~# mkdir -p /var/www/rotacaicara.com.br
+cd /var/www/rotacaicara.com.br
+git clone https://github.com/workspacemrqz/rotacaicara.git .
+Cloning into '.'...
+remote: Enumerating objects: 2018, done.
+remote: Counting objects: 100% (2018/2018), done.
+remote: Compressing objects: 100% (671/671), done.
+remote: Total 2018 (delta 1309), reused 2018 (delta 1309), pack-reused 0 (from 0)
+Receiving objects: 100% (2018/2018), 8.26 MiB | 22.45 MiB/s, done.
+Resolving deltas: 100% (1309/1309), done.
+root@srv864082:/var/www/rotacaicara.com.br# npm install
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+
+added 511 packages, and audited 512 packages in 7s
+
+68 packages are looking for funding
+  run `npm fund` for details
+
+8 vulnerabilities (1 low, 7 moderate)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+root@srv864082:/var/www/rotacaicara.com.br# cat > .env << 'EOF'
+DATABASE_URL=postgresql://neondb_owner:npg_q9pCnLTuYo6l@ep-long-feather-acf901dd-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require
+NODE_ENV=production
+PORT=3002
+EOF
+root@srv864082:/var/www/rotacaicara.com.br# npm run db:push
+npm run build
+pm2 start ecosystem.config.js
+pm2 save && pm2 startup
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/var/www/rotacaicara.com.br/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+[✓] Changes applied
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (3) src/main.tsxBrowserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+/images/global-bg.svg referenced in /images/global-bg.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+✓ 2186 modules transformed.
+../dist/public/index.html                   1.54 kB │ gzip:   0.71 kB
+../dist/public/assets/index-Bu1PKzu_.css   77.55 kB │ gzip:  13.87 kB
+../dist/public/assets/index-DGqArvY3.js   676.82 kB │ gzip: 205.21 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.05s
+▲ [WARNING] Duplicate key "tagline1" in object literal [duplicate-object-key]
+
+    server/storage.ts:403:6:
+      403 │       tagline1: "Descubra os melhores negócios da sua região",
+          ╵       ~~~~~~~~
+
+  The original key "tagline1" is here:
+
+    server/storage.ts:393:6:
+      393 │       tagline1: "Conectando você aos melhores negócios da cidade",
+          ╵       ~~~~~~~~
+
+1 warning
+
+  dist/index.js  50.4kb
+
+⚡ Done in 7ms
+
+                        -------------
+
+__/\\\\\\\\\\\\\____/\\\\____________/\\\\____/\\\\\\\\\_____
+ _\/\\\/////////\\\_\/\\\\\\________/\\\\\\__/\\\///////\\\___
+  _\/\\\_______\/\\\_\/\\\//\\\____/\\\//\\\_\///______\//\\\__
+   _\/\\\\\\\\\\\\\/__\/\\\\///\\\/\\\/_\/\\\___________/\\\/___
+    _\/\\\/////////____\/\\\__\///\\\/___\/\\\________/\\\//_____
+     _\/\\\_____________\/\\\____\///_____\/\\\_____/\\\//________
+      _\/\\\_____________\/\\\_____________\/\\\___/\\\/___________
+       _\/\\\_____________\/\\\_____________\/\\\__/\\\\\\\\\\\\\\\_
+        _\///______________\///______________\///__\///////////////__
+
+
+                          Runtime Edition
+
+        PM2 is a Production Process Manager for Node.js applications
+                     with a built-in Load Balancer.
+
+                Start and Daemonize any application:
+                $ pm2 start app.js
+
+                Load Balance 4 instances of api.js:
+                $ pm2 start api.js -i 4
+
+                Monitor in production:
+                $ pm2 monitor
+
+                Make pm2 auto-boot at server restart:
+                $ pm2 startup
+
+                To go further checkout:
+                http://pm2.io/
+
+
+                        -------------
+
+[PM2] Spawning PM2 daemon with pm2_home=/root/.pm2
+[PM2] PM2 Successfully daemonized
+[PM2][ERROR] File ecosystem.config.js not found
+[PM2] Saving current process list...
+[PM2][WARN] PM2 is not managing any process, skipping save...
+[PM2][WARN] To force saving use: pm2 save --force
+[PM2] Init System found: systemd
+Platform systemd
+Template
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User=root
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/root/.pm2
+PIDFile=/root/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/usr/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/usr/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/usr/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target
+
+Target path
+/etc/systemd/system/pm2-root.service
+Command list
+[ 'systemctl enable pm2-root' ]
+[PM2] Writing init configuration in /etc/systemd/system/pm2-root.service
+[PM2] Making script booting at startup...
+[PM2] [-] Executing: systemctl enable pm2-root...
+Created symlink /etc/systemd/system/multi-user.target.wants/pm2-root.service → /etc/systemd/system/pm2-root.service.
+[PM2] [v] Command successfully executed.
++---------------------------------------+
+[PM2] Freeze a process list on reboot via:
+$ pm2 save
+
+[PM2] Remove init script via:
+$ pm2 unstartup systemd
+root@srv864082:/var/www/rotacaicara.com.br# ln -s /etc/nginx/sites-available/rotacaicara.com.br /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+nginx: [emerg] open() "/etc/nginx/sites-enabled/rotacaicara.com.br" failed (2: No such file or directory) in /etc/nginx/nginx.conf:60
+nginx: configuration file /etc/nginx/nginx.conf test failed
+root@srv864082:/var/www/rotacaicara.com.br# ln -s /etc/nginx/sites-available/rotacaicara.com.br /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/rotacaicara.com.br': File exists
+nginx: [emerg] open() "/etc/nginx/sites-enabled/rotacaicara.com.br" failed (2: No such file or directory) in /etc/nginx/nginx.conf:60
+nginx: configuration file /etc/nginx/nginx.conf test failed
+root@srv864082:/var/www/rotacaicara.com.br# # Configurar proxy reverso
+ln -s /etc/nginx/sites-available/rotacaicara.com.br /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/rotacaicara.com.br': File exists
+nginx: [emerg] open() "/etc/nginx/sites-enabled/rotacaicara.com.br" failed (2: No such file or directory) in /etc/nginx/nginx.conf:60
+nginx: configuration file /etc/nginx/nginx.conf test failed
+root@srv864082:/var/www/rotacaicara.com.br# certbot --nginx -d rotacaicara.com.br -d www.rotacaicara.com.br
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Error while running nginx -c /etc/nginx/nginx.conf -t.
+
+nginx: [emerg] open() "/etc/nginx/sites-enabled/rotacaicara.com.br" failed (2: No such file or directory) in /etc/nginx/nginx.conf:60
+nginx: configuration file /etc/nginx/nginx.conf test failed
+
+The nginx plugin is not working; there may be problems with your existing configuration.
+The error was: MisconfigurationError('Error while running nginx -c /etc/nginx/nginx.conf -t.\n\nnginx: [emerg] open() "/etc/nginx/sites-enabled/rotacaicara.com.br" failed (2: No such file or directory) in /etc/nginx/nginx.conf:60\nnginx: configuration file /etc/nginx/nginx.conf test failed\n')
+root@srv864082:/var/www/rotacaicara.com.br# 

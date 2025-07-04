@@ -1,0 +1,21 @@
+root@srv864082:/var/www/rotacaicara# npm run db:push
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/var/www/rotacaicara/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+ Warning  Found data-loss statements:
+· You're about to delete tagline column in site_settings table with 1 items
+· You're about to delete description column in site_settings table with 1 items
+· You're about to delete whatsapp column in site_settings table with 1 items
+· You're about to delete instagram column in site_settings table with 1 items
+· You're about to delete facebook column in site_settings table with 1 items
+· You're about to delete website column in site_settings table with 1 items
+
+THIS ACTION WILL CAUSE DATA LOSS AND CANNOT BE REVERTED
+
+Do you still want to push changes?
+[x] All changes were aborted

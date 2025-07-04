@@ -1,0 +1,10 @@
+SESSION_SECRET=H5xK+M8kdvqOZC1inQVrVhkfIJvaCLgsNtECq8CyZrX0gcUjLuEVild3OGyMjTGlITPUpftb6iGjVKLncddv1g==
+PGUSER=neondb_owner
+PGPASSWORD=npg_e6aj7VwFLIuG
+DATABASE_URL=postgresql://neondb_owner:npg_e6aj7VwFLIuG@ep-damp-dust-adl2amrw.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+PGDATABASE=neondb
+PGHOST=ep-damp-dust-adl2amrw.c-2.us-east-1.aws.neon.tech
+PGPORT=5432
+REPL_ID=rotacaicara
+ISSUER_URL=https://replit.com/oidc
+REPLIT_DOMAINS=rotacaicara.com.br,www.rotacaicara.com.br

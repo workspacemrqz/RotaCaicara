@@ -1,0 +1,57 @@
+root@srv864082:/var/www/rotacaicara.com.br/projeto# # Verificar se o diretório está vazio
+ls -la
+
+# Clonar o repositório
+git clone https://github.com/workspacemrqz/rotacaicara.git .
+
+# Se der erro de autenticação, vamos configurar primeiro
+git config --global user.name "workspacemrqz"
+git config --global user.email "contato@workspacemrqz.com"
+total 16
+drwxr-xr-x 2 root root 4096 Jun 14 13:11 .
+drwxr-xr-x 5 root root 4096 Jun 14 12:34 ..
+-rw-r--r-- 1 root root  494 Jun 14 13:11 .env
+-rw-r--r-- 1 root root   86 Jun 14 12:58 package-lock.json
+fatal: destination path '.' already exists and is not an empty directory.
+root@srv864082:/var/www/rotacaicara.com.br/projeto# # Executar migrações do banco (forçado)
+npm run db:push -- --force
+
+# Compilar projeto para produção
+npm run build
+
+# Verificar existência dos arquivos compilados
+ls -la dist/
+
+# Testar aplicação manualmente
+export $(cat .env | xargs) && node dist/index.js
+npm error code ENOENT
+npm error syscall open
+npm error path /var/www/rotacaicara.com.br/projeto/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/var/www/rotacaicara.com.br/projeto/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /root/.npm/_logs/2025-06-14T13_12_00_790Z-debug-0.log
+npm error code ENOENT
+npm error syscall open
+npm error path /var/www/rotacaicara.com.br/projeto/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/var/www/rotacaicara.com.br/projeto/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /root/.npm/_logs/2025-06-14T13_12_00_882Z-debug-0.log
+ls: cannot access 'dist/': No such file or directory
+node:internal/modules/cjs/loader:1215
+  throw err;
+  ^
+
+Error: Cannot find module '/var/www/rotacaicara.com.br/projeto/dist/index.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Module._load (node:internal/modules/cjs/loader:1043:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.19.2

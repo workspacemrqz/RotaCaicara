@@ -1,0 +1,65 @@
+Atue como desenvolvedor full-stack sênior em Node.js/Express (backend) e React/TypeScript com React Query, React Hook Form, Zod e Framer Motion (frontend). Você recebeu o projeto EcoTrackSolution completo. Corrija e implemente todas estas demandas no Painel Administrativo e no site, apontando os arquivos e trechos alterados:
+
+1. **Excluir Negócio**  
+   - Ícone de lixeira em “Gerenciar Negócios” deve chamar  
+     ```http
+     DELETE /api/businesses/:id
+     ```  
+     no backend (`server/routes.ts`), usando `storage.deleteBusiness(id)`, retornando status 204. No frontend (`client/src/pages/admin.tsx`), use `mutateAsync`, `onSuccess` faz `invalidateQueries("businesses")` e remove o item da lista.
+
+2. **Atualizar Negócio**  
+   - Modal “Editar Negócio” usa `PATCH /api/businesses/:id`.  
+   - Valide com Zod (`shared/schema.ts`) antes de submeter.  
+   - Em `handleBusinessSubmit`, faça `await updateBusiness.mutateAsync(data)` e só então `closeModal()` e `reset()`.  
+   - `onSuccess` invalida `["businesses"]`; `onError` exibe toast sem fechar modal.
+
+3. **Listagem por Categoria**  
+   - Página Home (`pages/index.tsx` ou `pages/categories/[slug].tsx`): ajuste `getStaticPaths`/`getServerSideProps` ou `useQuery` para buscar  
+     ```http
+     GET /api/categories/:slug/businesses
+     ```  
+   - Se slug não existe, retorne 404 com componente customizado.
+
+4. **Configurações do Site**  
+   - Em `client/src/pages/admin/settings.tsx`, adicione botão “Salvar” que envia PUT/PATCH para `/api/settings`, persiste em `server/routes.ts` e mostra toast de sucesso.  
+   - Separe em 3 abas: **Geral**, **Home** e **Anuncie sua Empresa**.
+
+5. **Remover Aba Conteúdo**  
+   - Exclua rota, import e item de menu “Conteúdo” do sidebar (`client/src/components/Sidebar.tsx`).
+
+6. **Animações Avançadas**  
+   - Na página “Anuncie sua Empresa” (frontend), substitua efeitos simples por animações Framer Motion em cards, botões e formulário de envio.
+
+7. **Formulário de Anuncie sua Empresa**  
+   - Envio faz POST em `/api/submissions` (crie em `server/routes.ts`), retorna 201.  
+   - No frontend, exiba modal de sucesso e adicione no admin em `/api/admin/submissions`.
+
+8. **Gerenciar Cadastros**  
+   - Aba **Cadastros**: liste `GET /api/admin/submissions`, com botões **Ver**, **Editar**, **Publicar** e **Excluir**.  
+   - Submissões não verificadas exibem tag **Pendente**.
+
+9. **Dashboard → Cadastros Pendentes**  
+   - No Dashboard, em **Cadastros Pendentes**, inclua botão “Ir para Cadastros” que redireciona à aba correspondente.
+
+10. **Texto Removido**  
+    - No sidebar/admin header, remova a frase “Gerencie todos os aspectos da plataforma Rota Caiçara”.
+
+11. **Animações Globais**  
+    - Insira animações fixas em trechos estratégicos (ex.: Hero, seções “Destaques”).
+
+12. **Rodapé**  
+    - Ajuste o `<Footer>`: o círculo de fundo atrás dos ícones sociais deve ser off-white; os ícones, no azul principal do site.
+
+13. **Logo Dinâmico**  
+    - Ao trocar o logo em Configurações, o novo arquivo deve atualizar imediatamente em todos os lugares (header, footer, favicon).
+
+14. **Reorganização de Configurações**  
+    - Em **Configurações do Site**, crie três abas: **Configuração Geral**, **Home** e **Anuncie sua Empresa**, cada uma salvando um subconjunto de settings via PUT/PATCH `/api/settings`.
+
+15. **Remover Bloco de Certificação**  
+    - Na aba **Anuncie sua Empresa** (admin e frontend), remova totalmente o bloco:
+
+    > CERTIFICADO DE ANUNCIANTE VERDE  
+    > Receba um certificado…  
+
+Por fim, envie **apenas** os diffs (trechos de código antes e depois) dos arquivos alterados, incluindo linhas de import necessárias e comentários de no máximo 2 linhas explicando cada mudança.

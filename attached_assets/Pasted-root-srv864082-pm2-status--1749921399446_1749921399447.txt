@@ -1,0 +1,428 @@
+root@srv864082:~# pm2 status
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+root@srv864082:~# systemctl status nginx
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2025-06-14 17:05:03 UTC; 6min ago
+       Docs: man:nginx(8)
+   Main PID: 14989 (nginx)
+      Tasks: 3 (limit: 9477)
+     Memory: 5.4M
+        CPU: 21ms
+     CGroup: /system.slice/nginx.service
+             ├─14989 "nginx: master process /usr/sbin/nginx -g daemon on; master_process on;"
+             ├─14992 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+             └─14993 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+
+Jun 14 17:05:03 srv864082 systemd[1]: Starting A high performance web server and a reverse proxy server...
+Jun 14 17:05:03 srv864082 systemd[1]: Started A high performance web server and a reverse proxy server.
+root@srv864082:~# pm2 logs rotacaicara
+[TAILING] Tailing last 15 lines for [rotacaicara] process (change the value with --lines option)
+^C
+root@srv864082:~# netstat -tlnp | grep 3002
+root@srv864082:~# curl -I http://69.62.92.12
+HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Sat, 14 Jun 2025 17:12:16 GMT
+Content-Type: text/html
+Content-Length: 612
+Last-Modified: Sat, 14 Jun 2025 17:05:02 GMT
+Connection: keep-alive
+ETag: "684dabbe-264"
+Accept-Ranges: bytes
+
+root@srv864082:~# curl -H "Host: rotacaicara.com.br" http://69.62.92.12
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+root@srv864082:~# curl http://69.62.92.12:3002 | head -20
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to 69.62.92.12 port 3002 after 2 ms: Connection refused
+root@srv864082:~# curl http://69.62.92.12:3002/api/categories
+curl: (7) Failed to connect to 69.62.92.12 port 3002 after 0 ms: Connection refused
+root@srv864082:~# curl -o deploy-rotacaicara.sh https://raw.githubusercontent.com/workspacemrqz/rotacaicara/main/deploy-rotacaicara.sh
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    14  100    14    0     0     70      0 --:--:-- --:--:-- --:--:--    70
+root@srv864082:~# nano deploy-rotacaicara.sh
+root@srv864082:~# curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+apt install -y nodejs
+node --version
+npm --version
+2025-06-14 17:14:35 - Installing pre-requisites
+Hit:1 https://deb.nodesource.com/node_20.x nodistro InRelease
+Hit:2 http://mirror.ufam.edu.br/ubuntu jammy-backports InRelease                            
+Hit:3 http://mirror.ufam.edu.br/ubuntu jammy InRelease     
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:5 http://mirror.ufam.edu.br/ubuntu jammy-security InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:7 http://mirror.ufam.edu.br/ubuntu jammy-updates InRelease
+Hit:8 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Hit:9 http://archive.ubuntu.com/ubuntu jammy-security InRelease
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+ca-certificates is already the newest version (20240203~22.04.1).
+curl is already the newest version (7.81.0-1ubuntu1.20).
+gnupg is already the newest version (2.2.27-3ubuntu2.3).
+apt-transport-https is already the newest version (2.4.14).
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+Hit:1 https://deb.nodesource.com/node_20.x nodistro InRelease
+Hit:2 http://mirror.ufam.edu.br/ubuntu jammy-backports InRelease                                                  
+Hit:3 http://mirror.ufam.edu.br/ubuntu jammy InRelease                           
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:5 http://mirror.ufam.edu.br/ubuntu jammy-security InRelease
+Hit:6 http://mirror.ufam.edu.br/ubuntu jammy-updates InRelease
+Hit:7 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:8 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Hit:9 http://archive.ubuntu.com/ubuntu jammy-security InRelease
+Reading package lists... Done
+2025-06-14 17:14:40 - Repository configured successfully.
+2025-06-14 17:14:40 - To install Node.js, run: apt-get install nodejs -y
+2025-06-14 17:14:40 - You can use N|solid Runtime as a node.js alternative
+2025-06-14 17:14:40 - To install N|solid Runtime, run: apt-get install nsolid -y 
+
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+nodejs is already the newest version (20.19.2-1nodesource1).
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+v20.19.2
+10.8.2
+root@srv864082:~# npm install -g pm2
+
+changed 135 packages in 16s
+
+13 packages are looking for funding
+  run `npm fund` for details
+root@srv864082:~# apt install -y git build-essential certbot python3-certbot-nginx
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+build-essential is already the newest version (12.9ubuntu3).
+certbot is already the newest version (1.21.0-1build1).
+python3-certbot-nginx is already the newest version (1.21.0-1).
+git is already the newest version (1:2.34.1-1ubuntu1.12).
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+root@srv864082:~# ufw allow 3002
+ufw reload
+Rule added
+Rule added (v6)
+Firewall reloaded
+root@srv864082:~# mkdir -p /var/www/rotacaicara.com.br
+cd /var/www/rotacaicara.com.br
+git clone https://github.com/workspacemrqz/rotacaicara.git .
+ls -la
+fatal: destination path '.' already exists and is not an empty directory.
+total 532
+-rw-r--r--   1 root root      0 Jun 14 17:06 ' className="w-16 h-auto"'
+drwxr-xr-x  12 root root   4096 Jun 14 17:07  .
+drwxr-xr-x   4 root root   4096 Jun 14 17:06  ..
+-rw-r--r--   1 root root    165 Jun 14 17:06  .env
+-rw-r--r--   1 root root    443 Jun 14 17:06  .env.example
+drwxr-xr-x   8 root root   4096 Jun 14 17:06  .git
+-rw-r--r--   1 root root    287 Jun 14 17:06  .gitignore
+-rw-r--r--   1 root root    697 Jun 14 17:06  .replit
+-rw-r--r--   1 root root   2568 Jun 14 17:06  COMANDOS_VPS_MULTI_SITES.txt
+-rw-r--r--   1 root root   1792 Jun 14 17:06  DEPLOY.md
+-rw-r--r--   1 root root  11771 Jun 14 17:06  GUIA_COMPLETO_DEPLOY_VPS_MULTI_SITES.txt
+-rw-r--r--   1 root root   5404 Jun 14 17:06  GUIA_INTERFACE_GRAFICA_VPS.txt
+-rw-r--r--   1 root root   9757 Jun 14 17:06  GUIA_MULTI_SITES_VPS.md
+-rw-r--r--   1 root root  10161 Jun 14 17:06  PASSO_A_PASSO_VPS.md
+-rw-r--r--   1 root root   6455 Jun 14 17:06  README.md
+-rw-r--r--   1 root root   6155 Jun 14 17:06  RELATORIO_TECNICO.md
+drwxr-xr-x   2 root root  20480 Jun 14 17:06  attached_assets
+drwxr-xr-x   2 root root   4096 Jun 14 17:06  backup
+drwxr-xr-x   3 root root   4096 Jun 14 17:06  client
+-rw-r--r--   1 root root    459 Jun 14 17:06  components.json
+drwxr-xr-x   3 root root   4096 Jun 14 17:07  dist
+-rw-r--r--   1 root root    325 Jun 14 17:06  drizzle.config.ts
+-rw-r--r--   1 root root    798 Jun 14 17:06  ecosystem.config.json
+drwxr-xr-x 344 root root  12288 Jun 14 17:06  node_modules
+-rw-r--r--   1 root root 332394 Jun 14 17:06  package-lock.json
+-rw-r--r--   1 root root   3732 Jun 14 17:06  package.json
+-rw-r--r--   1 root root     80 Jun 14 17:06  postcss.config.js
+drwxr-xr-x   3 root root   4096 Jun 14 17:06  public
+drwxr-xr-x   3 root root   4096 Jun 14 17:06  server
+-rw-r--r--   1 root root  13423 Jun 14 17:06  setup-multi-sites.sh
+drwxr-xr-x   2 root root   4096 Jun 14 17:06  shared
+-rw-r--r--   1 root root   3156 Jun 14 17:06  tailwind.config.ts
+-rw-r--r--   1 root root    657 Jun 14 17:06  tsconfig.json
+drwxr-xr-x   2 root root   4096 Jun 14 17:06  uploads
+-rw-r--r--   1 root root    971 Jun 14 17:06  vite.config.ts
+root@srv864082:/var/www/rotacaicara.com.br# npm install
+
+up to date, audited 512 packages in 3s
+
+68 packages are looking for funding
+  run `npm fund` for details
+
+8 vulnerabilities (1 low, 7 moderate)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+root@srv864082:/var/www/rotacaicara.com.br# cat > .env << 'EOF'
+DATABASE_URL=postgresql://neondb_owner:npg_q9pCnLTuYo6l@ep-long-feather-acf901dd-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require
+NODE_ENV=production
+PORT=3002
+EOF
+root@srv864082:/var/www/rotacaicara.com.br# npm run db:push
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/var/www/rotacaicara.com.br/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+[i] No changes detected
+root@srv864082:/var/www/rotacaicara.com.br# npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (4) src/App.tsxBrowserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+/images/global-bg.svg referenced in /images/global-bg.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+✓ 2186 modules transformed.
+../dist/public/index.html                   1.54 kB │ gzip:   0.71 kB
+../dist/public/assets/index-D-VrcKeP.css   77.30 kB │ gzip:  13.82 kB
+../dist/public/assets/index-hQuVcphc.js   675.45 kB │ gzip: 204.92 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.79s
+▲ [WARNING] Duplicate key "tagline1" in object literal [duplicate-object-key]
+
+    server/storage.ts:403:6:
+      403 │       tagline1: "Descubra os melhores negócios da sua região",
+          ╵       ~~~~~~~~
+
+  The original key "tagline1" is here:
+
+    server/storage.ts:393:6:
+      393 │       tagline1: "Conectando você aos melhores negócios da cidade",
+          ╵       ~~~~~~~~
+
+1 warning
+
+  dist/index.js  50.3kb
+
+⚡ Done in 6ms
+root@srv864082:/var/www/rotacaicara.com.br# mkdir -p logs
+root@srv864082:/var/www/rotacaicara.com.br# pm2 start npm --name "rotacaicara" -- start
+pm2 save
+pm2 startup
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ rotacaicara    │ default     │ N/A     │ fork    │ 19669    │ 0s     │ 0    │ online    │ 0%       │ 30.1mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+[PM2] Init System found: systemd
+Platform systemd
+Template
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User=root
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/root/.pm2
+PIDFile=/root/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/usr/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/usr/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/usr/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target
+
+Target path
+/etc/systemd/system/pm2-root.service
+Command list
+[ 'systemctl enable pm2-root' ]
+[PM2] Writing init configuration in /etc/systemd/system/pm2-root.service
+[PM2] Making script booting at startup...
+[PM2] [-] Executing: systemctl enable pm2-root...
+[PM2] [v] Command successfully executed.
++---------------------------------------+
+[PM2] Freeze a process list on reboot via:
+$ pm2 save
+
+[PM2] Remove init script via:
+$ pm2 unstartup systemd
+root@srv864082:/var/www/rotacaicara.com.br# cat > /etc/nginx/sites-available/rotacaicara.com.br << 'EOF'
+server {
+    listen 80;
+    server_name rotacaicara.com.br www.rotacaicara.com.br;
+
+    location / {
+        proxy_pass http://localhost:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+EOF
+root@srv864082:/var/www/rotacaicara.com.br# rm -f /etc/nginx/sites-enabled/default
+ln -s /etc/nginx/sites-available/rotacaicara.com.br /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/rotacaicara.com.br': File exists
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@srv864082:/var/www/rotacaicara.com.br# pm2 status
+curl -I http://localhost:3002
+curl -I http://localhost
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ rotacaicara    │ default     │ N/A     │ fork    │ 0        │ 0      │ 15   │ errored   │ 0%       │ 0b       │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+curl: (7) Failed to connect to localhost port 3002 after 0 ms: Connection refused
+HTTP/1.1 502 Bad Gateway
+Server: nginx/1.18.0 (Ubuntu)
+Date: Sat, 14 Jun 2025 17:15:47 GMT
+Content-Type: text/html
+Content-Length: 166
+Connection: keep-alive
+
+root@srv864082:/var/www/rotacaicara.com.br# certbot --nginx -d rotacaicara.com.br -d www.rotacaicara.com.br
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+ (Enter 'c' to cancel): euagabrielmarquez@gmail.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.5-February-24-2025.pdf. You must
+agree in order to register with the ACME server. Do you agree?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: yes
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing, once your first certificate is successfully issued, to
+share your email address with the Electronic Frontier Foundation, a founding
+partner of the Let's Encrypt project and the non-profit organization that
+develops Certbot? We'd like to send you email about our work encrypting the web,
+EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: yes
+Account registered.
+Requesting a certificate for rotacaicara.com.br and www.rotacaicara.com.br
+y
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/rotacaicara.com.br/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/rotacaicara.com.br/privkey.pem
+This certificate expires on 2025-09-12.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for rotacaicara.com.br to /etc/nginx/sites-enabled/rotacaicara.com.br
+Successfully deployed certificate for www.rotacaicara.com.br to /etc/nginx/sites-enabled/rotacaicara.com.br
+Congratulations! You have successfully enabled HTTPS on https://rotacaicara.com.br and https://www.rotacaicara.com.br
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+root@srv864082:/var/www/rotacaicara.com.br# y
+y: command not found
+root@srv864082:/var/www/rotacaicara.com.br# # Ver logs da aplicação
+pm2 logs rotacaicara
+
+# Status dos serviços
+pm2 status
+systemctl status nginx
+
+# Testar portas
+netstat -tlnp | grep 3002
+[TAILING] Tailing last 15 lines for [rotacaicara] process (change the value with --lines option)
+/root/.pm2/logs/rotacaicara-out.log last 15 lines:
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+0|rotacaic | 
+0|rotacaic | > rest-express@1.0.0 start
+0|rotacaic | > NODE_ENV=production node dist/index.js
+0|rotacaic | 
+
+/root/.pm2/logs/rotacaicara-error.log last 15 lines:
+0|rotacaic |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+0|rotacaic |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+0|rotacaic | 
+0|rotacaic | Node.js v20.19.2
+0|rotacaic | file:///var/www/rotacaicara.com.br/dist/index.js:261
+0|rotacaic |   throw new Error(
+0|rotacaic |         ^
+0|rotacaic | 
+0|rotacaic | Error: DATABASE_URL must be set. Did you forget to provision a database?
+0|rotacaic |     at file:///var/www/rotacaicara.com.br/dist/index.js:261:9
+0|rotacaic |     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+0|rotacaic |     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+0|rotacaic |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+0|rotacaic | 
+0|rotacaic | Node.js v20.19.2

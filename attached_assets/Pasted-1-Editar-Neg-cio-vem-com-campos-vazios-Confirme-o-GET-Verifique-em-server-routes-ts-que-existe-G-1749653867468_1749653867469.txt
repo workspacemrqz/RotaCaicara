@@ -1,0 +1,157 @@
+1. “Editar Negócio” vem com campos vazios
+Confirme o GET
+
+Verifique em server/routes.ts que existe GET /api/businesses/:id retornando todos os campos do negócio (id, name, description, categoryId, phone, whatsapp, email, imageUrl, address, destaque, certificado, active).
+
+Teste no Postman/DevTools → GET /api/businesses/123 e confira o JSON.
+
+Pré‐população no Front
+
+No handler de abertura do modal, faça algo como:
+
+ts
+Copiar
+const { data: business } = await api.get<Business>(`/api/businesses/${id}`);
+formik.resetForm({ values: {
+  name: business.name,
+  description: business.description,
+  categoryId: business.categoryId,
+  phone: business.phone,
+  whatsapp: business.whatsapp,
+  email: business.email,
+  imageUrl: business.imageUrl,
+  address: business.address,
+  destaque: business.destaque,
+  certificado: business.certificado,
+  active: business.active,
+}});
+Se usar react-hook-form, chame reset(business) assim que business chegar.
+
+Habilite enableReinitialize: true no Formik ou use useEffect para resetar o form com os dados.
+
+Fluxo multi-step
+
+Armazene business em um state no componente pai do wizard e passe como initialValues em todas as etapas.
+
+Não crie um novo form a cada etapa sem aplicar esses valores.
+
+2. “Alterar Cadastro” falha 500 ao Confirmar
+Capture o Request/Response
+
+No DevTools → Network → clique “Confirmar” e copie:
+
+URL, método (PUT), payload JSON.
+
+Corpo da resposta de erro (500 + message).
+
+Ajuste o Schema de Update
+
+Em shared/schema.ts (ou onde estiver o Zod), crie um schema de atualização que aceite apenas os campos enviados e seja opcional se necessário:
+
+ts
+Copiar
+export const updateRegistrationSchema = z.object({
+  name: z.string(),
+  categoryId: z.number(),
+  phone: z.string(),
+  whatsapp: z.string(),
+  email: z.string().optional(),
+  imageUrl: z.string().optional(),
+  address: z.string(),
+  description: z.string(),
+  instagramUrl: z.string().optional(),
+  facebookUrl: z.string().optional(),
+});
+Routes e Storage
+
+Em server/routes.ts:
+
+ts
+Copiar
+const data = updateRegistrationSchema.parse(req.body);
+const updated = await storage.updateBusinessRegistration(id, data);
+res.json(updated);
+Em MemStorage/DbStorage, confirme que updateBusinessRegistration(id, data) grava todos esses campos.
+
+Teste isolado
+
+Use Postman ou Supertest: faça PUT /api/business-registrations/:id com payload mínimo e veja se retorna 200.
+
+3. Settings Admin não reflete no Frontend
+Contexto completo
+
+No SettingsContext, o useQuery('settings', …) deve buscar tudo:
+
+ts
+Copiar
+interface Settings {
+  siteName: string;
+  location: string;
+  headlines: string[];
+  taglines: string[];
+  contact: { phone:string; email:string; address:string };
+  socials: { instagramUrl:string; whatsappUrl:string; facebookUrl:string };
+  faqs: { question:string; answer:string }[];
+}
+Invalidate / Refetch
+
+No formulário de Configurações, após PUT /api/admin/settings, chame:
+
+ts
+Copiar
+await api.put('/api/admin/settings', payload);
+queryClient.invalidateQueries('settings');
+Assim SettingsContext refaz o fetch e atualiza instantaneamente.
+
+Consumo no Front
+
+Hero da home: <h1>{settings.headlines[0]}</h1><p>{settings.taglines[0]}</p>
+
+Seção FAQ:
+
+tsx
+Copiar
+{settings.faqs.map((f, i) => (
+  <Accordion key={i} title={f.question}>{f.answer}</Accordion>
+))}
+Footer:
+
+tsx
+Copiar
+<a href={settings.socials.instagramUrl}><FaInstagram/></a>
+<a href={settings.socials.whatsappUrl}><FaWhatsapp/></a>
+<a href={settings.socials.facebookUrl}><FaFacebook/></a>
+4. Checklist de Verificação Pós-Correção
+Editar Negócio
+
+Abre modal com todos os campos preenchidos.
+
+PUT ocorre só ao clicar “Confirmar” no último passo.
+
+Alterar Cadastro
+
+Botão “Alterar Cadastro” abre wizard multi-step.
+
+PUT no último passo envia payload válido e retorna 200.
+
+Categorias
+
+Seletor de cor removido.
+
+Modal/Grid de ícones funciona, grava iconName e mostra preview.
+
+PUT /api/categories/:id retorna 200 e atualiza lista.
+
+Configurações do Site
+
+Todos os campos (headlines, taglines, contact, socials, faqs) aparecem no admin.
+
+Após salvar, home e footer mudam sem reload da página.
+
+Logs & Testes
+
+Server logs mostram bodies corretos.
+
+Supertest ou Cypress validam todos os fluxos.
+
+Siga esta rota de depuração e correção, garantindo que cada ponto só passe quando estiver 100% verde.
