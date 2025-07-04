@@ -24,7 +24,7 @@ export async function seedDatabase() {
       { name: "PARA SEU CORPO", slug: "para-seu-corpo", icon: "🏋️", color: "#006C84", active: true },
       { name: "PARA SUA FESTA", slug: "para-sua-festa", icon: "🎂", color: "#006C84", active: true },
       { name: "PARA SUA VIAGEM", slug: "para-sua-viagem", icon: "🏖️", color: "#006C84", active: true },
-      { name: "PARA SUA DIVERSÃO", slug: "para-sua-diversao", icon: "🎭", color: "#006C84", active: true },
+      { name: "ASSISTÊNCIA TÉCNICA", slug: "assistencia-tecnica", icon: "🔧", color: "#006C84", active: true },
       { name: "NOVIDADES NA CIDADE", slug: "novidades-na-cidade", icon: "⭐", color: "#006C84", active: true }
     ];
 

@@ -275,9 +275,9 @@ class MemStorage implements IStorage {
         active: true,
       },
       {
-        name: "PARA SUA DIVERSÃO",
-        slug: "para-sua-diversao",
-        icon: "🎭",
+        name: "ASSISTÊNCIA TÉCNICA",
+        slug: "assistencia-tecnica",
+        icon: "🔧",
         color: "#006C84",
         backgroundImage: null,
         active: true,
