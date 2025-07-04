@@ -60,7 +60,7 @@ nixPkgs = ["nodejs_20"]
 
 [phases.install]
 dependsOn = ["setup"]
-cmds = ["npm ci"]
+cmds = ["npm ci --include=dev"]
 
 [phases.build] 
 dependsOn = ["install"]
@@ -116,6 +116,9 @@ npm run db:push
 
 ### ❌ Erro: "invalid type: map, expected a sequence"
 **Solução**: Corrigida sintaxe do nixpacks.toml
+
+### ❌ Erro: "sh: 1: vite: not found"
+**Solução**: Alterado comando de instalação para `npm ci --include=dev` para incluir devDependencies
 
 ### Erro de Banco de Dados
 ```bash
