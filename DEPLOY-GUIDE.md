@@ -1,56 +1,66 @@
-# Guia de Deploy EasyPanel - Rota Caiçara
+# Guia de Deploy - Rota Caiçara no EasyPanel
 
-## Problemas Corrigidos ✅
+## Resumo das Correções Implementadas
 
-1. **Erro de sintaxe no nixpacks.toml** - Corrigido
-2. **Porta hardcoded no servidor** - Corrigido para usar variável de ambiente
-3. **Endpoint de health check** - Adicionado
-4. **Configuração de CORS** - Verificada
+### ✅ Problemas Resolvidos:
+1. **Sintaxe Nixpacks**: Configuração corrigida para formato adequado
+2. **Dependências npm**: Incluído `--include=dev` para instalar devDependencies
+3. **Vite não encontrado**: Corrigido com instalação das devDependencies
+4. **Seed do banco**: Tornado opcional para não quebrar o deploy
+5. **Configuração do servidor**: Porta dinâmica e bind em 0.0.0.0
 
 ## Configuração no EasyPanel
 
-### 1. Criar Nova Aplicação
-- **Nome**: rotacaicara
-- **Tipo**: App
-- **Fonte**: GitHub Repository
-- **Repositório**: https://github.com/workspacemrqz/RotaCaicara
-- **Branch**: main
-- **Tipo de Build**: Nixpacks
+### 1. Criar Novo Projeto
+- Acesse seu painel do EasyPanel
+- Clique em "New Project"
+- Selecione "From GitHub"
 
-### 2. Configuração do Nixpacks
+### 2. Configuração do Repositório
+- **Repository**: `workspacemrqz/RotaCaicara`
+- **Branch**: `main`
+- **Build Type**: `Nixpacks`
 
-#### Comandos (deixar vazios - usar nixpacks.toml):
-- **Comando de Instalação**: (vazio)
-- **Comando de Build**: (vazio)
-- **Comando de Início**: (vazio)
+### 3. Configuração das Variáveis de Ambiente
+**IMPORTANTE**: Configure estas variáveis no EasyPanel:
 
-#### Pacotes:
-- **Pacotes Nix**: (vazio - configurado no nixpacks.toml)
-- **Pacotes APT**: (vazio)
-
-### 3. Variáveis de Ambiente
-
-```env
-DATABASE_URL=postgres://mrqz:@Workspacen8n@postgres_rotacaicara:5432/rotacaicara?sslmode=disable
+```bash
 NODE_ENV=production
 PORT=3101
+DATABASE_URL=postgres://mrqz:@Workspacen8n@postgres_rotacaicara:5432/rotacaicara?sslmode=disable
 ```
 
-### 4. Configuração de Rede
-- **Porta**: 3101
-- **Health Check**: `/health`
-- **Health Check Timeout**: 30s
-- **Health Check Interval**: 30s
+### 4. Configuração do Banco de Dados
+Se você ainda não configurou o banco PostgreSQL no EasyPanel:
 
-### 5. Configuração de Domínio
-- Configure o domínio desejado nas configurações de routing
+1. **Crie um serviço PostgreSQL**:
+   - Vá em "Services" → "Database" → "PostgreSQL"
+   - Nome: `postgres_rotacaicara`
+   - Usuário: `mrqz`
+   - Senha: `@Workspacen8n`
+   - Database: `rotacaicara`
 
-## Arquivos Corrigidos
+2. **Configure a URL de conexão**:
+   - A URL deve ser: `postgres://mrqz:@Workspacen8n@postgres_rotacaicara:5432/rotacaicara?sslmode=disable`
+   - **Nota**: Use o nome interno do serviço PostgreSQL (`postgres_rotacaicara`)
 
-### nixpacks.toml
+### 5. Configuração Avançada
+- **Health Check**: `/health` (opcional)
+- **Port**: `3101`
+- **Build Command**: Deixe vazio (usa nixpacks.toml)
+- **Start Command**: Deixe vazio (usa nixpacks.toml)
+
+### 6. Deploy
+1. Clique em "Deploy"
+2. Aguarde o build completar
+3. Verifique os logs para confirmar que o servidor iniciou
+
+## Configuração Nixpacks Final
+
+O arquivo `nixpacks.toml` está configurado com:
+
 ```toml
 # Configuração Nixpacks para EasyPanel
-
 [variables]
 NODE_ENV = "production"
 PORT = "3101"
@@ -71,109 +81,71 @@ dependsOn = ["build"]
 cmds = ["npm run start"]
 ```
 
-### server/index.ts
-- Porta alterada para usar `process.env.PORT`
-- Endpoint `/health` adicionado
-- Host configurado para `0.0.0.0`
+## Estrutura do Projeto
 
-## Processo de Deploy
-
-### 1. Primeiro Deploy
-```bash
-# Fazer push das correções
-git add .
-git commit -m "fix: corrigir configuração para deploy EasyPanel"
-git push origin main
+```
+Rota/
+├── client/          # Frontend React
+├── server/          # Backend Express
+├── shared/          # Schemas compartilhados
+├── dist/            # Build output
+├── nixpacks.toml    # Configuração de deploy
+└── package.json     # Dependências
 ```
 
-### 2. Configurar Banco de Dados
-Após o primeiro deploy bem-sucedido, execute:
+## Comandos Disponíveis
 
 ```bash
-# Conectar à aplicação via SSH ou console
-npm run db:push
+# Desenvolvimento
+npm run dev
+
+# Build
+npm run build
+
+# Produção
+npm run start
+
+# Linting
+npm run lint
 ```
 
-### 3. Verificar Funcionamento
-- **Health Check**: `https://seu-dominio.com/health`
-- **Site Principal**: `https://seu-dominio.com`
+## Healthcheck
 
-## Monitoramento
+O servidor expõe um endpoint de saúde em:
+- `GET /health`
+- Retorna: `{"status": "ok", "timestamp": "..."}`
 
-### Logs
-- Monitore os logs para verificar se a aplicação está iniciando corretamente
-- Verifique se não há erros de conexão com o banco
+## Solução de Problemas
 
-### Métricas
-- CPU e memória usage
-- Tempo de resposta
-- Uptime
-
-## Troubleshooting
-
-### ❌ Erro: "undefined variable 'npm'"
-**Solução**: Removido `npm` dos nixPkgs pois já vem incluído no `nodejs_20`
-
-### ❌ Erro: "invalid type: map, expected a sequence"
-**Solução**: Corrigida sintaxe do nixpacks.toml
-
-### ❌ Erro: "sh: 1: vite: not found"
-**Solução**: Alterado comando de instalação para `npm ci --include=dev` para incluir devDependencies
-
-### Erro de Banco de Dados
-```bash
-# Verificar conexão
-psql "postgres://mrqz:@Workspacen8n@postgres_rotacaicara:5432/rotacaicara?sslmode=disable" -c "\dt"
-```
+### Erro de Conexão com Banco
+Se o erro `EAI_AGAIN postgres_rotacaicara` aparecer:
+1. Verifique se o serviço PostgreSQL está rodando
+2. Confirme que a variável `DATABASE_URL` está configurada corretamente
+3. O seed do banco agora é opcional e não deve quebrar o deploy
 
 ### Erro de Build
-- Verificar se todas as dependências estão instaladas
-- Verificar sintaxe do nixpacks.toml
-- Verificar se os scripts npm estão funcionando
+Se o Vite não for encontrado:
+1. Confirme que `--include=dev` está no comando de instalação
+2. Verifique se as devDependencies estão listadas no package.json
 
 ### Erro de Porta
-- Verificar se a variável PORT está definida
-- Verificar se o servidor está bind em 0.0.0.0
+Se o servidor não responder:
+1. Confirme que a variável `PORT=3101` está configurada
+2. Verifique se não há conflitos de porta
 
-## Configurações Avançadas
+## Logs de Deploy
 
-### SSL/TLS
-- EasyPanel gerencia automaticamente certificados SSL
-- Configure redirect HTTP para HTTPS se necessário
+Durante o deploy, você deve ver:
+1. ✅ Download do código do GitHub
+2. ✅ Instalação das dependências (`npm ci --include=dev`)
+3. ✅ Build do projeto (`npm run build`)
+4. ✅ Início do servidor (`npm run start`)
 
-### Backup
-- Configure backups automáticos do banco de dados
-- Monitore espaço em disco
+## Último Commit
 
-### Escalonamento
-- Configure auto-scaling se necessário
-- Monitore performance e recursos
-
-## Comandos Úteis
-
-### Restart da Aplicação
-```bash
-# No EasyPanel: usar botão Restart
+```
+fix: tornar seed do banco opcional para não quebrar deploy
 ```
 
-### Verificar Logs
-```bash
-# No EasyPanel: aba Logs
-```
-
-### Acessar Console
-```bash
-# No EasyPanel: botão Console
-```
-
-## Checklist Final
-
-- [ ] nixpacks.toml corrigido
-- [ ] Porta configurada corretamente
-- [ ] Variáveis de ambiente definidas
-- [ ] Health check endpoint funcionando
-- [ ] Banco de dados configurado
-- [ ] SSL/TLS ativo
-- [ ] Domínio configurado
-- [ ] Monitoramento ativo
-- [ ] Backups configurados 
+**Status**: ✅ Pronto para deploy
+**Data**: 2025-01-04 

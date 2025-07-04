@@ -1,4 +1,5 @@
 # Configuração Nixpacks para EasyPanel
+providers = ["node"]
 
 [variables]
 NODE_ENV = "production"
@@ -15,6 +16,5 @@ cmds = ["npm ci --include=dev"]
 dependsOn = ["install"]
 cmds = ["npm run build"]
 
-[phases.start]
-dependsOn = ["build"]
-cmds = ["npm run start"] 
+[start]
+cmd = "npm run start" 
