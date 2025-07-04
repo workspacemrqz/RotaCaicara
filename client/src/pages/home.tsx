@@ -17,16 +17,14 @@ export default function Home() {
     isLoading: categoriesLoading,
     error: categoriesError,
   } = useQuery<Category[]>({
-    queryKey: ["categories"],
+    queryKey: ["/api/categories"],
     queryFn: async () => {
       const response = await fetch("/api/categories");
-      if (!response.ok) throw new Error("Failed to fetch categories");
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-    retry: 3,
-    retryDelay: 1000,
   });
 
   const {
@@ -34,10 +32,12 @@ export default function Home() {
     isLoading: businessesLoading,
     error: businessesError,
   } = useQuery<Business[]>({
-    queryKey: ["businesses", "featured"],
+    queryKey: ["/api/businesses/featured"],
     queryFn: async () => {
       const response = await fetch("/api/businesses/featured");
-      if (!response.ok) throw new Error("Failed to fetch businesses");
+      if (!response.ok) {
+        throw new Error("Failed to fetch featured businesses");
+      }
       return response.json();
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
