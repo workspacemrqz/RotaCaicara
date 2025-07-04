@@ -31,7 +31,7 @@ import {
   type InsertPromotion,
   type InsertAnalytics,
   type InsertNews,
-} from "../shared/schema";
+} from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, sql, ilike, and } from "drizzle-orm";
 
@@ -875,7 +875,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(categories)
       .where(eq(categories.active, true))
-      .orderBy(categories.order, categories.name);
+      .orderBy(asc(categories.order), asc(categories.name));
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | undefined> {
@@ -1404,4 +1404,3 @@ export const storage = new DatabaseStorage();
     console.log("Database initialization skipped - database may not be available yet:", error instanceof Error ? error.message : 'Unknown error');
   }
 })();
-

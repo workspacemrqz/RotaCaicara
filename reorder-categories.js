@@ -29,12 +29,17 @@ async function reorderCategories() {
     // Definir nova ordem: ASSISTÊNCIA TÉCNICA deve vir depois de PARA SEU AUTOMÓVEL
     const newOrder = [
       'para-sua-casa',
-      'para-sua-alimentacao', 
+      'para-sua-refeicao', 
+      'para-sua-empresa',
       'para-sua-saude',
       'para-sua-beleza',
       'para-seu-automovel',
       'assistencia-tecnica', // Movendo para depois de automóvel
-      'para-sua-diversao',
+      'para-seu-bebe',
+      'para-seu-pet',
+      'para-sua-educacao',
+      'para-seu-corpo',
+      'para-sua-festa',
       'para-sua-viagem',
       'novidades-na-cidade'
     ];
