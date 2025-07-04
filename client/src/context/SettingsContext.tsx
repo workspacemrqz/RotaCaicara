@@ -67,7 +67,18 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, [data]);
 
   const refreshSettings = async () => {
-    await refetch();
+    try {
+      const response = await fetch("/api/admin/settings");
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      } else {
+        console.warn("Failed to fetch settings, using defaults");
+      }
+    } catch (error) {
+      console.error("Failed to refresh settings:", error);
+      // Don't throw error, just log it and continue with defaults
+    }
   };
 
   return (

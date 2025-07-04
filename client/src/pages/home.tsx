@@ -12,20 +12,55 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const { featuredEnabled, settings } = useSettings();
 
-  const { data: categories = [], isLoading: categoriesLoading } = useQuery<
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useQuery<
     Category[]
   >({
-    queryKey: ["/api/categories", Date.now()],
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/categories");
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    retry: 3,
+    retryDelay: 1000,
   });
 
-  const { data: featuredBusinesses = [], isLoading: businessesLoading } =
+  const { data: featuredBusinesses, isLoading: businessesLoading, error: businessesError } =
     useQuery<Business[]>({
-      queryKey: ["/api/businesses/featured"],
+      queryKey: ["businesses", "featured"],
+      queryFn: async () => {
+        const response = await fetch("/api/businesses/featured");
+        if (!response.ok) throw new Error("Failed to fetch businesses");
+        return response.json();
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+      retry: 3,
+      retryDelay: 1000,
     });
 
   const handleCategoryClick = (categorySlug: string) => {
     setLocation(`/category/${categorySlug}`);
   };
+
+  // Show error state if there's an error
+  if (categoriesError || businessesError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div>Erro ao carregar</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Recarregar Página
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (categoriesLoading || businessesLoading) {
     return (
