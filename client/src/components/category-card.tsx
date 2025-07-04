@@ -14,7 +14,8 @@ import {
   PartyPopper, 
   Plane, 
   Theater, 
-  Star 
+  Star,
+  Wrench 
 } from "lucide-react";
 
 interface CategoryCardProps {
@@ -40,6 +41,7 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
     if (name.includes('festa')) return PartyPopper;
     if (name.includes('viagem')) return Plane;
     if (name.includes('diversão') || name.includes('diversao')) return Theater;
+    if (name.includes('assistência') || name.includes('assistencia') || name.includes('técnica') || name.includes('tecnica')) return Wrench;
     if (name.includes('novidades')) return Star;
     return Star; // Default icon
   };
