@@ -33,28 +33,23 @@ async function migrateDatabase() {
     console.log('📋 Criando estrutura das tabelas...');
     await createTableStructures(targetPool);
 
-    // 2. Migrar dados de cada tabela
+    // 2. Migrar dados tabela por tabela
     for (const table of tables) {
-      try {
-        console.log(`📤 Exportando dados da tabela: ${table}`);
-        const sourceData = await sourcePool.query(`SELECT * FROM ${table}`);
-        
-        if (sourceData.rows.length > 0) {
-          console.log(`📥 Importando ${sourceData.rows.length} registros para: ${table}`);
-          await insertData(targetPool, table, sourceData.rows);
-        } else {
-          console.log(`⚠️  Tabela ${table} está vazia`);
-        }
-      } catch (error) {
-        console.log(`⚠️  Erro ao migrar tabela ${table}: ${error.message}`);
-        // Continue com outras tabelas mesmo se uma falhar
-      }
+      await migrateTable(sourcePool, targetPool, table);
     }
 
     console.log('✅ Migração concluída com sucesso!');
+    console.log('📊 Verificando dados migrados...');
+    
+    // Verificar contagem de registros
+    for (const table of tables) {
+      const result = await targetPool.query(`SELECT COUNT(*) FROM ${table}`);
+      console.log(`${table}: ${result.rows[0].count} registros`);
+    }
 
   } catch (error) {
-    console.error('❌ Erro durante a migração:', error);
+    console.error('❌ Erro na migração:', error);
+    throw error;
   } finally {
     await sourcePool.end();
     await targetPool.end();
@@ -62,9 +57,8 @@ async function migrateDatabase() {
 }
 
 async function createTableStructures(pool) {
-  const createTables = `
-    -- Categories
-    CREATE TABLE IF NOT EXISTS categories (
+  const createTableQueries = [
+    `CREATE TABLE IF NOT EXISTS categories (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       slug TEXT NOT NULL UNIQUE,
@@ -72,10 +66,9 @@ async function createTableStructures(pool) {
       color TEXT DEFAULT '#006C84',
       background_image TEXT,
       active BOOLEAN DEFAULT true
-    );
+    )`,
 
-    -- Site Settings
-    CREATE TABLE IF NOT EXISTS site_settings (
+    `CREATE TABLE IF NOT EXISTS site_settings (
       id SERIAL PRIMARY KEY,
       site_name TEXT NOT NULL DEFAULT 'Rota Caiçara',
       locality TEXT NOT NULL DEFAULT 'São Sebastião',
@@ -107,10 +100,9 @@ async function createTableStructures(pool) {
       faq4_question TEXT NOT NULL DEFAULT 'Empresas de outras cidades podem anunciar?',
       faq4_answer TEXT NOT NULL DEFAULT 'Sim, desde que atendam nossa região ou ofereçam serviços para nossos usuários locais.',
       updated_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Settings
-    CREATE TABLE IF NOT EXISTS settings (
+    `CREATE TABLE IF NOT EXISTS settings (
       id SERIAL PRIMARY KEY,
       site_name TEXT NOT NULL DEFAULT 'Rota Caiçara',
       locality TEXT NOT NULL DEFAULT 'São Sebastião',
@@ -141,10 +133,9 @@ async function createTableStructures(pool) {
       faq4_question TEXT NOT NULL DEFAULT 'Posso ter mais de um negócio cadastrado?',
       faq4_answer TEXT NOT NULL DEFAULT 'Sim, você pode cadastrar múltiplos negócios usando o mesmo formulário.',
       updated_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Businesses
-    CREATE TABLE IF NOT EXISTS businesses (
+    `CREATE TABLE IF NOT EXISTS businesses (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       description TEXT NOT NULL,
@@ -161,10 +152,9 @@ async function createTableStructures(pool) {
       featured BOOLEAN DEFAULT false,
       certified BOOLEAN DEFAULT false,
       active BOOLEAN DEFAULT true
-    );
+    )`,
 
-    -- Business Registrations
-    CREATE TABLE IF NOT EXISTS business_registrations (
+    `CREATE TABLE IF NOT EXISTS business_registrations (
       id SERIAL PRIMARY KEY,
       business_name TEXT NOT NULL,
       category_id INTEGER NOT NULL,
@@ -177,10 +167,9 @@ async function createTableStructures(pool) {
       contact_email TEXT,
       image_url TEXT,
       processed BOOLEAN DEFAULT false
-    );
+    )`,
 
-    -- Banners
-    CREATE TABLE IF NOT EXISTS banners (
+    `CREATE TABLE IF NOT EXISTS banners (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       subtitle TEXT,
@@ -190,10 +179,9 @@ async function createTableStructures(pool) {
       active BOOLEAN DEFAULT true,
       "order" INTEGER DEFAULT 0,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Testimonials
-    CREATE TABLE IF NOT EXISTS testimonials (
+    `CREATE TABLE IF NOT EXISTS testimonials (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       company TEXT,
@@ -202,20 +190,18 @@ async function createTableStructures(pool) {
       rating INTEGER DEFAULT 5,
       active BOOLEAN DEFAULT true,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- FAQs
-    CREATE TABLE IF NOT EXISTS faqs (
+    `CREATE TABLE IF NOT EXISTS faqs (
       id SERIAL PRIMARY KEY,
       question TEXT NOT NULL,
       answer TEXT NOT NULL,
       "order" INTEGER DEFAULT 0,
       active BOOLEAN DEFAULT true,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Promotions
-    CREATE TABLE IF NOT EXISTS promotions (
+    `CREATE TABLE IF NOT EXISTS promotions (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT,
@@ -224,20 +210,18 @@ async function createTableStructures(pool) {
       valid_until TIMESTAMP,
       active BOOLEAN DEFAULT true,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Analytics
-    CREATE TABLE IF NOT EXISTS analytics (
+    `CREATE TABLE IF NOT EXISTS analytics (
       id SERIAL PRIMARY KEY,
       path TEXT NOT NULL,
       user_agent TEXT,
       ip_address TEXT,
       referrer TEXT,
       visited_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- News
-    CREATE TABLE IF NOT EXISTS news (
+    `CREATE TABLE IF NOT EXISTS news (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT,
@@ -248,19 +232,17 @@ async function createTableStructures(pool) {
       active BOOLEAN DEFAULT true,
       "order" INTEGER DEFAULT 0,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Sessions
-    CREATE TABLE IF NOT EXISTS sessions (
+    `CREATE TABLE IF NOT EXISTS sessions (
       id SERIAL PRIMARY KEY,
       session_id TEXT NOT NULL UNIQUE,
       data JSON,
       expires_at TIMESTAMP,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    -- Admin Logs
-    CREATE TABLE IF NOT EXISTS admin_logs (
+    `CREATE TABLE IF NOT EXISTS admin_logs (
       id SERIAL PRIMARY KEY,
       action TEXT NOT NULL,
       table_name TEXT,
@@ -270,30 +252,77 @@ async function createTableStructures(pool) {
       user_agent TEXT,
       ip_address TEXT,
       created_at TIMESTAMP DEFAULT NOW()
-    );
-  `;
+    )`
+  ];
 
-  await pool.query(createTables);
+  for (const query of createTableQueries) {
+    await pool.query(query);
+  }
 }
 
-async function insertData(pool, tableName, data) {
-  if (data.length === 0) return;
-
-  // Pegar as colunas do primeiro registro
-  const columns = Object.keys(data[0]);
-  const placeholders = columns.map((_, index) => `$${index + 1}`).join(', ');
-  
-  for (const row of data) {
-    const values = columns.map(col => row[col]);
-    const query = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders}) ON CONFLICT DO NOTHING`;
+async function migrateTable(sourcePool, targetPool, tableName) {
+  try {
+    console.log(`📦 Migrando tabela: ${tableName}`);
     
-    try {
-      await pool.query(query, values);
-    } catch (error) {
-      console.log(`⚠️  Erro ao inserir registro na tabela ${tableName}:`, error.message);
+    // Verificar se a tabela existe no banco origem
+    const checkTable = await sourcePool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = $1
+      )
+    `, [tableName]);
+
+    if (!checkTable.rows[0].exists) {
+      console.log(`⚠️  Tabela ${tableName} não encontrada no banco origem`);
+      return;
     }
+
+    // Buscar dados da tabela origem
+    const sourceData = await sourcePool.query(`SELECT * FROM ${tableName}`);
+    
+    if (sourceData.rows.length === 0) {
+      console.log(`📭 Tabela ${tableName} vazia`);
+      return;
+    }
+
+    // Limpar tabela destino
+    await targetPool.query(`DELETE FROM ${tableName}`);
+
+    // Inserir dados na tabela destino
+    for (const row of sourceData.rows) {
+      const columns = Object.keys(row);
+      const values = Object.values(row);
+      const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
+      
+      const insertQuery = `
+        INSERT INTO ${tableName} (${columns.join(', ')}) 
+        VALUES (${placeholders})
+      `;
+      
+      await targetPool.query(insertQuery, values);
+    }
+
+    // Resetar sequence para PK
+    await targetPool.query(`
+      SELECT setval(pg_get_serial_sequence('${tableName}', 'id'), 
+        COALESCE(MAX(id), 1), true) FROM ${tableName}
+    `);
+
+    console.log(`✅ ${tableName}: ${sourceData.rows.length} registros migrados`);
+    
+  } catch (error) {
+    console.error(`❌ Erro ao migrar ${tableName}:`, error);
+    throw error;
   }
 }
 
 // Executar migração
-migrateDatabase();
+migrateDatabase()
+  .then(() => {
+    console.log('🎉 Migração concluída com sucesso!');
+    process.exit(0);
+  })
+  .catch(error => {
+    console.error('💥 Erro na migração:', error);
+    process.exit(1);
+  });
