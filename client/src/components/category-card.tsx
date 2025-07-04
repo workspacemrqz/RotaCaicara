@@ -25,7 +25,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category, onClick }: CategoryCardProps) {
   const hasBackgroundImage = category.backgroundImage;
-  
+
   const getCategoryIcon = (categoryName: string) => {
     const name = categoryName.toLowerCase();
     if (name.includes('refeição') || name.includes('refeicao')) return UtensilsCrossed;
@@ -45,9 +45,9 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
     if (name.includes('novidades')) return Star;
     return Star; // Default icon
   };
-  
+
   const IconComponent = getCategoryIcon(category.name);
-  
+
   return (
     <Card 
       className="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] cursor-pointer w-full"
@@ -59,6 +59,11 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
             className="w-16 h-16 text-[#006C84] transition-transform duration-300 hover:scale-110"
           />
         </div>
+        <img
+          src={category.image || "/placeholder-category.jpg"}
+          alt={category.name}
+          className="w-full h-32 category-image"
+        />
         <h4 className="text-gray-800 text-base font-medium text-center leading-tight uppercase">
           {category.name}
         </h4>

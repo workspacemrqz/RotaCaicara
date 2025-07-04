@@ -91,6 +91,10 @@ export default function ImageUpload({ value, onChange, label }: ImageUploadProps
             src={value}
             alt={label}
             className="w-full h-48 object-cover rounded-lg border"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
           />
           <Button
             type="button"

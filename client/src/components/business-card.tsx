@@ -52,20 +52,20 @@ export default function BusinessCard({ business }: BusinessCardProps) {
           />
         </div>
       )}
-      
+
       <CardContent className="p-4 sm:p-6 flex-grow flex flex-col">
         {/* Nome da Empresa */}
         <h4 className="font-bold text-petroleo text-2xl mb-2 text-center uppercase">
           {business.name}
         </h4>
-        
+
         {/* Descrição */}
         {business.description && (
           <p className="text-gray-600 text-sm text-center mb-4 leading-relaxed">
             {business.description}
           </p>
         )}
-        
+
         {/* Botões Sociais */}
         <div className="flex justify-center gap-3 mb-4 flex-wrap">
           {business.instagram && (
@@ -77,7 +77,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               <FaInstagram />
             </button>
           )}
-          
+
           {business.facebook && (
             <button 
               onClick={handleFacebookClick}
@@ -87,7 +87,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               <FaFacebook />
             </button>
           )}
-          
+
           {business.whatsapp && (
             <button 
               onClick={handleWhatsAppClick}
@@ -97,7 +97,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               <FaWhatsapp />
             </button>
           )}
-          
+
           {business.journalLink && (
             <button 
               onClick={handleJournalClick}
@@ -108,7 +108,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             </button>
           )}
         </div>
-        
+
         {/* Localização */}
         {business.address && (
           <button 
