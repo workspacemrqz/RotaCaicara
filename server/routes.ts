@@ -44,7 +44,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
-      
+
       // Return the URL path for the uploaded file
       const url = `/uploads/${req.file.filename}`;
       res.json({ url });
@@ -64,9 +64,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/categories", async (req, res) => {
     try {
       const categories = await storage.getCategories();
+      console.log("Categories returned:", categories.map(c => ({ name: c.name, slug: c.slug })));
       res.json(categories);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch categories" });
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
 
@@ -540,17 +542,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/admin/submissions/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      
+
       // Get current submission
       const submissions = await storage.getBusinessRegistrations();
       const currentSubmission = submissions.find(s => s.id === id);
       if (!currentSubmission) {
         return res.status(404).json({ error: "Submission not found" });
       }
-      
+
       // For partial updates, merge with existing data
       const updateData = { ...currentSubmission, ...req.body };
-      
+
       // Validate only if we're doing a full update (all required fields present)
       let validatedData;
       if (Object.keys(req.body).length > 2 || (req.body.businessName && req.body.categoryId)) {
@@ -558,12 +560,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         validatedData = req.body;
       }
-      
+
       console.log(`Updating submission ${id}:`, validatedData);
-      
+
       // Update the submission in storage
       const updated = await storage.updateBusinessRegistration(id, validatedData);
-      
+
       // If status is being changed to approved, create business and delete registration
       if (req.body.status === 'approved' || req.body.processed === true) {
         const submission = updated || currentSubmission;
@@ -583,14 +585,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         await storage.createBusiness(businessData);
         console.log(`Business created from submission ${id}`);
-        
+
         // Delete the registration after creating the business
         await storage.deleteBusinessRegistration(id);
         console.log(`Registration ${id} deleted after publishing`);
-        
+
         return res.json({ success: true, message: "Registration published and moved to businesses", deleted: true });
       }
-      
+
       res.json({ success: true, message: "Submission updated successfully", data: updated });
     } catch (error) {
       console.error("Failed to update submission:", error);

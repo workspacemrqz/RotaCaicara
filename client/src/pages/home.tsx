@@ -15,7 +15,7 @@ export default function Home() {
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<
     Category[]
   >({
-    queryKey: ["/api/categories"],
+    queryKey: ["/api/categories", Date.now()],
   });
 
   const { data: featuredBusinesses = [], isLoading: businessesLoading } =
