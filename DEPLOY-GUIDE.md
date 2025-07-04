@@ -50,32 +50,25 @@ PORT=3101
 ### nixpacks.toml
 ```toml
 # Configuração Nixpacks para EasyPanel
-providers = ["node"]
 
 [variables]
 NODE_ENV = "production"
 PORT = "3101"
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm"]
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
 dependsOn = ["setup"]
-cmds = [
-  "npm ci --production=false"
-]
+cmds = ["npm ci"]
 
-[phases.build]
+[phases.build] 
 dependsOn = ["install"]
-cmds = [
-  "npm run build"
-]
+cmds = ["npm run build"]
 
 [phases.start]
 dependsOn = ["build"]
-cmds = [
-  "npm run start"
-]
+cmds = ["npm run start"]
 ```
 
 ### server/index.ts
@@ -117,6 +110,12 @@ npm run db:push
 - Uptime
 
 ## Troubleshooting
+
+### ❌ Erro: "undefined variable 'npm'"
+**Solução**: Removido `npm` dos nixPkgs pois já vem incluído no `nodejs_20`
+
+### ❌ Erro: "invalid type: map, expected a sequence"
+**Solução**: Corrigida sintaxe do nixpacks.toml
 
 ### Erro de Banco de Dados
 ```bash

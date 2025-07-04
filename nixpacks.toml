@@ -1,27 +1,20 @@
 # Configuração Nixpacks para EasyPanel
-providers = ["node"]
 
 [variables]
 NODE_ENV = "production"
 PORT = "3101"
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm"]
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
 dependsOn = ["setup"]
-cmds = [
-  "npm ci --production=false"
-]
+cmds = ["npm ci"]
 
-[phases.build]
+[phases.build] 
 dependsOn = ["install"]
-cmds = [
-  "npm run build"
-]
+cmds = ["npm run build"]
 
 [phases.start]
 dependsOn = ["build"]
-cmds = [
-  "npm run start"
-] 
+cmds = ["npm run start"] 
