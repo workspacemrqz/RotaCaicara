@@ -1423,5 +1423,11 @@ async function seedDatabase() {
 // Use DatabaseStorage instead of MemStorage
 export const storage = new DatabaseStorage();
 
-// Initialize database with seed data
-seedDatabase();
+// Initialize database with seed data - make it optional to not break deployment
+(async () => {
+  try {
+    await seedDatabase();
+  } catch (error) {
+    console.log("Database seeding skipped - database may not be available yet:", error.message);
+  }
+})();
