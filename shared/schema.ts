@@ -18,6 +18,7 @@ export const categories = pgTable("categories", {
   color: text("color").default("#006C84"),
   backgroundImage: text("background_image"),
   active: boolean("active").default(true),
+  order: integer("order").default(0),
 });
 
 export const businesses = pgTable("businesses", {

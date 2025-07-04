@@ -875,7 +875,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(categories)
       .where(eq(categories.active, true))
-      .orderBy(asc(categories.order), asc(categories.name));
+      .orderBy(categories.order, categories.name);
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | undefined> {
