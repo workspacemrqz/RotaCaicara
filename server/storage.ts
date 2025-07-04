@@ -31,7 +31,7 @@ import {
   type InsertPromotion,
   type InsertAnalytics,
   type InsertNews,
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, sql, ilike, and } from "drizzle-orm";
 
@@ -1405,4 +1405,3 @@ export const storage = new DatabaseStorage();
   }
 })();
 
-export * from './schema';
