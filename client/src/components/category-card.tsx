@@ -59,11 +59,7 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
             className="w-16 h-16 text-[#006C84] transition-transform duration-300 hover:scale-110"
           />
         </div>
-        <img
-          src={category.image || "/placeholder-category.jpg"}
-          alt={category.name}
-          className="w-full h-32 category-image"
-        />
+        
         <h4 className="text-gray-800 text-base font-medium text-center leading-tight uppercase">
           {category.name}
         </h4>
