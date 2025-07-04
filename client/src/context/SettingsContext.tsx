@@ -1,43 +1,56 @@
-
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { SiteSetting } from '@shared/schema';
+
+interface SiteSettings {
+  id: number;
+  siteName: string;
+  siteDescription: string;
+  contactEmail: string;
+  contactPhone: string;
+  socialInstagram: string;
+  socialFacebook: string;
+  socialYoutube: string;
+  heroTitle: string;
+  heroDescription: string;
+  announceTitle: string;
+  announceDescription: string;
+  announceFormUrl: string;
+}
 
 interface SettingsContextType {
-  settings: SiteSetting | null;
+  settings: SiteSettings | null;
   isLoading: boolean;
   error: Error | null;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-interface SettingsProviderProps {
-  children: ReactNode;
+async function fetchSettings() {
+  const response = await fetch('/api/admin/settings');
+  if (!response.ok) {
+    throw new Error('Failed to fetch settings');
+  }
+  return response.json();
 }
 
-export function SettingsProvider({ children }: SettingsProviderProps) {
-  const { data: settings, isLoading, error } = useQuery<SiteSetting>({
-    queryKey: ['/api/admin/settings'],
-    staleTime: 1000 * 60 * 5,
+export function SettingsProvider({ children }: { children: React.ReactNode }) {
+  const { data: settings, isLoading, error } = useQuery({
+    queryKey: ['settings'],
+    queryFn: fetchSettings,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const value: SettingsContextType = {
-    settings: settings || null,
-    isLoading,
-    error: error as Error | null
-  };
-
   return (
-    <SettingsContext.Provider value={value}>
+    <SettingsContext.Provider value={{ settings: settings || null, isLoading, error }}>
       {children}
     </SettingsContext.Provider>
   );
 }
 
-export const useSettings = () => {
+export function useSettings() {
   const context = useContext(SettingsContext);
   if (context === undefined) {
     throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
-};
+}

@@ -1,10 +1,23 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from '@tanstack/react-query';
 
-// Default query function
-const defaultQueryFn = async ({ queryKey }: { queryKey: readonly unknown[] }) => {
-  const [url] = queryKey;
-  const response = await fetch(url as string, {
-    credentials: "include",
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+export async function apiRequest(url: string, options: RequestInit = {}) {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
   });
 
   if (!response.ok) {
@@ -12,15 +25,4 @@ const defaultQueryFn = async ({ queryKey }: { queryKey: readonly unknown[] }) =>
   }
 
   return response.json();
-};
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutos
-      retry: 3,
-      refetchOnWindowFocus: false,
-      queryFn: defaultQueryFn,
-    },
-  },
-});
+}
