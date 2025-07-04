@@ -44,18 +44,20 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
-import { QueryClient } from "@tanstack/react-query";
-
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      cacheTime: 1000 * 60 * 10, // 10 minutes
-      retry: 2,
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      staleTime: 1000 * 60 * 5, // 5 minutos
+      retry: 3,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-      refetchOnMount: true,
+      queryFn: async ({ queryKey }) => {
+        const [url] = queryKey;
+        const response = await fetch(url as string);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }
     },
   },
 });
