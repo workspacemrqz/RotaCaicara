@@ -312,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteBusiness(id);
       console.log(`Business ${id} deleted successfully`);
-      res.status(204).end();
+      res.status(200).json({ success: true, message: "Business deleted successfully" });
     } catch (error) {
       console.error("Failed to delete business:", error);
       res.status(500).json({ error: error instanceof Error ? error.message : "Failed to delete business" });
