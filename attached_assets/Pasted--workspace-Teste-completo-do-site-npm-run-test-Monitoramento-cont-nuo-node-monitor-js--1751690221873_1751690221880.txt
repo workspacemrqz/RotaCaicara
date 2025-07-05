@@ -1,0 +1,168 @@
+~/workspace$ # Teste completo do site
+npm run test
+
+# Monitoramento contínuo
+node monitor.js
+
+# Validação de dados
+node validate-data.js
+
+> rest-express@1.0.0 test
+> node test-site.js
+
+[2025-07-05T04:36:15.966Z] 🔵 INFO: 🚀 Starting comprehensive site testing...
+[2025-07-05T04:36:15.969Z] 🔵 INFO: 
+--- Running Server Health Test ---
+[2025-07-05T04:36:15.969Z] 🧪 TEST: Testing server health...
+[2025-07-05T04:36:15.985Z] ✅ SUCCESS: Server health check passed
+{ status: 'ok', timestamp: '2025-07-05T04:36:15.982Z' }
+[2025-07-05T04:36:15.987Z] ✅ SUCCESS: Server Health test PASSED
+[2025-07-05T04:36:15.987Z] 🔵 INFO: 
+--- Running Categories API Test ---
+[2025-07-05T04:36:15.987Z] 🧪 TEST: Testing Categories API...
+[2025-07-05T04:36:16.849Z] ✅ SUCCESS: Categories API returned 14 categories
+[2025-07-05T04:36:16.849Z] 🔵 INFO: 14/14 categories have valid structure
+[2025-07-05T04:36:17.020Z] ✅ SUCCESS: Individual category fetch successful
+{
+  id: 22,
+  name: 'PARA SUA CASA',
+  slug: 'para-sua-casa',
+  icon: '🏠',
+  color: '#006C84',
+  backgroundImage: null,
+  active: true,
+  order: 1
+}
+[2025-07-05T04:36:17.020Z] ✅ SUCCESS: Categories API test PASSED
+[2025-07-05T04:36:17.021Z] 🔵 INFO: 
+--- Running Businesses API Test ---
+[2025-07-05T04:36:17.021Z] 🧪 TEST: Testing Businesses API...
+[2025-07-05T04:36:17.193Z] ✅ SUCCESS: Businesses API returned 7 businesses
+[2025-07-05T04:36:17.193Z] 🔵 INFO: 7/7 businesses have valid structure
+[2025-07-05T04:36:17.365Z] ✅ SUCCESS: Featured businesses API returned 1 businesses
+[2025-07-05T04:36:17.536Z] ✅ SUCCESS: Individual business fetch successful
+{
+  id: 7,
+  name: 'Hizon Phone',
+  description: 'Venda de Iphones e Acessórios Apple',
+  phone: '',
+  whatsapp: '12997102757',
+  address: ' Avenida Walkir Vergani, 240, loja 11 - Boiçucanga, São Sebastião - SP',
+  email: '',
+  website: '',
+  instagram: 'hizonphone',
+  facebook: '',
+  journalLink: '',
+  categoryId: 34,
+  imageUrl: 'https://i.ibb.co/5W2fZXbL/1.png',
+  featured: true,
+  certified: false,
+  active: true
+}
+[2025-07-05T04:36:17.538Z] ❌ ERROR: Search API failed
+[2025-07-05T04:36:17.538Z] ✅ SUCCESS: Businesses API test PASSED
+[2025-07-05T04:36:17.538Z] 🔵 INFO: 
+--- Running Site Settings API Test ---
+[2025-07-05T04:36:17.538Z] 🧪 TEST: Testing Site Settings API...
+[2025-07-05T04:36:17.715Z] ✅ SUCCESS: Site settings have all required fields
+[2025-07-05T04:36:17.715Z] 🔵 INFO: Site settings validation
+{
+  siteName: true,
+  locality: true,
+  phone: true,
+  email: true,
+  totalFields: 31
+}
+[2025-07-05T04:36:17.716Z] ✅ SUCCESS: Site Settings API test PASSED
+[2025-07-05T04:36:17.716Z] 🔵 INFO: 
+--- Running Business Registration API Test ---
+[2025-07-05T04:36:17.716Z] 🧪 TEST: Testing Business Registration API...
+[2025-07-05T04:36:18.065Z] ✅ SUCCESS: Business registration API test passed
+{
+  id: 3,
+  businessName: 'Test Business 1751690177889',
+  categoryId: 22,
+  phone: '12999999999',
+  whatsapp: '12999999999',
+  address: 'Test Address, Test City',
+  description: 'Test business description',
+  instagram: null,
+  facebook: null,
+  contactEmail: 'test@example.com',
+  imageUrl: null,
+  processed: false
+}
+[2025-07-05T04:36:18.236Z] ✅ SUCCESS: Business registrations fetch returned 3 registrations
+[2025-07-05T04:36:18.236Z] ✅ SUCCESS: Business Registration API test PASSED
+[2025-07-05T04:36:18.237Z] 🔵 INFO: 
+--- Running Admin Endpoints Test ---
+[2025-07-05T04:36:18.237Z] 🧪 TEST: Testing Admin Endpoints...
+[2025-07-05T04:36:18.408Z] ✅ SUCCESS: Admin endpoint /api/admin/business-registrations working
+{ dataLength: 3 }
+[2025-07-05T04:36:18.582Z] ✅ SUCCESS: Admin endpoint /api/admin/banners working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:18.755Z] ✅ SUCCESS: Admin endpoint /api/admin/settings working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:18.927Z] ✅ SUCCESS: Admin endpoint /api/admin/testimonials working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:19.099Z] ✅ SUCCESS: Admin endpoint /api/admin/faqs working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:19.271Z] ✅ SUCCESS: Admin endpoint /api/admin/promotions working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:19.443Z] ✅ SUCCESS: Admin endpoint /api/admin/logs working
+{ dataLength: 6 }
+[2025-07-05T04:36:19.614Z] ✅ SUCCESS: Admin endpoint /api/admin/analytics working
+{ dataLength: 'N/A' }
+[2025-07-05T04:36:19.614Z] 🔵 INFO: Admin endpoints test: 8/8 passed
+[2025-07-05T04:36:19.614Z] ✅ SUCCESS: Admin Endpoints test PASSED
+[2025-07-05T04:36:19.615Z] 🔵 INFO: 
+--- Running Data Integrity Test ---
+[2025-07-05T04:36:19.615Z] 🧪 TEST: Testing Data Integrity...
+[2025-07-05T04:36:20.475Z] ✅ SUCCESS: All businesses have valid category relationships
+[2025-07-05T04:36:20.475Z] ✅ SUCCESS: No duplicate category slugs found
+[2025-07-05T04:36:20.475Z] ✅ SUCCESS: All critical settings are present
+[2025-07-05T04:36:20.475Z] ✅ SUCCESS: Data Integrity test PASSED
+[2025-07-05T04:36:20.475Z] 🔵 INFO: 
+=== TEST SUMMARY ===
+[2025-07-05T04:36:20.475Z] 🔵 INFO: Tests passed: 7/7
+[2025-07-05T04:36:20.475Z] 🔵 INFO: Success rate: 100.0%
+[2025-07-05T04:36:20.475Z] ✅ SUCCESS: 🎉 All tests passed! Site is functioning correctly.
+[2025-07-05T04:36:20.529Z] 👁️ MONITOR: 🚀 Starting real-time site monitoring...
+[2025-07-05T04:36:20.532Z] 🔵 INFO: Monitoring interval: 30 seconds
+[2025-07-05T04:36:20.532Z] 🔵 INFO: Base URL: http://localhost:5000
+
+[2025-07-05T04:36:20.532Z] 👁️ MONITOR: Starting monitoring cycle...
+[2025-07-05T04:36:20.548Z] ✅ SUCCESS: Health Check OK (6ms)
+[2025-07-05T04:36:20.722Z] ✅ SUCCESS: Categories API OK (173ms)
+[2025-07-05T04:36:20.894Z] ✅ SUCCESS: Businesses API OK (172ms)
+[2025-07-05T04:36:21.066Z] ✅ SUCCESS: Featured Businesses OK (171ms)
+[2025-07-05T04:36:21.238Z] ✅ SUCCESS: Site Settings OK (171ms)
+[2025-07-05T04:36:21.239Z] ✅ SUCCESS: All systems operational (100.0%)
+[2025-07-05T04:36:21.239Z] 🔵 INFO: Memory usage normal
+{ rss: 50, heapTotal: 6, heapUsed: 5, external: 2 }
+[2025-07-05T04:36:21.240Z] 👁️ MONITOR: Next check in 30 seconds
+
+^C[2025-07-05T04:36:34.500Z] 👁️ MONITOR: Stopping monitoring...
+[2025-07-05T04:36:34.552Z] 🔍 VALIDATION: 🔍 Starting comprehensive data validation...
+[2025-07-05T04:36:34.555Z] 🔵 INFO: 
+--- Validating Categories ---
+[2025-07-05T04:36:34.555Z] 🔍 VALIDATION: Validating categories data...
+[2025-07-05T04:36:34.746Z] ✅ SUCCESS: Categories validation: 14 total, 14 active, 0 issues
+[2025-07-05T04:36:34.746Z] ✅ SUCCESS: Categories validation PASSED
+[2025-07-05T04:36:34.746Z] 🔵 INFO: 
+--- Validating Businesses ---
+[2025-07-05T04:36:34.746Z] 🔍 VALIDATION: Validating businesses data...
+[2025-07-05T04:36:34.921Z] 🔵 INFO: Featured businesses: 1
+[2025-07-05T04:36:34.922Z] ✅ SUCCESS: Businesses validation: 7 total, 0 issues
+[2025-07-05T04:36:34.922Z] ✅ SUCCESS: Businesses validation PASSED
+[2025-07-05T04:36:34.922Z] 🔵 INFO: 
+--- Validating Site Settings ---
+[2025-07-05T04:36:34.922Z] 🔍 VALIDATION: Validating site settings...
+[2025-07-05T04:36:35.094Z] ✅ SUCCESS: Site settings validation: 31 fields, 0 issues
+[2025-07-05T04:36:35.094Z] ✅ SUCCESS: Site Settings validation PASSED
+[2025-07-05T04:36:35.094Z] 🔵 INFO: 
+=== VALIDATION SUMMARY ===
+[2025-07-05T04:36:35.095Z] 🔵 INFO: Validations passed: 3/3
+[2025-07-05T04:36:35.095Z] 🔵 INFO: Success rate: 100.0%
+[2025-07-05T04:36:35.095Z] ✅ SUCCESS: 🎉 All data validations passed! Database integrity confirmed.
+~/workspace$ 
