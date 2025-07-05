@@ -1,4 +1,3 @@
-
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
@@ -56,6 +55,10 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   server.on("upgrade", vite.ws.handleUpgrade);
+    // Add error handler to prevent crashes
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+  });
 }
 
 export function serveStatic(app: Express) {
