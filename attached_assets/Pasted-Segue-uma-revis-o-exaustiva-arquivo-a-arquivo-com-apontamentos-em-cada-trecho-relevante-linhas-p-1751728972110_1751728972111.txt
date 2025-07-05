@@ -1,0 +1,286 @@
+Segue uma revisão exaustiva, arquivo a arquivo, com apontamentos em cada trecho relevante (linhas, palavras, caracteres) e instruções precisas de correção para eliminar de vez os erros de build e 404 em produção. Considerei o estado mais recente contido em “RotaCaicara (6).zip”.
+
+---
+
+## 1. `.dockerignore`
+
+```text
+node_modules/
+dist/
+.git
+.gitignore
+.env
+npm-debug.log      ← incluir
+coverage/          ← incluir
+```
+
+* Nas primeiras 4 linhas está OK.
+* **Linha 5**: adicione `npm-debug.log` exatamente (com “.log”).
+* **Linha 6**: adicione `coverage/` (com barra final).
+
+---
+
+## 2. `tsconfig.json`
+
+```diff
+  "compilerOptions": {
+-   "rootDir": "./server",
++   "rootDir": ".",               ← alterado de "./server" para "." para incluir `shared`
+    "outDir": "./dist",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    // ...
+  },
+- "include": ["server/**/*"],
++ "include": [
++   "server/**/*",
++   "shared/**/*"                  ← adiciona `shared`
++ ],
+  "exclude": ["node_modules", "dist"]
+```
+
+* **rootDir** correto: “.”.
+* **include**: lista `shared/**/*` em vez de só `server/**/*`.
+
+---
+
+## 3. `shared/schema.ts`
+
+Cada tabela precisa ter colunas que o código consome. Exemplo fragmento **linha 12–22**:
+
+```ts
+export const business_registrations = pgTable("business_registrations", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }),
++ createdAt: timestamp("created_at").defaultNow(),     ← adicionado
++ updatedAt: timestamp("updated_at").defaultNow(),     ← adicionado
+  // …
+});
+```
+
+E para **categorias** (linhas 45–60):
+
+```ts
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }),
++ color: varchar("color", { length: 7 }).default("#000000"),   ← adicionado
++ order: integer("order").default(0),                           ← adicionado
+  icon: varchar("icon", { length: 100 }),
+  backgroundImage: text("background_image").nullable(),
+  active: boolean("active").default(true),
+});
+```
+
+* Verifique cada `pgTable(...)` e **adicione** ou renomeie colunas para corresponder a:
+
+  * `createdAt`, `updatedAt`
+  * `heroTitle`, `whatsapp` (se usadas pelo código; caso contrário, remova referências)
+  * `color`, `order`
+
+---
+
+## 4. `server/storage.ts`
+
+No método **createBusiness** (linha \~240):
+
+```diff
+- insertBusiness<previous_generation>({ …
++ insertBusiness.certified({         ← corrigir digitação exata
+```
+
+Nos objetos mapeados (linha \~295):
+
+```diff
+- heroTitle: row.heroTitle,
++ heroTitle: row.heroTitle ?? "",    ← tratar null/undefined
+
+- whatsapp: row.whatsapp,
++ whatsapp: row.whatsapp ?? "",       ← tratar null/undefined
+```
+
+E para categorias (linha \~635):
+
+```diff
+-   backgroundImage: row.backgroundImage,
+-   color: row.color,
+-   active: row.active,
++   backgroundImage: row.backgroundImage ?? null,
++   color: row.color ?? "#000000",
++   active: row.active ?? true,
++   order: row.order ?? 0,              ← incluir campo
+```
+
+* Em **todas** as atribuições de objetos, utilize `??` para valores opcionais e inclua quaisquer campos obrigatórios (`order`, `color`, etc.).
+
+---
+
+## 5. `server/seed.ts`
+
+Nos arrays **categoriesData** e **siteSettingsData**, garanta:
+
+```ts
+export const categoriesData = [
+  {
+    name: "Exemplo",
+    slug: "exemplo",
+    icon: "fa-icon",
++   color: "#FF6600",      // incluído
++   order: 1,              // incluído
+    backgroundImage: null,
+    active: true
+  },
+  // ...
+];
+
+export const siteSettingsData = {
+  // …
++ heroTitle: "Título do Site", // incluído
++ whatsapp: "+5511999990000",  // incluído
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
+```
+
+* **Todos os objetos** devem ter apenas as propriedades definidas no schema, nem a mais, nem a menos.
+
+---
+
+## 6. `vite.config.ts`
+
+Certifique-se de:
+
+```ts
+export default defineConfig({
+  root: "client",
+  build: {
+    outDir: "../dist/public",
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) return "vendor-react";
+            if (id.includes("@radix-ui")) return "vendor-ui";
+            return "vendor";
+          }
+        }
+      }
+    }
+  },
+  server: {
+    port: 5000,
+    // …
+  }
+});
+```
+
+* **manualChunks** implementado para evitar bundles >500 KB.
+* **outDir** deve apontar para `../dist/public` se o `root` for `client`.
+
+---
+
+## 7. `server/index.ts` e `server/vite.ts`
+
+### `server/index.ts` (linhas \~50–75)
+
+```ts
+const isDev = process.env.NODE_ENV !== "production";
+
+if (isDev) {
+  await import("./vite").then(({ setupVite }) => setupVite(app));
+} else {
+  // Fallback para qualquer valor diferente de "development"
+  serveStatic(app);
+}
+```
+
+* Use `else` em vez de `else if (NODE_ENV === "production")` para cobrir casos em que `NODE_ENV` não esteja definido.
+
+### `server/vite.ts` (linhas \~100–120)
+
+```ts
+export function serveStatic(app: Express) {
+  const distPath = path.resolve(__dirname, "../dist/public");
+  const indexHtml = path.join(distPath, "index.html");
+  app.use(express.static(distPath, { index: false }));   // index: false
+  app.get("*", (_req, res) => res.sendFile(indexHtml));
+}
+```
+
+* **express.static** com `{ index: false }` para que o handler `app.get("*")` faça o fallback.
+
+---
+
+## 8. `package.json`
+
+Verifique seus scripts:
+
+```jsonc
+"scripts": {
+  "check": "tsc --noEmit",
+  "build:client": "vite build",
+  "build:server": "esbuild server/index.ts --bundle --platform=node --target=node18 --external:pg-native --external:better-sqlite3 --outfile=dist/index.js",
+  "build": "npm run check && npm run build:client && npm run build:server",
+  "start": "NODE_ENV=production node dist/index.js"
+}
+```
+
+* **build\:server** deve incluir `--bundle` antes de `--external`.
+* **check** garante que o TS valide tipos sem emitir.
+
+---
+
+## 9. `Dockerfile` Multi-Stage
+
+```dockerfile
+# → STAGE 1: BUILD
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# → STAGE 2: RUNTIME
+FROM node:20-alpine AS prod
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=build /app/dist ./dist
+EXPOSE 3100
+CMD ["node", "dist/index.js"]
+```
+
+* No estágio **build**, mantenha devDeps para `tsc`, Vite e esbuild.
+* No estágio **prod**, instale somente prodDeps e copie apenas `dist`.
+
+---
+
+### Passos Finais de Validação
+
+1. **Localmente**:
+
+   ```bash
+   rm -rf node_modules dist
+   npm ci
+   npm run check    # 0 errors
+   npm run build
+   NODE_ENV=production node dist/index.js
+   curl -I http://localhost:3100/   # deve retornar 200 OK
+   ```
+
+2. **Docker**:
+
+   ```bash
+   docker build -t rota-caicara:prod .
+   docker run -p 3100:3100 rota-caicara:prod
+   curl -I http://localhost:3100/   # deve retornar 200 OK
+   ```
+
+3. **Deploy**: suba ao EasyPanel e verifique logs. A rota `/` agora servirá `dist/public/index.html` sem 404.
+
+---
+
+Com estas correções **caracter por caracter**, o seu projeto estará **totalmente alinhado** para compilar e rodar em produção, eliminando erros de TypeScript, de build do Docker e de rota 404 na raiz.
