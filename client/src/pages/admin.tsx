@@ -531,22 +531,38 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const queryClient = useQueryClient();
 
   // Queries
-  const { data: businesses = [] } = useQuery<Business[]>({
+  const { data: businesses = [], isLoading: businessesLoading, error: businessesError } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/businesses");
+      return response.json();
+    },
   });
 
-  const { data: categories = [] } = useQuery<Category[]>({
+  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/categories");
+      return response.json();
+    },
   });
 
-  const { data: businessRegistrations = [] } = useQuery<BusinessRegistration[]>(
+  const { data: businessRegistrations = [], isLoading: registrationsLoading, error: registrationsError } = useQuery<BusinessRegistration[]>(
     {
       queryKey: ["/api/admin/business-registrations"],
+      queryFn: async () => {
+        const response = await apiRequest("GET", "/api/admin/business-registrations");
+        return response.json();
+      },
     },
   );
 
-  const { data: analytics = [] } = useQuery<Analytics[]>({
+  const { data: analytics = [], isLoading: analyticsLoading, error: analyticsError } = useQuery<Analytics[]>({
     queryKey: ["/api/admin/analytics"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/admin/analytics");
+      return response.json();
+    },
   });
 
   // State management
@@ -982,6 +998,15 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
         .includes(businessSearchFilter.toLowerCase()),
   );
 
+  // Debug logging
+  console.log("Admin Panel Debug:", {
+    businesses: businesses,
+    businessesLoading,
+    businessesError,
+    categories: categories,
+    businessRegistrations: businessRegistrations
+  });
+
   // Calculate analytics
   const totalBusinesses = businesses.length;
   const totalRegistrations = businessRegistrations.length;
@@ -989,6 +1014,39 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const pendingRegistrations = businessRegistrations.filter(
     (reg) => !reg.processed,
   ).length;
+
+  // Show loading state
+  if (businessesLoading || categoriesLoading || registrationsLoading || analyticsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-3 sm:p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#006C84] mx-auto mb-4"></div>
+            <p className="text-[#006C84]">Carregando dados do painel...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (businessesError || categoriesError || registrationsError || analyticsError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-3 sm:p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-16">
+            <h2 className="text-xl font-semibold text-red-600 mb-4">Erro ao carregar dados</h2>
+            <p className="text-gray-600 mb-4">
+              {businessesError?.message || categoriesError?.message || registrationsError?.message || analyticsError?.message}
+            </p>
+            <Button onClick={() => window.location.reload()}>
+              Recarregar Página
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-3 sm:p-6">
