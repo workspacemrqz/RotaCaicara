@@ -1148,8 +1148,8 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   // Debug logging
   console.log("Admin Panel Debug:", {
     businesses: businesses,
-    businessesLoading,
-    businessesError,
+    businessesLoading: businessesQuery.isLoading,
+    businessesError: businessesQuery.error,
     categories: categories,
     businessRegistrations: businessRegistrations
   });
@@ -1163,7 +1163,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
     : 0;
 
   // Show loading state
-  if (businessesLoading || categoriesLoading || registrationsLoading || analyticsLoading) {
+  if (businessesQuery.isLoading || categoriesQuery.isLoading || businessRegistrationsQuery.isLoading || analyticsQuery.isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-3 sm:p-6">
         <div className="max-w-7xl mx-auto">
@@ -1177,14 +1177,14 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   }
 
   // Show error state
-  if (businessesError || categoriesError || registrationsError || analyticsError) {
+  if (businessesQuery.error || categoriesQuery.error || businessRegistrationsQuery.error || analyticsQuery.error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 p-3 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-16">
             <h2 className="text-xl font-semibold text-red-600 mb-4">Erro ao carregar dados</h2>
             <p className="text-gray-600 mb-4">
-              {businessesError?.message || categoriesError?.message || registrationsError?.message || analyticsError?.message}
+              {businessesQuery.error?.message || categoriesQuery.error?.message || businessRegistrationsQuery.error?.message || analyticsQuery.error?.message}
             </p>
             <Button onClick={() => window.location.reload()}>
               Recarregar Página
