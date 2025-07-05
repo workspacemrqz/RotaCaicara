@@ -12,7 +12,10 @@
     "db:migrate": "tsx server/migrate.ts",
     "db:init": "node init-db.js",
     "test": "node test-site.js",
-    "test:verbose": "DEBUG=* node test-site.js"
+    "test:verbose": "DEBUG=* node test-site.js",
+    "monitor": "node monitor.js",
+    "validate": "node validate-data.js",
+    "test:all": "npm run test && npm run validate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

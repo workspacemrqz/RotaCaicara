@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 /**
  * Comprehensive Site Testing Script
  * Tests all functionalities and data integrity

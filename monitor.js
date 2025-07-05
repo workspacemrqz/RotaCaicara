@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 /**
  * Real-time Site Monitoring Script
  * Continuously monitors site health and logs issues

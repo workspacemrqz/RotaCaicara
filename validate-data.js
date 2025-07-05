@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 /**
  * Data Validation Script
  * Validates database structure and data integrity
