@@ -111,14 +111,21 @@ export default function BusinessCard({ business }: BusinessCardProps) {
 
         {/* Localização */}
         {business.address && (
-          <button 
-            onClick={handleLocationClick}
-            className="flex items-center justify-center gap-2 text-gray-600 hover:text-petroleo transition-colors mt-auto"
-          >
-            <MapPin size={16} />
-            <span className="text-sm">{business.address}</span>
-          </button>
-        )}
+          <div className="flex justify-center mt-auto">
+            <button 
+              onClick={handleLocationClick}
+              className="social-icon-circle bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors"
+              aria-label="Ver localização no Google Maps"
+              title={business.address}
+            >
+              <MapPin size={20} />
+            </button>
+          </div>
+        )}</div>
+      </CardContent>
+    </Card>
+  );
+}
       </CardContent>
     </Card>
   );
