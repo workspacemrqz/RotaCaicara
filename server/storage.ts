@@ -985,39 +985,11 @@ class MemStorage implements IStorage {
   }
 
   async getSiteSettings(): Promise<SiteSetting> {
-    console.log('⚙️ DatabaseStorage: Fetching site settings...');
-    try {
-      const result = await db.select().from(siteSettings).limit(1);
-      if (result[0]) {
-        console.log('✅ DatabaseStorage: Site settings found');
-        return result[0];
-      }
-
-      console.log('⚠️ DatabaseStorage: No site settings found, creating default...');
-      const defaultSettings: typeof siteSettings.$inferInsert = {
-        siteName: 'Rota Caiçara',
-        locality: 'São Sebastião',
-        heroTitle: 'Descubra os sabores únicos de São Sebastião',
-        heroSubtitle: 'Conheça os melhores estabelecimentos locais e viva experiências gastronômicas autênticas',
-        whatsappNumber: '(12) 99999-9999',
-        contactEmail: 'contato@rotacaicara.com.br',
-        instagramUrl: '@rotacaicara',
-        facebookUrl: 'facebook.com/rotacaicara',
-        primaryColor: '#2D5A27',
-        secondaryColor: '#F4A460',
-        accentColor: '#8B4513'
-      };
-
-      const [newSetting] = await db.insert(siteSettings)
-        .values(defaultSettings)
-        .returning();
-
-      console.log('✅ DatabaseStorage: Default site settings created');
-      return newSetting;
-    } catch (error) {
-      console.error('❌ DatabaseStorage: Error fetching site settings:', error);
-      throw error;
+    const setting = this.settings.get("main");
+    if (!setting) {
+      throw new Error("Site settings not found");
     }
+    return setting;
   }
 
   async updateSiteSettings(
