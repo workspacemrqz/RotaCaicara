@@ -101,7 +101,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
           {business.address && (
             <button 
               onClick={handleLocationClick}
-              className="social-icon-circle bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors"
+              className="social-icon-circle bg-green-100 hover:bg-green-200 text-green-600 hover:text-green-800 transition-colors"
               aria-label="Ver localização no Google Maps"
               title={business.address}
             >
