@@ -1108,11 +1108,11 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
 
   // Calculate analytics
   const totalBusinesses = businesses.length;
-  const totalRegistrations = businessRegistrations.length;
+  const totalRegistrations = Array.isArray(businessRegistrations) ? businessRegistrations.length : 0;
   const totalCategories = categories.length;
-  const pendingRegistrations = businessRegistrations.filter(
-    (reg) => !reg.processed,
-  ).length;
+  const pendingRegistrations = Array.isArray(businessRegistrations) 
+    ? businessRegistrations.filter((reg) => !reg.processed).length 
+    : 0;
 
   // Show loading state
   if (businessesLoading || categoriesLoading || registrationsLoading || analyticsLoading) {
@@ -1370,7 +1370,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {businessRegistrations.map((registration) => (
+                  {Array.isArray(businessRegistrations) && businessRegistrations.map((registration) => (
                     <div
                       key={registration.id}
                       className="flex items-center justify-between p-4 border rounded-lg"
@@ -1437,7 +1437,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </div>
                   ))}
-                  {businessRegistrations.length === 0 && (
+                  {(!Array.isArray(businessRegistrations) || businessRegistrations.length === 0) && (
                     <div className="text-center py-8 text-gray-500">
                       Nenhum cadastro recebido ainda.
                     </div>
