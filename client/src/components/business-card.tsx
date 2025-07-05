@@ -121,11 +121,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
               <MapPin size={20} />
             </button>
           </div>
-        )}</div>
-      </CardContent>
-    </Card>
-  );
-}
+        )}
       </CardContent>
     </Card>
   );
