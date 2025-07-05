@@ -1109,28 +1109,32 @@ export class DatabaseStorage implements IStorage {
     return created[0];
   }
 
-  // Substitua o método inteiro abaixo:
   async updateSiteSettings(
     settingsUpdate: Partial<InsertSiteSetting>,
   ): Promise<SiteSetting> {
-    // Busca a configuração existente
-    const [existing] = await db.select().from(siteSettings).limit(1);
+    try {
+      // Busca a configuração existente
+      const [existing] = await db.select().from(siteSettings).limit(1);
 
-    if (existing) {
-      // Atualiza todos os campos passados e seta updatedAt
-      const [updated] = await db
-        .update(siteSettings)
-        .set({ ...settingsUpdate, updatedAt: new Date() })
-        .where(eq(siteSettings.id, existing.id))
-        .returning();
-      return updated;
-    } else {
-      // Se não existir, insere um novo registro
-      const [created] = await db
-        .insert(siteSettings)
-        .values(settingsUpdate)
-        .returning();
-      return created;
+      if (existing) {
+        // Atualiza todos os campos passados e seta updatedAt
+        const [updated] = await db
+          .update(siteSettings)
+          .set({ ...settingsUpdate, updatedAt: new Date() })
+          .where(eq(siteSettings.id, existing.id))
+          .returning();
+        return updated;
+      } else {
+        // Se não existir, insere um novo registro
+        const [created] = await db
+          .insert(siteSettings)
+          .values(settingsUpdate)
+          .returning();
+        return created;
+      }
+    } catch (error) {
+      console.error('Error updating site settings:', error);
+      throw error;
     }
   }
 
