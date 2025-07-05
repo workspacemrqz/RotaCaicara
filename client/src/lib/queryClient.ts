@@ -1,11 +1,14 @@
+
 import { QueryClient } from "@tanstack/react-query";
 
-// Generic API request function
+// Create a fetch wrapper that includes proper error handling
 export async function apiRequest(
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
+  method: string,
   endpoint: string,
   data?: any
-) {
+): Promise<Response> {
+  const url = endpoint.startsWith("http") ? endpoint : endpoint;
+  
   const config: RequestInit = {
     method,
     headers: {
@@ -13,31 +16,39 @@ export async function apiRequest(
     },
   };
 
-  if (data && method !== "GET") {
+  if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
     config.body = JSON.stringify(data);
   }
 
-  const response = await fetch(endpoint, config);
-
+  const response = await fetch(url, config);
+  
   if (!response.ok) {
-    const errorData = await response.text();
-    throw new Error(errorData || `HTTP error! status: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`HTTP ${response.status}: ${errorText}`);
   }
-
+  
   return response;
 }
 
-// Create a default query client with queryFn
+// Default query function
+const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }) => {
+  const [url] = queryKey;
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: async ({ queryKey }) => {
-        const response = await apiRequest("GET", queryKey[0] as string);
-        return response.json();
-      },
+      queryFn: defaultQueryFn,
+      retry: 1,
       staleTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false,
-      retry: 1,
     },
   },
 });
