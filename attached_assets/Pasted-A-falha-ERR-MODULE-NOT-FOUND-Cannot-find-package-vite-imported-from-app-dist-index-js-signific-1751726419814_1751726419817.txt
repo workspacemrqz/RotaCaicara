@@ -1,0 +1,114 @@
+A falha `ERR_MODULE_NOT_FOUND: Cannot find package 'vite' imported from /app/dist/index.js` significa que, mesmo em produção, o seu bundle ainda contém uma chamada a `import('vite')` ou um `import`/`require` estático de `vite`. Para resolver de uma vez por todas:
+
+---
+
+## 1. Remova **toda** referência estática a `vite` de `server/index.ts`
+
+Abra `server/index.ts` e **elimite** qualquer linha do tipo:
+
+```ts
+import { createServer as createViteServer } from 'vite';
+```
+
+Ou
+
+```ts
+const vite = require('vite');
+```
+
+O arquivo deve ficar assim (exemplo simplificado):
+
+```diff
+--- a/server/index.ts
++++ b/server/index.ts
+@@ -1,7 +1,6 @@
+-import { createServer as createViteServer } from 'vite';   // ❌ remover
+ import express from 'express';
+ import { serveStatic } from './vite';  // só exporta o handler estático
+ import { DatabaseStorage } from './storage';
+ 
++// ATENÇÃO: nenhuma importação de 'vite' aqui
+ const app = express();
+ const isProduction = process.env.NODE_ENV === 'production';
+
+```
+
+E dentro da função de bootstrap:
+
+```diff
+-  if (!isProduction) {
+-    // em dev: usar Vite
+-    const { configureVite } = await import('./vite');
+-    await configureVite(app);
+-  } else {
+-    serveStatic(app);
+-  }
++  if (isProduction) {
++    // produção: serve apenas os arquivos já construídos
++    serveStatic(app);
++  } else {
++    // desenvolvimento: injeta o middleware do Vite
++    const { configureVite } = await import('./vite');
++    await configureVite(app);
++  }
+```
+
+Isso garante que **nunca** exista uma importação estática de `vite` no bundle de produção.
+
+---
+
+## 2. Garanta que o build realmente use `NODE_ENV=production`
+
+No seu **Dockerfile**, antes do `RUN npm run build:production`, defina:
+
+```dockerfile
+# logo após o FROM e antes de qualquer build JS:
+ENV NODE_ENV=production
+```
+
+E reorganize para invalidar o cache sempre que mudar o código:
+
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# 1) Instala só depêndencias de produção
+COPY package*.json ./
+ENV NODE_ENV=production
+RUN npm ci --omit=dev
+
+# 2) Copia todo o código e faz o build
+COPY . .
+RUN npm run build:production
+
+# 3) Fase final: roda o dist
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+USER nodejs
+CMD ["node", "dist/index.js"]
+```
+
+Esse fluxo:
+
+1. Garante que em **build** `NODE_ENV=production` desabilite tudo que for dev.
+2. Remove qualquer chance de cachear uma versão antiga do bundle com o `COPY . .` **depois** do `npm ci`.
+3. Obedece a separação de estágios (multistage), mantendo a imagem final enxuta e sem `devDependencies`.
+
+Por fim, ao subir novamente no Easypanel, force um build limpo (por exemplo com `docker build --no-cache`) para que ele pegue essas mudanças de imediato.
+
+---
+
+### Resumo dos passos
+
+1. **Patch em `server/index.ts`**: tire qualquer `import`/`require` de `vite` fora do bloco de desenvolvimento.
+2. **Dockerfile multistage**:
+
+   * `ENV NODE_ENV=production` antes de instalar deps.
+   * `npm ci --omit=dev` + `COPY . .` + `npm run build:production`.
+   * Fase final só com `dist` e `node_modules`.
+3. **Re-build sem cache** e redeploy.
+
+Com isso, seu bundle de produção não terá mais nenhum `import('vite')` e o erro 500 convertido em “Módulo não encontrado” deixará de ocorrer.
