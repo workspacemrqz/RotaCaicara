@@ -86,6 +86,8 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || "3100");
 
   server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port} and accepting connections from all interfaces`);
+    console.log(`🚀 Server running on port ${port} in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`📡 Accepting connections from all interfaces (0.0.0.0:${port})`);
+    console.log(`🔗 Health check available at: http://localhost:${port}/health`);
   });
 })();
