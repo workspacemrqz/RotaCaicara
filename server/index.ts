@@ -79,7 +79,11 @@ app.use((req, res, next) => {
   const isProduction = nodeEnv === "production";
   const isDevelopment = nodeEnv === "development";
 
-  if (isDevelopment) {
+  // Always use static file serving in production (EasyPanel)
+  if (isProduction) {
+    console.log("Production mode: serving static files");
+    serveStatic(app);
+  } else if (isDevelopment) {
     try {
       const { configureVite } = await import("./vite");
       await configureVite(app);
@@ -90,7 +94,7 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
   } else {
-    console.log(`${isProduction ? 'Production' : 'Static'} mode: serving static files`);
+    console.log("Static mode: serving static files");
     serveStatic(app);
   }
 
@@ -100,5 +104,7 @@ app.use((req, res, next) => {
     console.log(`🚀 Server running on port ${port} in ${nodeEnv} mode`);
     console.log(`📡 Accepting connections from all interfaces (0.0.0.0:${port})`);
     console.log(`🔗 Health check available at: http://0.0.0.0:${port}/health`);
+    console.log(`🌐 Environment: ${nodeEnv}`);
+    console.log(`📊 Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
   });
 })();

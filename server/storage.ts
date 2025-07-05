@@ -292,15 +292,32 @@ class DatabaseStorage implements IStorage {
       }
 
       console.log('⚠️ DatabaseStorage: No site settings found, creating default...');
-      const defaultSettings: typeof siteSettings.$inferInsert = {
+      const defaultSettings = {
         siteName: 'Rota Caiçara',
         locality: 'São Sebastião',
+        headline1: 'DESCUBRA AS MELHORES EMPRESAS',
+        headline2: 'DE SÃO SEBASTIÃO',
+        headline3: 'CONECTANDO VOCÊ AOS MELHORES',
+        headline4: 'NEGÓCIOS DA CIDADE',
+        tagline1: 'Conectando você aos melhores negócios da cidade',
+        tagline2: 'Descubra, conecte-se, prospere',
+        tagline3: 'Sua empresa na palma da mão',
+        tagline4: 'O futuro do comércio local',
+        phone: '(12) 99999-0000',
+        email: 'contato@rotacaicara.com.br',
+        address: 'São Sebastião, SP',
+        logoUrl: 'https://i.ibb.co/LhhDX2hz/Logo-1.jpg',
+        instagramUrl: 'https://instagram.com/rotacaicara',
+        whatsappUrl: 'https://wa.me/5512999999999',
+        facebookUrl: 'https://facebook.com/rotacaicara',
+        footerDescription: 'Conectando você às melhores empresas da cidade com sustentabilidade e qualidade.',
+        advertiseHeadline: 'SUA MARCA EM DESTAQUE ENTRE AS MELHORES',
+        advertiseSubtitle1: 'Onde excelência encontra visibilidade!',
+        advertiseSubtitle2: 'Junte-se à nossa comunidade sustentável e fortaleça sua reputação empresarial com divulgação multicanal eficiente e impactante.',
         heroTitle: 'Descubra os sabores únicos de São Sebastião',
         heroSubtitle: 'Conheça os melhores estabelecimentos locais e viva experiências gastronômicas autênticas',
         whatsappNumber: '(12) 99999-9999',
         contactEmail: 'contato@rotacaicara.com.br',
-        instagramUrl: '@rotacaicara',
-        facebookUrl: 'facebook.com/rotacaicara',
         primaryColor: '#2D5A27',
         secondaryColor: '#F4A460',
         accentColor: '#8B4513'

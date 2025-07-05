@@ -1,23 +1,15 @@
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from "@shared/schema";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL not configured. Please add it to Secrets:");
-  console.error("Key: DATABASE_URL");
-  console.error("Value: postgresql://user:password@hostname:port/database");
-  console.error("Using fallback configuration for development...");
-  
-  // Fallback for development - you'll need to add DATABASE_URL to Secrets
-  process.env.DATABASE_URL = "postgresql://localhost:5432/fallback_db";
-}
+const connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/rotacaicara";
 
-export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 30000,
-  max: 10,
+// Create the connection with specific settings for EasyPanel
+const client = postgres(connectionString, {
+  ssl: connectionString.includes('sslmode=disable') ? false : 'require',
+  max: 20,
+  idle_timeout: 20,
+  connect_timeout: 10,
 });
 
-export const db = drizzle(pool, { schema });
+// Create the database instance
+export const db = drizzle(client);

@@ -15,6 +15,7 @@ import {
   insertCategorySchema
 } from "@shared/schema";
 import { z } from "zod";
+import fs from "fs";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -47,6 +48,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       port: process.env.PORT || '3100'
     });
   });
+
+    // Create uploads directory if it doesn't exist
+  const uploadsDir = path.resolve('./uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log(`📁 Created uploads directory: ${uploadsDir}`);
+  }
 
   // Simple root endpoint
   app.get("/api/status", (req, res) => {

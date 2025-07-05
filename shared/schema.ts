@@ -185,6 +185,15 @@ export const siteSettings = pgTable("site_settings", {
   advertiseSubtitle1: text("advertise_subtitle1").notNull().default("Onde excelência encontra visibilidade!"),
   advertiseSubtitle2: text("advertise_subtitle2").notNull().default("Junte-se à nossa comunidade sustentável e fortaleça sua reputação empresarial com divulgação multicanal eficiente e impactante."),
 
+  // Additional fields for compatibility
+  heroTitle: text("hero_title").default("Descubra os sabores únicos de São Sebastião"),
+  heroSubtitle: text("hero_subtitle").default("Conheça os melhores estabelecimentos locais e viva experiências gastronômicas autênticas"),
+  whatsappNumber: text("whatsapp_number").default("(12) 99999-9999"),
+  contactEmail: text("contact_email").default("contato@rotacaicara.com.br"),
+  primaryColor: text("primary_color").default("#2D5A27"),
+  secondaryColor: text("secondary_color").default("#F4A460"),
+  accentColor: text("accent_color").default("#8B4513"),
+
   // FAQs for admin
   faq1Question: text("faq1_question")
     .notNull()

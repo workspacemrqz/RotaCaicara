@@ -47,8 +47,11 @@ RUN addgroup -g 1001 -S nodejs && \
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist
 
-# Copy other necessary files (public assets, uploads dir if needed)
+# Copy other necessary files (public assets, uploads dir if needed)  
 COPY --from=build /app/public ./public
+
+# Create uploads directory with proper permissions
+RUN mkdir -p uploads && chown -R appuser:nodejs uploads
 
 # Change ownership of the app directory
 RUN chown -R appuser:nodejs /app
