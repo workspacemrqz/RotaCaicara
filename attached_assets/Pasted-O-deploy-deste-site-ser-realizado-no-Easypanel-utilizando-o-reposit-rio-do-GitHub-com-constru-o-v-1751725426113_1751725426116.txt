@@ -1,0 +1,137 @@
+O deploy deste site será realizado no Easypanel utilizando o repositório do GitHub, com construção via Nixpacks. Os comandos de instalação, build e start já estão configurados no Easypanel, assim como as variáveis de ambiente necessárias para o funcionamento do projeto.
+
+Relatório informativo:
+Fonte: https://github.com/workspacemrqz/RotaCaicara
+Construção: Dockerfile
+Caminho do Dockerfile: Dockerfile (na raiz do projeto)
+
+Variáveis de ambiente:
+DATABASE_URL=postgres://mrqz:@Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable
+NODE_ENV=production
+SESSION_SECRET=8f9a2b1c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5
+PORT=3100
+
+LOGS DE IMPLANTAÇÃO:
+Commit: Assistant checkpoint: Complete fix for getSiteSettings method syntax errors
+
+Assistant generated file changes:
+- server/storage.ts: Add missing catch block to getSiteSettings method
+Add missing catch block to getSiteSettings method
+Add missing closing brace for getSiteSettings method
+
+---
+
+User prompt:
+
+Você fez tudo que precisava de acordo com o que pedi?
+
+Replit-Commit-Author: Assistant
+Replit-Commit-Session-Id: 59208048-aacd-44a3-afd1-565f662cbe6f 
+##########################################
+### Download Github Archive Started...
+### Sat, 05 Jul 2025 14:21:41 GMT
+##########################################
+
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 929B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.4s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 210B done
+#3 DONE 0.0s
+
+#4 [ 1/10] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.97MB 0.1s done
+#5 DONE 0.1s
+
+#6 [ 4/10] COPY package*.json ./
+#6 CACHED
+
+#7 [ 2/10] WORKDIR /app
+#7 CACHED
+
+#8 [ 3/10] RUN apk add --no-cache curl
+#8 CACHED
+
+#9 [ 5/10] RUN npm ci --include=dev && npm cache clean --force
+#9 CACHED
+
+#10 [ 6/10] COPY . .
+#10 DONE 0.1s
+
+#11 [ 7/10] RUN npm run build:production
+#11 0.326 
+#11 0.326 > rest-express@1.0.0 build:production
+#11 0.326 > npm install --production=false && npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+#11 0.326 
+#11 0.653 npm warn config production Use `--omit=dev` instead.
+#11 5.070 
+#11 5.070 up to date, audited 530 packages in 5s
+#11 5.070 
+#11 5.070 71 packages are looking for funding
+#11 5.070   run `npm fund` for details
+#11 5.114 
+#11 5.114 5 moderate severity vulnerabilities
+#11 5.114 
+#11 5.114 To address all issues (including breaking changes), run:
+#11 5.114   npm audit fix --force
+#11 5.114 
+#11 5.114 Run `npm audit` for details.
+#11 5.946 vite v5.4.19 building for production...
+#11 6.021 transforming...
+#11 8.897 
+#11 8.897 /images/global-bg.svg referenced in /images/global-bg.svg didn't resolve at build time, it will remain unchanged to be resolved at runtime
+#11 17.39 ✓ 2216 modules transformed.
+#11 18.01 rendering chunks...
+#11 18.02 computing gzip size...
+#11 18.06 ../dist/public/index.html                   1.54 kB │ gzip:   0.71 kB
+#11 18.06 ../dist/public/assets/index-BB-asEu0.css   77.10 kB │ gzip:  13.81 kB
+#11 18.06 ../dist/public/assets/index-BCJQJRmh.js   689.17 kB │ gzip: 208.10 kB
+#11 18.06 
+#11 18.06 (!) Some chunks are larger than 500 kB after minification. Consider:
+#11 18.06 - Using dynamic import() to code-split the application
+#11 18.06 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#11 18.06 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#11 18.06 ✓ built in 12.08s
+#11 19.42 
+#11 19.42   dist/index.js  52.9kb
+#11 19.42 
+#11 19.42 ⚡ Done in 33ms
+#11 DONE 19.6s
+
+#12 [ 8/10] RUN npm ci --omit=dev && npm cache clean --force
+#12 19.70 
+#12 19.70 added 419 packages, and audited 420 packages in 20s
+#12 19.71 
+#12 19.71 56 packages are looking for funding
+#12 19.71   run `npm fund` for details
+#12 19.71 
+#12 19.71 found 0 vulnerabilities
+#12 19.89 npm warn using --force Recommended protections disabled.
+#12 DONE 20.7s
+
+#13 [ 9/10] RUN addgroup -g 1001 -S nodejs &&     adduser -S nextjs -u 1001
+#13 DONE 0.1s
+
+#14 [10/10] RUN chown -R nextjs:nodejs /app
+#14 DONE 35.7s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 3.8s done
+#15 writing image sha256:a7db4ac414bf7cf9f768c7f5d9495a83349dc8972ea510552d4e4066d292457d
+#15 writing image sha256:a7db4ac414bf7cf9f768c7f5d9495a83349dc8972ea510552d4e4066d292457d done
+#15 naming to docker.io/easypanel/sites/site-rotacaicara done
+#15 DONE 3.8s
+##########################################
+### Success
+### Sat, 05 Jul 2025 14:23:02 GMT
+##########################################
