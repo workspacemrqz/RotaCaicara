@@ -1,5 +1,5 @@
 
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 async function initializeDatabase() {
   if (!process.env.DATABASE_URL) {
