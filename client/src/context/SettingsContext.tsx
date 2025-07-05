@@ -31,18 +31,23 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshSettings = async () => {
+    console.log('⚙️ SettingsContext: Fetching site settings...');
     try {
       setIsLoading(true);
       const response = await fetch('/api/site-settings');
-      if (response.ok) {
-        const data = await response.json();
-        setSettings(data || {});
-      } else {
-        console.warn('Failed to fetch settings, using defaults');
-        setSettings({});
+      if (!response.ok) {
+        console.error('❌ Settings fetch failed:', response.status, response.statusText);
+        throw new Error('Failed to fetch settings');
       }
+      const data = await response.json();
+      console.log('✅ Settings fetched successfully:', {
+        siteName: data.siteName,
+        locality: data.locality,
+        fieldsCount: Object.keys(data).length
+      });
+      setSettings(data || {});
     } catch (error) {
-      console.error('Failed to fetch settings:', error);
+      console.error('❌ Settings context error:', error);
       setSettings({});
     } finally {
       setIsLoading(false);

@@ -38,18 +38,31 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Middleware to log all requests
+  app.use((req, res, next) => {
+    console.log(`🔵 [${new Date().toISOString()}] ${req.method} ${req.url}`, {
+      body: req.body,
+      query: req.query,
+      params: req.params
+    });
+    next();
+  });
+
   // File upload endpoint
   app.post("/api/upload", upload.single('file'), (req, res) => {
+    console.log('📁 File upload attempt:', req.file?.originalname);
     try {
       if (!req.file) {
+        console.error('❌ No file uploaded in request');
         return res.status(400).json({ error: 'No file uploaded' });
       }
 
       // Return the URL path for the uploaded file
       const url = `/uploads/${req.file.filename}`;
+      console.log('✅ File uploaded successfully:', url);
       res.json({ url });
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
       res.status(500).json({ error: 'Failed to upload file' });
     }
   });
@@ -62,12 +75,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get all categories
   app.get("/api/categories", async (req, res) => {
+    console.log('🗂️ Fetching all categories...');
     try {
       const categories = await storage.getCategories();
+      console.log("✅ Categories fetched successfully:", categories.length, "categories");
       console.log("Categories returned:", categories.map(c => ({ name: c.name, slug: c.slug })));
       res.json(categories);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("❌ Error fetching categories:", error);
       res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
@@ -88,12 +103,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get all businesses
   app.get("/api/businesses", async (req, res) => {
+    console.log('🏢 Fetching all businesses...');
     try {
       const businesses = await storage.getBusinesses();
-      console.log(`Fetched ${businesses.length} businesses from database`);
+      console.log(`✅ Fetched ${businesses.length} businesses from database`);
+      console.log('Business data validation:', businesses.map(b => ({
+        id: b.id,
+        name: b.name,
+        categoryId: b.categoryId,
+        active: b.active,
+        featured: b.featured
+      })));
       res.json(businesses);
     } catch (error) {
-      console.error("Error fetching businesses:", error);
+      console.error("❌ Error fetching businesses:", error);
       res.status(500).json({ message: "Failed to fetch businesses", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
@@ -190,17 +213,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create business registration
   app.post("/api/business-registrations", async (req, res) => {
+    console.log('📝 Creating business registration with data:', req.body);
     try {
       const validatedData = insertBusinessRegistrationSchema.parse(req.body);
+      console.log('✅ Business registration data validated successfully');
       const registration = await storage.createBusinessRegistration(validatedData);
+      console.log('✅ Business registration created with ID:', registration.id);
       res.status(201).json(registration);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error('❌ Validation error in business registration:', error.errors);
         return res.status(400).json({ 
           message: "Validation error", 
           errors: error.errors 
         });
       }
+      console.error('❌ Failed to create business registration:', error);
       res.status(500).json({ message: "Failed to create business registration" });
     }
   });

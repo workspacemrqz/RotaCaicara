@@ -6,6 +6,8 @@ export async function apiRequest(
   url: string,
   data?: any
 ) {
+  console.log(`🔵 Frontend API Request: ${method} ${url}`, data ? { data } : '');
+  
   const options: RequestInit = {
     method,
     headers: {
@@ -15,19 +17,34 @@ export async function apiRequest(
 
   if (data && method !== 'GET') {
     options.body = JSON.stringify(data);
+    console.log('📤 Request body:', JSON.stringify(data, null, 2));
   }
 
-  const response = await fetch(url, options);
+  try {
+    const response = await fetch(url, options);
+    console.log(`📊 Response status: ${response.status} ${response.statusText}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`API Error: ${response.status} - ${errorText}`);
-    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ API Error: ${response.status} - ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log(`✅ API Response for ${url}:`, result);
+    
+    // Validate response structure
+    if (Array.isArray(result)) {
+      console.log(`📊 Response array length: ${result.length}`);
+    } else if (typeof result === 'object' && result !== null) {
+      console.log(`📊 Response object keys:`, Object.keys(result));
+    }
+    
+    return result;
+  } catch (error) {
+    console.error(`❌ API Request failed for ${url}:`, error);
+    throw error;
   }
-
-  const result = await response.json();
-  console.log(`API Response for ${url}:`, result);
-  return result;
 }
 
 // Default query function

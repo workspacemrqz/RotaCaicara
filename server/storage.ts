@@ -871,11 +871,19 @@ class MemStorage implements IStorage {
 export class DatabaseStorage implements IStorage {
   // Categories
   async getCategories(): Promise<Category[]> {
-    return await db
-      .select()
-      .from(categories)
-      .where(eq(categories.active, true))
-      .orderBy(asc(categories.order), asc(categories.name));
+    console.log('🗂️ DatabaseStorage: Fetching categories from database...');
+    try {
+      const result = await db
+        .select()
+        .from(categories)
+        .where(eq(categories.active, true))
+        .orderBy(asc(categories.order), asc(categories.name));
+      console.log(`✅ DatabaseStorage: Retrieved ${result.length} categories from database`);
+      return result;
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching categories:', error);
+      throw error;
+    }
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | undefined> {
@@ -919,7 +927,24 @@ export class DatabaseStorage implements IStorage {
 
   // Businesses
   async getBusinesses(): Promise<Business[]> {
-    return await db.select().from(businesses).orderBy(desc(businesses.id));
+    console.log('🏢 DatabaseStorage: Fetching businesses from database...');
+    try {
+      const result = await db.select().from(businesses).orderBy(desc(businesses.id));
+      console.log(`✅ DatabaseStorage: Retrieved ${result.length} businesses from database`);
+      // Log data integrity check
+      result.forEach(business => {
+        const missingFields = [];
+        if (!business.name) missingFields.push('name');
+        if (!business.categoryId) missingFields.push('categoryId');
+        if (missingFields.length > 0) {
+          console.warn(`⚠️ Business ${business.id} missing fields:`, missingFields);
+        }
+      });
+      return result;
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching businesses:', error);
+      throw error;
+    }
   }
 
   async getBusinessesByCategory(categoryId: number): Promise<Business[]> {
@@ -1054,9 +1079,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSiteSettings(): Promise<SiteSetting> {
-    const result = await db.select().from(siteSettings).limit(1);
-    if (result[0]) {
-      return result[0];
+    console.log('⚙️ DatabaseStorage: Fetching site settings...');
+    try {
+      const result = await db.select().from(siteSettings).limit(1);
+      if (result[0]) {
+        console.log('✅ DatabaseStorage: Site settings found');
+        console.log('Settings validation:', {
+          siteName: !!result[0].siteName,
+          locality: !!result[0].locality,
+          phone: !!result[0].phone,
+          email: !!result[0].email
+        });
+        return result[0];
+      }
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching site settings:', error);
+      throw error;
     }
 
     // Create default settings if none exist

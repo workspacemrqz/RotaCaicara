@@ -726,7 +726,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const [editingRegistration, setEditingRegistration] =
     useState<BusinessRegistration | null>(null);
   const [viewingRegistration, setViewingRegistration] =
-    useState<BusinessRegistration | null>(null);
+    useState(BusinessRegistration | null>(null);
 
   // Business form with validation
   const businessForm = useForm<z.infer<typeof insertBusinessSchema>>({
@@ -1145,14 +1145,41 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
         .includes(businessSearchFilter.toLowerCase()),
   ) : [];
 
-  // Debug logging
-  console.log("Admin Panel Debug:", {
-    businesses: businesses,
+  // Debug log to see what data we have
+  console.log('🔧 Admin Panel Debug:', {
+    businesses: businesses?.length || 0,
     businessesLoading: businessesQuery.isLoading,
     businessesError: businessesQuery.error,
-    categories: categories,
-    businessRegistrations: businessRegistrations
+    categories: categories?.length || 0,
+    categoriesLoading: categoriesQuery.isLoading,
+    categoriesError: categoriesQuery.error,
+    businessRegistrations: businessRegistrations?.length || 0,
+    businessRegistrationsLoading: businessRegistrationsQuery.isLoading,
+    businessRegistrationsError: businessRegistrationsQuery.error,
+    analytics: analytics?.length || 0,
+    analyticsLoading: analyticsQuery.isLoading,
+    analyticsError: analyticsQuery.error
   });
+
+  // Log data validation
+  if (businesses && businesses.length > 0) {
+    console.log('🏢 Business data validation:', businesses.map(b => ({
+      id: b.id,
+      name: b.name,
+      hasImage: !!b.imageUrl,
+      hasCategory: !!b.categoryId,
+      isActive: b.active
+    })));
+  }
+
+  if (categories && categories.length > 0) {
+    console.log('🗂️ Categories data validation:', categories.map(c => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      isActive: c.active
+    })));
+  }
 
   // Calculate analytics
   const totalBusinesses = Array.isArray(businesses) ? businesses.length : 0;
@@ -1519,7 +1546,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
                 {currentStep === 1 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">
-                      Informações Básicas
+                      InformaçõesBásicas
                     </h3>
 
                     <FormField
