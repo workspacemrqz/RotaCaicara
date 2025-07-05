@@ -6,7 +6,10 @@ if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL not configured. Please add it to Secrets:");
   console.error("Key: DATABASE_URL");
   console.error("Value: postgresql://user:password@hostname:port/database");
-  throw new Error("DATABASE_URL environment variable is required");
+  console.error("Using fallback configuration for development...");
+  
+  // Fallback for development - you'll need to add DATABASE_URL to Secrets
+  process.env.DATABASE_URL = "postgresql://localhost:5432/fallback_db";
 }
 
 export const pool = new Pool({ 
