@@ -348,3 +348,65 @@ export type InsertFaq = z.infer<typeof insertFaqSchema>;
 export type InsertPromotion = z.infer<typeof insertPromotionSchema>;
 export type InsertAnalytics = z.infer<typeof insertAnalyticsSchema>;
 export type InsertNews = z.infer<typeof insertNewsSchema>;
+
+export const categorySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  icon: z.string(),
+  color: z.string().nullable(),
+  order: z.number().nullable(),
+  backgroundImage: z.string().nullable(),
+  active: z.boolean().nullable(),
+});
+
+export const businessSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string(),
+  journalLink: z.string(),
+  categoryId: z.number(),
+  address: z.string().nullable(),
+  email: z.string().nullable(),
+  phone: z.string().nullable(),
+  active: z.boolean().nullable(),
+  whatsapp: z.string().nullable(),
+  website: z.string().nullable(),
+  instagram: z.string().nullable(),
+  facebook: z.string().nullable(),
+  imageUrl: z.string().nullable(),
+  featured: z.boolean().nullable(),
+  certified: z.boolean().nullable(),
+});
+
+export const siteSettingsSchema = z.object({
+  id: z.number(),
+  siteName: z.string(),
+  locality: z.string(),
+  tagline1: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  address: z.string(),
+  logoUrl: z.string(),
+  instagramUrl: z.string(),
+  whatsappUrl: z.string(),
+  facebookUrl: z.string(),
+  whatsapp: z.string().optional(),
+  footerDescription: z.string().optional(),
+  featuredEnabled: z.boolean().optional(),
+  headline1: z.string().optional(),
+  headline3: z.string().optional(),
+  advertiseHeadline: z.string().optional(),
+  advertiseSubtitle1: z.string().optional(),
+  advertiseSubtitle2: z.string().optional(),
+  faq1Question: z.string().optional(),
+  faq1Answer: z.string().optional(),
+  faq2Question: z.string().optional(),
+  faq2Answer: z.string().optional(),
+  faq3Question: z.string().optional(),
+  faq3Answer: z.string().optional(),
+  faq4Question: z.string().optional(),
+  faq4Answer: z.string().optional(),
+  createdAt: z.date().nullable(),
+  updatedAt: z.date().nullable(),
+});

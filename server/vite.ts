@@ -54,8 +54,10 @@ export async function setupVite(app: Express, server: Server) {
     }
   });
 
-  if (vite.ws && vite.ws.handleUpgrade) {
-    server.on("upgrade", vite.ws.handleUpgrade);
+  if (vite.ws && 'handleUpgrade' in vite.ws) {
+    (vite.ws as any).handleUpgrade(req, (req as any).socket, Buffer.alloc(0), (ws: any) => {
+      console.log("WebSocket upgrade successful");
+    });
   }
     // Add error handler to prevent crashes
   server.on('error', (err) => {

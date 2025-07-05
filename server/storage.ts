@@ -931,8 +931,7 @@ export class DatabaseStorage implements IStorage {
     try {
       const result = await db.select().from(businesses).orderBy(desc(businesses.id));
       console.log(`✅ DatabaseStorage: Retrieved ${result.length} businesses from database`);
-      // Log data integrity check
-      result.forEach(business => {
+      // Log data integrity check      result.forEach(business => {
         const missingFields = [];
         if (!business.name) missingFields.push('name');
         if (!business.categoryId) missingFields.push('categoryId');

@@ -12,13 +12,16 @@ interface SiteSettings {
   instagramUrl?: string;
   whatsappUrl?: string;
   facebookUrl?: string;
+  featuredEnabled?: boolean;
 }
 
-interface SettingsContextType {
-  settings: SiteSettings;
-  isLoading: boolean;
-  refreshSettings: () => Promise<void>;
-}
+type SettingsContextType = {
+  settings: SiteSettings | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+  featuredEnabled: boolean;
+};
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
@@ -29,15 +32,18 @@ interface SettingsProviderProps {
 export function SettingsProvider({ children }: SettingsProviderProps) {
   const [settings, setSettings] = useState<SiteSettings>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const refreshSettings = async () => {
+  const refetch = async () => {
     console.log('⚙️ SettingsContext: Fetching site settings...');
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
       const response = await fetch('/api/site-settings');
       if (!response.ok) {
         console.error('❌ Settings fetch failed:', response.status, response.statusText);
-        throw new Error('Failed to fetch settings');
+        setError(`Failed to fetch settings: ${response.status} ${response.statusText}`);
+        return;
       }
       const data = await response.json();
       console.log('✅ Settings fetched successfully:', {
@@ -46,8 +52,9 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
         fieldsCount: Object.keys(data).length
       });
       setSettings(data || {});
-    } catch (error) {
-      console.error('❌ Settings context error:', error);
+    } catch (e: any) {
+      console.error('❌ Settings context error:', e);
+      setError(e.message || 'An unexpected error occurred');
       setSettings({});
     } finally {
       setIsLoading(false);
@@ -55,13 +62,15 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
   };
 
   useEffect(() => {
-    refreshSettings();
+    refetch();
   }, []);
 
   const contextValue = {
-    settings: settings || {},
-    isLoading,
-    refreshSettings
+    settings: settings || null,
+    loading: isLoading,
+    error: error,
+    refetch: refetch,
+    featuredEnabled: settings?.featuredEnabled ?? false,
   };
 
   return (

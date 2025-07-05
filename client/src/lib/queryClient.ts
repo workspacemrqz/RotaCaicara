@@ -7,7 +7,7 @@ export async function apiRequest(
   data?: any
 ) {
   console.log(`🔵 Frontend API Request: ${method} ${url}`, data ? { data } : '');
-  
+
   const options: RequestInit = {
     method,
     headers: {
@@ -32,14 +32,14 @@ export async function apiRequest(
 
     const result = await response.json();
     console.log(`✅ API Response for ${url}:`, result);
-    
+
     // Validate response structure
     if (Array.isArray(result)) {
       console.log(`📊 Response array length: ${result.length}`);
     } else if (typeof result === 'object' && result !== null) {
       console.log(`📊 Response object keys:`, Object.keys(result));
     }
-    
+
     return result;
   } catch (error) {
     console.error(`❌ API Request failed for ${url}:`, error);

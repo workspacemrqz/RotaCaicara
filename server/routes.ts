@@ -602,6 +602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const businessData = {
           name: submission.businessName,
           description: submission.description,
+          journalLink: "",
           categoryId: submission.categoryId,
           phone: submission.phone,
           whatsapp: submission.whatsapp,
