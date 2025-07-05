@@ -16,7 +16,7 @@ RUN npm ci --include=dev && npm cache clean --force
 COPY . .
 
 # Build the application
-RUN npm run build:production
+RUN npm run build
 
 # Remove dev dependencies to reduce image size
 RUN npm ci --omit=dev && npm cache clean --force
