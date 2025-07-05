@@ -1087,7 +1087,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   };
 
   // Filter businesses
-  const filteredBusinesses = businesses.filter(
+  const filteredBusinesses = Array.isArray(businesses) ? businesses.filter(
     (business) =>
       business.name
         .toLowerCase()
@@ -1095,7 +1095,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
       business.description
         .toLowerCase()
         .includes(businessSearchFilter.toLowerCase()),
-  );
+  ) : [];
 
   // Debug logging
   console.log("Admin Panel Debug:", {
@@ -1107,9 +1107,9 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   });
 
   // Calculate analytics
-  const totalBusinesses = businesses.length;
+  const totalBusinesses = Array.isArray(businesses) ? businesses.length : 0;
   const totalRegistrations = Array.isArray(businessRegistrations) ? businessRegistrations.length : 0;
-  const totalCategories = categories.length;
+  const totalCategories = Array.isArray(categories) ? categories.length : 0;
   const pendingRegistrations = Array.isArray(businessRegistrations) 
     ? businessRegistrations.filter((reg) => !reg.processed).length 
     : 0;
