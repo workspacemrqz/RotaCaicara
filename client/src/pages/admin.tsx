@@ -51,15 +51,15 @@ import {
   type Analytics,
 } from "@shared/schema";
 import { z } from "zod";
-import { 
-  BarChart3, 
-  Users, 
-  FileText, 
-  Tag, 
-  Settings, 
-  Search, 
-  Plus, 
-  Edit, 
+import {
+  BarChart3,
+  Users,
+  FileText,
+  Tag,
+  Settings,
+  Search,
+  Plus,
+  Edit,
   Trash2,
   ArrowLeft,
   ArrowRight
@@ -68,20 +68,36 @@ import {
 // Scroll to top helper
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-/** Substitua todo o componente SettingsConfiguration no seu admin.tsx por este: */
 function SettingsConfiguration() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { settings, refreshSettings } = useSettings();
+  const { settings, isLoading, refreshSettings } = useSettings();
 
-  // formulário usa o schema parcial para permitir campos opcionais
+  // Fetch settings from database
+  const { data: dbSettings, isLoading: dbLoading } = useQuery({
+    queryKey: ["/api/admin/settings"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/settings");
+      if (!response.ok) {
+        throw new Error("Failed to fetch settings");
+      }
+      return response.json();
+    },
+  });
+
+  // Usar os dados do banco ou fallback para settings do contexto
+  const currentSettings = dbSettings || settings;
+
+  // Form with database values
   const form = useForm<InsertSiteSetting>({
     resolver: zodResolver(insertSiteSettingSchema.partial()),
     defaultValues: {
       siteName: "",
       locality: "",
       headline1: "",
+      headline2: "",
       headline3: "",
+      headline4: "",
       tagline1: "",
       tagline2: "",
       tagline3: "",
@@ -89,6 +105,7 @@ function SettingsConfiguration() {
       phone: "",
       email: "",
       address: "",
+      logoUrl: "",
       instagramUrl: "",
       whatsappUrl: "",
       facebookUrl: "",
@@ -107,74 +124,106 @@ function SettingsConfiguration() {
     },
   });
 
-  // Quando os dados chegarem, preenche o form
+  // Update form when settings are loaded
   useEffect(() => {
-    if (!settings) return;
-    form.reset({
-      siteName: settings.siteName ?? "",
-      locality: settings.locality ?? "",
-      headline1: settings.headline1 ?? "",
-      headline3: settings.headline3 ?? "",
-      tagline1: settings.tagline1 ?? "",
-      tagline2: settings.tagline2 ?? "",
-      tagline3: settings.tagline3 ?? "",
-      tagline4: settings.tagline4 ?? "",
-      phone: settings.phone ?? "",
-      email: settings.email ?? "",
-      address: settings.address ?? "",
-      instagramUrl: settings.instagramUrl ?? "",
-      whatsappUrl: settings.whatsappUrl ?? "",
-      facebookUrl: settings.facebookUrl ?? "",
-      footerDescription: settings.footerDescription ?? "",
-      advertiseHeadline: settings.advertiseHeadline ?? "",
-      advertiseSubtitle1: settings.advertiseSubtitle1 ?? "",
-      advertiseSubtitle2: settings.advertiseSubtitle2 ?? "",
-      faq1Question: settings.faq1Question ?? "",
-      faq1Answer: settings.faq1Answer ?? "",
-      faq2Question: settings.faq2Question ?? "",
-      faq2Answer: settings.faq2Answer ?? "",
-      faq3Question: settings.faq3Question ?? "",
-      faq3Answer: settings.faq3Answer ?? "",
-      faq4Question: settings.faq4Question ?? "",
-      faq4Answer: settings.faq4Answer ?? "",
-    });
-  }, [settings, form]);
+    if (currentSettings) {
+      form.reset({
+        siteName: currentSettings.siteName || "",
+        locality: currentSettings.locality || "",
+        headline1: currentSettings.headline1 || "",
+        headline2: currentSettings.headline2 || "",
+        headline3: currentSettings.headline3 || "",
+        headline4: currentSettings.headline4 || "",
+        tagline1: currentSettings.tagline1 || "",
+        tagline2: currentSettings.tagline2 || "",
+        tagline3: currentSettings.tagline3 || "",
+        tagline4: currentSettings.tagline4 || "",
+        phone: currentSettings.phone || "",
+        email: currentSettings.email || "",
+        address: currentSettings.address || "",
+        logoUrl: currentSettings.logoUrl || "",
+        instagramUrl: currentSettings.instagramUrl || "",
+        whatsappUrl: currentSettings.whatsappUrl || "",
+        facebookUrl: currentSettings.facebookUrl || "",
+        footerDescription: currentSettings.footerDescription || "",
+        advertiseHeadline: currentSettings.advertiseHeadline || "",
+        advertiseSubtitle1: currentSettings.advertiseSubtitle1 || "",
+        advertiseSubtitle2: currentSettings.advertiseSubtitle2 || "",
+        faq1Question: currentSettings.faq1Question || "",
+        faq1Answer: currentSettings.faq1Answer || "",
+        faq2Question: currentSettings.faq2Question || "",
+        faq2Answer: currentSettings.faq2Answer || "",
+        faq3Question: currentSettings.faq3Question || "",
+        faq3Answer: currentSettings.faq3Answer || "",
+        faq4Question: currentSettings.faq4Question || "",
+        faq4Answer: currentSettings.faq4Answer || "",
+      });
+    }
+  }, [currentSettings, form]);
 
-  // mutation para salvar tudo
-  const updateSettings = useMutation({
-    mutationFn: (data: InsertSiteSetting) =>
-      apiRequest("PUT", "/api/admin/settings", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
-      queryClient.invalidateQueries({ queryKey: ["settings"] });
-      refreshSettings();
-      toast({ title: "Configurações salvas com sucesso!" });
-      scrollToTop();
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (data: Partial<InsertSiteSetting>) => {
+      const response = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update settings");
+      }
+      return response.json();
     },
-    onError: (err: any) => {
+    onSuccess: () => {
       toast({
-        title: "Erro ao salvar configurações",
-        description: err?.message ?? "Tente novamente mais tarde.",
+        title: "Sucesso",
+        description: "Configurações atualizadas com sucesso!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      refreshSettings();
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Falha ao atualizar configurações",
         variant: "destructive",
       });
+      console.error("Settings update error:", error);
     },
   });
 
+  const onSubmit = (data: InsertSiteSetting) => {
+    updateSettingsMutation.mutate(data);
+  };
+
+  if (isLoading || dbLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#006C84] mx-auto"></div>
+          <p className="mt-2 text-gray-600">Carregando configurações...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Configurações do Site</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((data) => updateSettings.mutate(data))}
-            className="space-y-8"
-          >
-            {/* Básico */}
-            <div>
-              <h3 className="text-lg font-semibold">Informações Básicas</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-[#006C84] mb-2">Configurações do Site</h2>
+        <p className="text-gray-600">Gerencie as configurações gerais do site</p>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Informações Básicas */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Informações Básicas</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="siteName"
@@ -182,7 +231,7 @@ function SettingsConfiguration() {
                     <FormItem>
                       <FormLabel>Nome do Site</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Rota Caiçara" />
+                        <Input placeholder="Ex: Rota Caiçara" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,48 +242,47 @@ function SettingsConfiguration() {
                   name="locality"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Localização</FormLabel>
+                      <FormLabel>Localidade</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="São Sebastião" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="logoUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Logo do Site</FormLabel>
-                      <FormControl>
-                        <ImageUpload
-                          value={field.value || ""}
-                          onChange={field.onChange}
-                        />
+                        <Input placeholder="Ex: São Sebastião" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
 
-            {/* Home (Headline + Tagline) */}
-            <div>
-              <h3 className="text-lg font-semibold">Página Inicial</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <FormField
+                control={form.control}
+                name="logoUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL da Logo</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://exemplo.com/logo.png" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Títulos e Subtítulos */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Títulos da Página Inicial</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="headline1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Título Principal</FormLabel>
+                      <FormLabel>Título 1</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="DESCUBRA AS MELHORES EMPRESAS DE SÃO SEBASTIÃO"
-                        />
+                        <Input placeholder="DESCUBRA AS MELHORES EMPRESAS" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -242,28 +290,115 @@ function SettingsConfiguration() {
                 />
                 <FormField
                   control={form.control}
-                  name="headline3"
+                  name="headline2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Subtítulo</FormLabel>
+                      <FormLabel>Título 2</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Conectando você aos melhores negócios da cidade"
-                        />
+                        <Input placeholder="DE SÃO SEBASTIÃO" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
               </div>
-            </div>
 
-            {/* Contato */}
-            <div>
-              <h3 className="text-lg font-semibold">Informações de Contato</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="headline3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Título 3</FormLabel>
+                      <FormControl>
+                        <Input placeholder="CONECTANDO VOCÊ AOS MELHORES" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="headline4"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Título 4</FormLabel>
+                      <FormControl>
+                        <Input placeholder="NEGÓCIOS DA CIDADE" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tagline1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subtítulo 1</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Conectando você aos melhores negócios" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tagline2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subtítulo 2</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Descubra, conecte-se, prospere" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tagline3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subtítulo 3</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Sua empresa na palma da mão" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tagline4"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subtítulo 4</FormLabel>
+                      <FormControl>
+                        <Input placeholder="O futuro do comércio local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Contato */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Informações de Contato</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="phone"
@@ -271,7 +406,7 @@ function SettingsConfiguration() {
                     <FormItem>
                       <FormLabel>Telefone</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="(12) 99999-0000" />
+                        <Input placeholder="(12) 99999-0000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -284,11 +419,7 @@ function SettingsConfiguration() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          type="email"
-                          placeholder="contato@exemplo.com"
-                        />
+                        <Input type="email" placeholder="contato@exemplo.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -301,33 +432,31 @@ function SettingsConfiguration() {
                     <FormItem>
                       <FormLabel>Endereço</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Rua, bairro, cidade - SP"
-                        />
+                        <Input placeholder="São Sebastião, SP" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Social */}
-            <div>
-              <h3 className="text-lg font-semibold">Redes Sociais</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          {/* Redes Sociais */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Redes Sociais</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="instagramUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Instagram URL</FormLabel>
+                      <FormLabel>Instagram</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="https://instagram.com/..."
-                        />
+                        <Input placeholder="https://instagram.com/seu_perfil" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -338,9 +467,9 @@ function SettingsConfiguration() {
                   name="whatsappUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>WhatsApp URL</FormLabel>
+                      <FormLabel>WhatsApp</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="https://wa.me/..." />
+                        <Input placeholder="https://wa.me/5512999999999" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -351,70 +480,47 @@ function SettingsConfiguration() {
                   name="facebookUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Facebook URL</FormLabel>
+                      <FormLabel>Facebook</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="https://facebook.com/..."
-                        />
+                        <Input placeholder="https://facebook.com/seu_perfil" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Footer e Anúncios */}
-            <div>
-              <h3 className="text-lg font-semibold">
-                Footer & Página de Anúncio
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <FormField
-                  control={form.control}
-                  name="footerDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descrição do Footer</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          rows={3}
-                          placeholder="Texto do rodapé"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="advertiseHeadline"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Título Anúncios</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="SUA MARCA EM DESTAQUE ENTRE AS MELHORES"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          {/* Página Anuncie */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Página "Anuncie"</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="advertiseHeadline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Título Principal</FormLabel>
+                    <FormControl>
+                      <Input placeholder="SUA MARCA EM DESTAQUE ENTRE AS MELHORES" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="advertiseSubtitle1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Subtítulo Anúncios 1</FormLabel>
+                      <FormLabel>Subtítulo 1</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Onde excelência encontra visibilidade!"
-                        />
+                        <Input placeholder="Onde excelência encontra visibilidade!" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -425,44 +531,58 @@ function SettingsConfiguration() {
                   name="advertiseSubtitle2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Subtítulo Anúncios 2</FormLabel>
+                      <FormLabel>Subtítulo 2</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Junte-se à nossa comunidade sustentável..."
-                        />
+                        <Textarea placeholder="Junte-se à nossa comunidade sustentável..." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* FAQs */}
-            <div>
-              <h3 className="text-lg font-semibold">
-                Perguntas Frequentes (FAQs)
-              </h3>
-              <div className="mt-4 space-y-4">
-                {([
-                  { n: 1, question: "faq1Question" as const, answer: "faq1Answer" as const },
-                  { n: 2, question: "faq2Question" as const, answer: "faq2Answer" as const },
-                  { n: 3, question: "faq3Question" as const, answer: "faq3Answer" as const },
-                  { n: 4, question: "faq4Question" as const, answer: "faq4Answer" as const },
-                ]).map((faq) => (
-                  <div
-                    key={faq.n}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  >
+          {/* Footer */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Rodapé</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="footerDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição do Rodapé</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Conectando você às melhores empresas da cidade..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* FAQs */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#006C84]">Perguntas Frequentes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {[1, 2, 3, 4].map((num) => (
+                <div key={num} className="space-y-2">
+                  <h4 className="font-medium text-gray-700">FAQ {num}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name={faq.question}
+                      name={`faq${num}Question` as keyof InsertSiteSetting}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Pergunta {faq.n}</FormLabel>
+                          <FormLabel>Pergunta {num}</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder={`Pergunta ${faq.n}`} />
+                            <Input placeholder={`Pergunta ${num}`} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -470,42 +590,35 @@ function SettingsConfiguration() {
                     />
                     <FormField
                       control={form.control}
-                      name={faq.answer}
+                      name={`faq${num}Answer` as keyof InsertSiteSetting}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Resposta {faq.n}</FormLabel>
+                          <FormLabel>Resposta {num}</FormLabel>
                           <FormControl>
-                            <Textarea
-                              {...field}
-                              rows={2}
-                              placeholder={`Resposta ${faq.n}`}
-                            />
+                            <Textarea placeholder={`Resposta ${num}`} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
 
-            {/* Botão Salvar */}
-            <div className="flex justify-end pt-6 border-t">
-              <Button
-                type="submit"
-                disabled={updateSettings.isPending}
-                className="bg-[#006C84] hover:bg-[#005A6A] px-8"
-              >
-                {updateSettings.isPending
-                  ? "Salvando..."
-                  : "Salvar Configurações"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="bg-[#006C84] hover:bg-[#005066]"
+              disabled={updateSettingsMutation.isPending}
+            >
+              {updateSettingsMutation.isPending ? "Salvando..." : "Salvar Configurações"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }
 

@@ -659,6 +659,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get site settings
+  app.get("/api/site-settings", async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json(settings);
+    } catch (error) {
+      console.error("Failed to fetch site settings:", error);
+      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to fetch settings" });
+    }
+  });
+
   // Settings management with sections
   app.patch("/api/settings/general", async (req, res) => {
     try {
