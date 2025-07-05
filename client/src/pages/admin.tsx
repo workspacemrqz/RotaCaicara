@@ -644,36 +644,71 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const queryClient = useQueryClient();
 
   // Queries
-  const { data: businesses = [], isLoading: businessesLoading, error: businessesError } = useQuery<Business[]>({
+  const businessesQuery = useQuery({
     queryKey: ["/api/businesses"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "/api/businesses");
-      return Array.isArray(response) ? response : [];
+      console.log("Fetching businesses...");
+      const response = await fetch("/api/businesses");
+      if (!response.ok) {
+        throw new Error("Failed to fetch businesses");
+      }
+      const data = await response.json();
+      console.log("API Response for /api/businesses:", data);
+      return Array.isArray(data) ? data : [];
     },
   });
 
-  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-    queryFn: async () => {
-      const response = await apiRequest("GET", "/api/categories");
-      return Array.isArray(response) ? response : [];
-    },
-  });
-
-  const { data: businessRegistrations = [], isLoading: registrationsLoading, error: registrationsError } = useQuery<BusinessRegistration[]>({
+  const businessRegistrationsQuery = useQuery({
     queryKey: ["/api/admin/business-registrations"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "/api/admin/business-registrations");
-      return Array.isArray(response) ? response : [];
+      console.log("Fetching business registrations...");
+      const response = await fetch("/api/admin/business-registrations");
+      if (!response.ok) {
+        throw new Error("Failed to fetch business registrations");
+      }
+      const data = await response.json();
+      console.log("API Response for /api/admin/business-registrations:", data);
+      return Array.isArray(data) ? data : [];
     },
   });
 
-  const { data: analytics = [], isLoading: analyticsLoading, error: analyticsError } = useQuery<Analytics[]>({
+  const categoriesQuery = useQuery({
+    queryKey: ["/api/categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/categories");
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    },
+  });
+
+  const analyticsQuery = useQuery({
     queryKey: ["/api/admin/analytics"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "/api/admin/analytics");
-      return Array.isArray(response) ? response : [];
+      const response = await fetch("/api/admin/analytics");
+      if (!response.ok) {
+        throw new Error("Failed to fetch analytics");
+      }
+      const data = await response.json();
+      console.log("API Response for /api/admin/analytics:", data);
+      return Array.isArray(data) ? data : [];
     },
+  });
+
+  // Ensure we have safe data defaults - always arrays
+  const businesses = Array.isArray(businessesQuery.data) ? businessesQuery.data : [];
+  const businessRegistrations = Array.isArray(businessRegistrationsQuery.data) ? businessRegistrationsQuery.data : [];
+  const categories = Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
+  const analytics = Array.isArray(analyticsQuery.data) ? analyticsQuery.data : [];
+
+  console.log("Admin Panel Debug:", {
+    businesses,
+    businessesLoading: businessesQuery.isLoading,
+    businessesError: businessesQuery.error,
+    categories,
+    businessRegistrations
   });
 
   // State management
@@ -684,7 +719,8 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [iconSelectorOpen, setIconSelectorOpen] = useState(false);
-  const [registrationDialogOpen, setRegistrationDialogOpen] = useState(false);
+  const [registrationDialogOpen, setRegistrationDialogOpen] =
+    useState(false);
   const [viewRegistrationDialogOpen, setViewRegistrationDialogOpen] =
     useState(false);
   const [editingRegistration, setEditingRegistration] =
@@ -1122,8 +1158,8 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const totalBusinesses = Array.isArray(businesses) ? businesses.length : 0;
   const totalRegistrations = Array.isArray(businessRegistrations) ? businessRegistrations.length : 0;
   const totalCategories = Array.isArray(categories) ? categories.length : 0;
-  const pendingRegistrations = Array.isArray(businessRegistrations) 
-    ? businessRegistrations.filter((reg) => !reg.processed).length 
+  const pendingRegistrations = Array.isArray(businessRegistrations)
+    ? businessRegistrations.filter((reg) => !reg.processed).length
     : 0;
 
   // Show loading state

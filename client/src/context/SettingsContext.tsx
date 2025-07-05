@@ -1,53 +1,75 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { SiteSetting } from "@shared/schema";
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+
+interface SiteSettings {
+  siteName?: string;
+  locality?: string;
+  tagline1?: string;
+  description?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  logoUrl?: string;
+  instagramUrl?: string;
+  whatsappUrl?: string;
+  facebookUrl?: string;
+}
 
 interface SettingsContextType {
-  settings: SiteSetting | null;
+  settings: SiteSettings;
   isLoading: boolean;
-  error: Error | null;
-  refreshSettings: () => void;
+  refreshSettings: () => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const {
-    data: settings,
-    isLoading,
-    error,
-    refetch: refreshSettings,
-  } = useQuery<SiteSetting>({
-    queryKey: ["/api/site-settings"],
-    queryFn: async () => {
-      const response = await fetch("/api/site-settings");
-      if (!response.ok) {
-        throw new Error("Failed to fetch settings");
+interface SettingsProviderProps {
+  children: ReactNode;
+}
+
+export function SettingsProvider({ children }: SettingsProviderProps) {
+  const [settings, setSettings] = useState<SiteSettings>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  const refreshSettings = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/site-settings');
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data || {});
+      } else {
+        console.warn('Failed to fetch settings, using defaults');
+        setSettings({});
       }
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-  });
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
+      setSettings({});
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshSettings();
+  }, []);
+
+  const contextValue = {
+    settings: settings || {},
+    isLoading,
+    refreshSettings
+  };
 
   return (
-    <SettingsContext.Provider
-      value={{
-        settings: settings || null,
-        isLoading,
-        error: error as Error | null,
-        refreshSettings,
-      }}
-    >
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );
 }
 
-export function useSettings() {
+export const useSettings = () => {
   const context = useContext(SettingsContext);
   if (context === undefined) {
-    throw new Error("useSettings must be used within a SettingsProvider");
+    throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
-}
+};
