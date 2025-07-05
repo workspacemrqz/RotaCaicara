@@ -878,7 +878,7 @@ class MemStorage implements IStorage {
       facebook: insertBusiness.facebook || null,
       imageUrl: insertBusiness.imageUrl || null,
       featured: insertBusiness.featured || false,
-      certified: insertBusiness.certified || false,
+      certified: insertBusiness<previous_generation> || false,
       active: insertBusiness.active !== false,
     };
     this.businesses.set(id, business);

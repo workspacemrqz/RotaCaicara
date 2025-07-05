@@ -139,9 +139,34 @@ export async function seedDatabase() {
 
     const insertedBusinesses = await db.insert(businesses).values(businessData).returning();
     console.log(`Inserted ${insertedBusinesses.length} businesses`);
-    
+
     console.log("Database seeded successfully");
   } catch (error) {
     console.error("Error seeding database:", error);
   }
 }
+
+const categoriesData = [
+    { name: 'Restaurantes', icon: 'utensils', backgroundImage: null, color: '#e74c3c', order: 1, active: true },
+    { name: 'Hospedagem', icon: 'bed', backgroundImage: null, color: '#3498db', order: 2, active: true },
+    { name: 'Comércio', icon: 'shopping-bag', backgroundImage: null, color: '#2ecc71', order: 3, active: true },
+    { name: 'Serviços', icon: 'wrench', backgroundImage: null, color: '#f39c12', order: 4, active: true },
+    { name: 'Turismo', icon: 'camera', backgroundImage: null, color: '#9b59b6', order: 5, active: true },
+    { name: 'Saúde', icon: 'heart', backgroundImage: null, color: '#e91e63', order: 6, active: true },
+    { name: 'Educação', icon: 'book', backgroundImage: null, color: '#34495e', order: 7, active: true },
+    { name: 'Transporte', icon: 'truck', backgroundImage: null, color: '#95a5a6', order: 8, active: true },
+  ];
+
+const siteSettingsData = {
+    siteName: 'Rota Caiçara',
+    locality: 'São Sebastião',
+    heroTitle: 'Descubra os melhores negócios da Rota Caiçara',
+    heroSubtitle: 'Descubra os melhores negócios da região',
+    contactPhone: '(12) 99999-9999',
+    contactEmail: 'contato@rotacaicara.com.br',
+    whatsapp: '5512999999999',
+    facebookUrl: 'https://facebook.com/rotacaicara',
+    instagramUrl: 'https://instagram.com/rotacaicara',
+    youtubeUrl: 'https://youtube.com/rotacaicara',
+    businessSubmissionText: 'Cadastre seu negócio gratuitamente e alcance mais clientes na região de São Sebastião.',
+  };
