@@ -726,7 +726,7 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   const [editingRegistration, setEditingRegistration] =
     useState<BusinessRegistration | null>(null);
   const [viewingRegistration, setViewingRegistration] =
-    useState(BusinessRegistration | null>(null);
+    useState<BusinessRegistration | null>(null);
 
   // Business form with validation
   const businessForm = useForm<z.infer<typeof insertBusinessSchema>>({
