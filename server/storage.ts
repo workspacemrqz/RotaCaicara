@@ -151,7 +151,8 @@ class DatabaseStorage implements IStorage {
       icon: category.icon || 'circle',
       color: category.color || '#006C84',
       backgroundImage: category.backgroundImage || null,
-      active: category.active !== false
+      active: category.active !== false,
+      order: category.order || 0
     };
 
     const result = await db.insert(categories).values(categoryData).returning();
@@ -878,7 +879,7 @@ class MemStorage implements IStorage {
       facebook: insertBusiness.facebook || null,
       imageUrl: insertBusiness.imageUrl || null,
       featured: insertBusiness.featured || false,
-      certified: insertBusiness<previous_generation> || false,
+      certified: insertBusiness.certified || false,
       active: insertBusiness.active !== false,
     };
     this.businesses.set(id, business);

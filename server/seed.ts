@@ -12,20 +12,20 @@ export async function seedDatabase() {
 
     // Seed categories - All 14 Rota Caiçara categories
     const categoryData = [
-      { name: "PARA SUA REFEIÇÃO", slug: "para-sua-refeicao", icon: "🍽️", color: "#006C84", active: true },
-      { name: "PARA SUA CASA", slug: "para-sua-casa", icon: "🏠", color: "#006C84", active: true },
-      { name: "PARA SUA EMPRESA", slug: "para-sua-empresa", icon: "🏭", color: "#006C84", active: true },
-      { name: "PARA SUA SAÚDE", slug: "para-sua-saude", icon: "💚", color: "#006C84", active: true },
-      { name: "PARA SEU AUTOMÓVEL", slug: "para-seu-automovel", icon: "🚗", color: "#006C84", active: true },
-      { name: "PARA SUA BELEZA", slug: "para-sua-beleza", icon: "💄", color: "#006C84", active: true },
-      { name: "PARA SEU BEBÊ", slug: "para-seu-bebe", icon: "👶", color: "#006C84", active: true },
-      { name: "PARA SEU PET", slug: "para-seu-pet", icon: "🐕", color: "#006C84", active: true },
-      { name: "PARA SUA EDUCAÇÃO", slug: "para-sua-educacao", icon: "✏️", color: "#006C84", active: true },
-      { name: "PARA SEU CORPO", slug: "para-seu-corpo", icon: "🏋️", color: "#006C84", active: true },
-      { name: "PARA SUA FESTA", slug: "para-sua-festa", icon: "🎂", color: "#006C84", active: true },
-      { name: "PARA SUA VIAGEM", slug: "para-sua-viagem", icon: "🏖️", color: "#006C84", active: true },
-      { name: "ASSISTÊNCIA TÉCNICA", slug: "assistencia-tecnica", icon: "🔧", color: "#006C84", active: true },
-      { name: "NOVIDADES NA CIDADE", slug: "novidades-na-cidade", icon: "⭐", color: "#006C84", active: true }
+      { name: "PARA SUA REFEIÇÃO", slug: "para-sua-refeicao", icon: "🍽️", color: "#006C84", order: 1, active: true },
+      { name: "PARA SUA CASA", slug: "para-sua-casa", icon: "🏠", color: "#006C84", order: 2, active: true },
+      { name: "PARA SUA EMPRESA", slug: "para-sua-empresa", icon: "🏭", color: "#006C84", order: 3, active: true },
+      { name: "PARA SUA SAÚDE", slug: "para-sua-saude", icon: "💚", color: "#006C84", order: 4, active: true },
+      { name: "PARA SEU AUTOMÓVEL", slug: "para-seu-automovel", icon: "🚗", color: "#006C84", order: 5, active: true },
+      { name: "PARA SUA BELEZA", slug: "para-sua-beleza", icon: "💄", color: "#006C84", order: 6, active: true },
+      { name: "PARA SEU BEBÊ", slug: "para-seu-bebe", icon: "👶", color: "#006C84", order: 7, active: true },
+      { name: "PARA SEU PET", slug: "para-seu-pet", icon: "🐕", color: "#006C84", order: 8, active: true },
+      { name: "PARA SUA EDUCAÇÃO", slug: "para-sua-educacao", icon: "✏️", color: "#006C84", order: 9, active: true },
+      { name: "PARA SEU CORPO", slug: "para-seu-corpo", icon: "🏋️", color: "#006C84", order: 10, active: true },
+      { name: "PARA SUA FESTA", slug: "para-sua-festa", icon: "🎂", color: "#006C84", order: 11, active: true },
+      { name: "PARA SUA VIAGEM", slug: "para-sua-viagem", icon: "🏖️", color: "#006C84", order: 12, active: true },
+      { name: "ASSISTÊNCIA TÉCNICA", slug: "assistencia-tecnica", icon: "🔧", color: "#006C84", order: 13, active: true },
+      { name: "NOVIDADES NA CIDADE", slug: "novidades-na-cidade", icon: "⭐", color: "#006C84", order: 14, active: true }
     ];
 
     const insertedCategories = await db.insert(categories).values(categoryData).returning();
@@ -146,27 +146,3 @@ export async function seedDatabase() {
   }
 }
 
-const categoriesData = [
-    { name: 'Restaurantes', icon: 'utensils', backgroundImage: null, color: '#e74c3c', order: 1, active: true },
-    { name: 'Hospedagem', icon: 'bed', backgroundImage: null, color: '#3498db', order: 2, active: true },
-    { name: 'Comércio', icon: 'shopping-bag', backgroundImage: null, color: '#2ecc71', order: 3, active: true },
-    { name: 'Serviços', icon: 'wrench', backgroundImage: null, color: '#f39c12', order: 4, active: true },
-    { name: 'Turismo', icon: 'camera', backgroundImage: null, color: '#9b59b6', order: 5, active: true },
-    { name: 'Saúde', icon: 'heart', backgroundImage: null, color: '#e91e63', order: 6, active: true },
-    { name: 'Educação', icon: 'book', backgroundImage: null, color: '#34495e', order: 7, active: true },
-    { name: 'Transporte', icon: 'truck', backgroundImage: null, color: '#95a5a6', order: 8, active: true },
-  ];
-
-const siteSettingsData = {
-    siteName: 'Rota Caiçara',
-    locality: 'São Sebastião',
-    heroTitle: 'Descubra os melhores negócios da Rota Caiçara',
-    heroSubtitle: 'Descubra os melhores negócios da região',
-    contactPhone: '(12) 99999-9999',
-    contactEmail: 'contato@rotacaicara.com.br',
-    whatsapp: '5512999999999',
-    facebookUrl: 'https://facebook.com/rotacaicara',
-    instagramUrl: 'https://instagram.com/rotacaicara',
-    youtubeUrl: 'https://youtube.com/rotacaicara',
-    businessSubmissionText: 'Cadastre seu negócio gratuitamente e alcance mais clientes na região de São Sebastião.',
-  };

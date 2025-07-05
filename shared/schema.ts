@@ -15,10 +15,10 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   icon: text("icon").notNull(),
-  color: text("color").default("#006C84"),
+  color: text("color").notNull().default("#006C84"),
   backgroundImage: text("background_image"),
   active: boolean("active").default(true),
-  order: integer("order").default(0),
+  order: integer("order").notNull().default(0),
 });
 
 export const businesses = pgTable("businesses", {
@@ -53,6 +53,7 @@ export const businessRegistrations = pgTable("business_registrations", {
   contactEmail: text("contact_email"),
   imageUrl: text("image_url"),
   processed: boolean("processed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertCategorySchema = createInsertSchema(categories)
@@ -64,6 +65,7 @@ export const insertCategorySchema = createInsertSchema(categories)
     icon: z.string().optional(),
     backgroundImage: z.string().optional(),
     active: z.boolean().optional(),
+    order: z.number().optional(),
   });
 
 export const insertBusinessSchema = createInsertSchema(businesses)
