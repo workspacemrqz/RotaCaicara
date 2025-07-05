@@ -1,44 +1,44 @@
-
 import { QueryClient } from "@tanstack/react-query";
 
 // Create a fetch wrapper that includes proper error handling
 export async function apiRequest(
-  method: string,
-  endpoint: string,
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  url: string,
   data?: any
-): Promise<Response> {
-  const url = endpoint.startsWith("http") ? endpoint : endpoint;
-  
-  const config: RequestInit = {
+) {
+  const options: RequestInit = {
     method,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
-  if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
-    config.body = JSON.stringify(data);
+  if (data && method !== 'GET') {
+    options.body = JSON.stringify(data);
   }
 
-  const response = await fetch(url, config);
-  
+  const response = await fetch(url, options);
+
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`HTTP ${response.status}: ${errorText}`);
+    console.error(`API Error: ${response.status} - ${errorText}`);
+    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
   }
-  
-  return response;
+
+  const result = await response.json();
+  console.log(`API Response for ${url}:`, result);
+  return result;
 }
 
 // Default query function
 const defaultQueryFn = async ({ queryKey }: { queryKey: any[] }) => {
   const [url] = queryKey;
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-  
+
   return response.json();
 };
 

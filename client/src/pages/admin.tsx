@@ -646,22 +646,34 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   // Queries
   const { data: businesses = [], isLoading: businessesLoading, error: businessesError } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
-    queryFn: () => apiRequest("GET", "/api/businesses"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/businesses");
+      return Array.isArray(response) ? response : [];
+    },
   });
 
   const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("GET", "/api/categories"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/categories");
+      return Array.isArray(response) ? response : [];
+    },
   });
 
   const { data: businessRegistrations = [], isLoading: registrationsLoading, error: registrationsError } = useQuery<BusinessRegistration[]>({
     queryKey: ["/api/admin/business-registrations"],
-    queryFn: () => apiRequest("GET", "/api/admin/business-registrations"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/admin/business-registrations");
+      return Array.isArray(response) ? response : [];
+    },
   });
 
   const { data: analytics = [], isLoading: analyticsLoading, error: analyticsError } = useQuery<Analytics[]>({
     queryKey: ["/api/admin/analytics"],
-    queryFn: () => apiRequest("GET", "/api/admin/analytics"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/admin/analytics");
+      return Array.isArray(response) ? response : [];
+    },
   });
 
   // State management

@@ -90,9 +90,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/businesses", async (req, res) => {
     try {
       const businesses = await storage.getBusinesses();
+      console.log(`Fetched ${businesses.length} businesses from database`);
       res.json(businesses);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch businesses" });
+      console.error("Error fetching businesses:", error);
+      res.status(500).json({ message: "Failed to fetch businesses", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
