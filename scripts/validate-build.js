@@ -116,7 +116,12 @@ try {
   console.log(`   🖥️  Server bundle: ${serverFile}`);
   console.log(`   🌐 Client files: ${clientDir}`);
   console.log(`   📄 Entry point: ${indexHtml}`);
-  console.log('\n🚀 Application is ready for deployment!');
+  console.log('\n🚀 Application is ready for EasyPanel deployment!');
+  console.log('🔧 EasyPanel Configuration:');
+  console.log('   Build Command: npm run build');
+  console.log('   Start Command: npm start');
+  console.log('   Port: 3100');
+  console.log('   Health Check: /health');
   
 } catch (error) {
   console.error('\n💥 Build validation failed:', error.message);

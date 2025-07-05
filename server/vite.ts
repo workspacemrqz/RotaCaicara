@@ -1,4 +1,3 @@
-
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
@@ -87,57 +86,46 @@ export async function configureVite(app: Express) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(process.cwd(), "dist", "public");
-  const clientIndexPath = path.resolve(distPath, "index.html");
+  const distPath = path.resolve("dist/public");
+  const indexPath = path.join(distPath, "index.html");
 
-  // Verify build directory exists
+  console.log("📁 Static files configuration:");
+  console.log(`   Dist path: ${distPath}`);
+  console.log(`   Index path: ${indexPath}`);
+  console.log(`   Dist exists: ${fs.existsSync(distPath)}`);
+  console.log(`   Index exists: ${fs.existsSync(indexPath)}`);
+
   if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}. Make sure to build the client first with 'npm run build'.`
-    );
+    console.error(`❌ Build directory missing: ${distPath}`);
+    throw new Error(`Build directory does not exist: ${distPath}. Run 'npm run build' first.`);
   }
 
-  // Verify index.html exists
-  if (!fs.existsSync(clientIndexPath)) {
-    throw new Error(
-      `Could not find index.html in: ${clientIndexPath}. Make sure the client build completed successfully.`
-    );
+  if (!fs.existsSync(indexPath)) {
+    console.error(`❌ Index file missing: ${indexPath}`);
+    throw new Error(`Index file does not exist: ${indexPath}. Build may be incomplete.`);
   }
 
-  console.log(`📁 Serving static files from: ${distPath}`);
-  console.log(`📄 SPA fallback file: ${clientIndexPath}`);
-
-  // Serve static files (CSS, JS, images, etc.) with proper caching
-  app.use(express.static(distPath, {
-    maxAge: process.env.NODE_ENV === "production" ? "1y" : "0",
+  // Serve static files with cache headers for EasyPanel
+  app.use(express.static(distPath, { 
+    maxAge: "1h",
     etag: true,
-    lastModified: true,
-    index: false // Disable automatic index.html serving, we'll handle it explicitly
+    lastModified: true
   }));
 
-  // SPA fallback - serve index.html for all non-API routes
-  app.get("*", (req, res, next) => {
-    // Skip API routes and health check
-    if (req.path.startsWith("/api") || req.path === "/health") {
-      return next();
+  // SPA fallback for all non-API routes
+  app.get("*", (req, res) => {
+    if (req.path.startsWith("/api")) {
+      return res.status(404).json({ message: "API endpoint not found" });
     }
 
-    try {
-      res.sendFile(clientIndexPath, (err) => {
-        if (err) {
-          console.error("Error serving index.html:", err);
-          res.status(500).json({ 
-            error: "Failed to serve application", 
-            message: "Internal server error" 
-          });
-        }
-      });
-    } catch (error) {
-      console.error("Error in SPA fallback:", error);
-      res.status(500).json({ 
-        error: "Failed to serve application", 
-        message: "Internal server error" 
-      });
-    }
+    // Send index.html for all client routes
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error("Error serving index.html:", err);
+        res.status(500).send("Internal Server Error");
+      }
+    });
   });
+
+  console.log("✅ Static file serving configured for EasyPanel");
 }

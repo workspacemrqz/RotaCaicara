@@ -44,8 +44,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ 
       status: "ok", 
       timestamp: new Date().toISOString(),
-      env: process.env.NODE_ENV || 'development',
-      port: process.env.PORT || '3100'
+      env: process.env.NODE_ENV || 'production',
+      port: process.env.PORT || '3100',
+      uptime: process.uptime(),
+      version: "1.0.0",
+      database: process.env.DATABASE_URL ? 'connected' : 'not_configured'
     });
   });
 

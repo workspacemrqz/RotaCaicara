@@ -79,11 +79,8 @@ app.use((req, res, next) => {
   const isProduction = nodeEnv === "production";
   const isDevelopment = nodeEnv === "development";
 
-  // Always use static file serving in production (EasyPanel)
-  if (isProduction) {
-    console.log("Production mode: serving static files");
-    serveStatic(app);
-  } else if (isDevelopment) {
+  // Configure serving based on environment
+  if (isDevelopment) {
     try {
       const { configureVite } = await import("./vite");
       await configureVite(app);
@@ -94,7 +91,8 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
   } else {
-    console.log("Static mode: serving static files");
+    // Production mode - serve static files for EasyPanel
+    console.log("Production mode: serving static files from dist/public");
     serveStatic(app);
   }
 

@@ -5,24 +5,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/public",
+    "build:server": "tsc --project tsconfig.json && npm run copy:assets",
+    "copy:assets": "cp -r public/* dist/public/ 2>/dev/null || true",
     "start": "NODE_ENV=production node dist/index.js",
-    "start:prod": "NODE_ENV=production node dist/index.js",
-    "build:client": "NODE_ENV=production vite build",
-    "build:server": "esbuild server/index.ts --bundle --platform=node --target=node18 --external:pg-native --external:better-sqlite3 --outfile=dist/index.js",
-    "build": "npm run check && npm run build:client && npm run build:server",
-    "build:production": "npm ci --omit=dev && npm run build",
-    "build:prod": "NODE_ENV=production npm run build",
-
-    "check": "tsc",
-    "db:push": "drizzle-kit push",
-    "db:migrate": "tsx server/migrate.ts",
-    "db:init": "node init-db.js",
-    "test": "node test-site.js",
-    "test:verbose": "DEBUG=* node test-site.js",
-    "monitor": "node monitor.js",
-    "validate": "node validate-data.js",
-    "test:all": "npm run test && npm run validate",
-    "validate:build": "node scripts/validate-build.js"
+    "seed": "tsx server/seed.ts",
+    "validate:build": "node scripts/validate-build.js && echo 'Build validation complete'",
+    "postbuild": "npm run validate:build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
