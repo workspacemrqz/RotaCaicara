@@ -1,0 +1,15 @@
+
+[variables]
+NPM_CONFIG_PRODUCTION = "false"
+
+[phases.setup]
+nixPkgs = ["nodejs_18", "npm-9_x"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npx vite build", "npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist"]
+
+[start]
+cmd = "npm start"

@@ -5,68 +5,61 @@ import path from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const viteLogger = createLogger();
 
-export function log(message: string, source = "express") {
+export const log = (...args: Parameters<typeof console.log>) => {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
+    hour12: false,
+    hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true,
   });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
+  console.log(`🔵 [${formattedTime}]`, ...args);
+};
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
-    middlewareMode: true,
-    hmr: { server },
-    allowedHosts: true,
-  };
-
   const vite = await createViteServer({
-    configFile: path.resolve(__dirname, "..", "vite.config.ts"),
+    configFile: path.resolve(process.cwd(), "vite.config.ts"),
+    server: { middlewareMode: true },
+    appType: "custom",
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {
+        if (msg.includes("WebSocket server error") || msg.includes("WebSocket connection closed")) {
+          return;
+        }
         viteLogger.error(msg, options);
-        process.exit(1);
       },
     },
-    server: serverOptions,
-    appType: "custom",
   });
 
   app.use(vite.middlewares);
+
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
-      const clientTemplate = path.resolve(__dirname, "..", "client", "index.html");
-
-      // always reload the index.html file from disk incase it changes
+      const clientTemplate = path.resolve(process.cwd(), "client", "index.html");
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
-      );
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      template = await vite.transformIndexHtml(url, template);
+
+      const { render } = await vite.ssrLoadModule("/src/main.tsx");
+      const appHtml = await render();
+      const html = template.replace(`<!--ssr-outlet-->`, appHtml);
+
+      res.status(200).set({ "Content-Type": "text/html" }).end(html);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
     }
   });
+
+  server.on("upgrade", vite.ws.handleUpgrade);
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "..", "dist", "public");
+  const distPath = path.resolve(process.cwd(), "dist", "public");
   const clientIndexPath = path.resolve(distPath, "index.html");
 
   app.use(express.static(distPath));
