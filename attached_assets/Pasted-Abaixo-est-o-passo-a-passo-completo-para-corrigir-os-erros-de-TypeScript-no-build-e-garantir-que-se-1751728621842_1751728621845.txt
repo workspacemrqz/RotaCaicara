@@ -1,0 +1,196 @@
+Abaixo está o passo-a-passo completo para corrigir os erros de TypeScript no build e garantir que seu projeto compile em produção:
+
+---
+
+## 1. Ajustar `tsconfig.json` para incluir a pasta `shared`
+
+O erro
+
+```
+File '/app/shared/schema.ts' is not under 'rootDir' '/app/server'
+```
+
+significa que o `rootDir` está restrito a `server`. Precisamos que o TS considere também `shared`.
+Edite seu **tsconfig.json** para algo como:
+
+```diff
+{
+  "compilerOptions": {
+-   "rootDir": "./server",
++   "rootDir": ".",
+    "outDir": "./dist",
+    // … demais opções
+  },
+- "include": ["server/**/*"],
++ "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+Isso faz com que o compilador encontre **todos** os seus arquivos `.ts`, tanto em `server/` quanto em `shared/`.
+
+---
+
+## 2. Corrigir o esquema em `shared/schema.ts`
+
+Você está usando `@shared/schema` para definir suas tabelas. Vários erros indicam propriedades faltantes ou com nomes diferentes:
+
+* **`createdAt` não existe**
+* **`heroTitle`, `whatsapp` não existem**
+* **`order` e `color` são obrigatórios, mas seu literal não os define**
+
+Abra `shared/schema.ts` e, para cada tabela envolvida (por exemplo, `business_registrations`, `site_settings`, etc.), adicione as colunas faltantes ou torne-as opcionais:
+
+```ts
+import { pgTable, serial, varchar, timestamp, integer, boolean, text } from 'drizzle-orm/pg-core';
+
+export const business_registrations = pgTable('business_registrations', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  // ... outras colunas
++ createdAt: timestamp('created_at').defaultNow(),
+  // se tiver updated_at, mapeie também
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Exemplo para outra tabela que precisa de order e color:
+export const categories = pgTable('categories', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }),
+  color: varchar('color', { length: 7 }).default('#ffffff'),
+  order: integer('order').default(0),
+  backgroundImage: text('background_image').nullable(),
+  active: boolean('active').default(true),
+});
+```
+
+Ajuste cada definição para que as colunas usadas no código (`heroTitle`, `whatsapp`, etc.) realmente existam ou, se forem opcionais, torne-as `.nullable()` e no TypeScript `.default('')` ou `.optional`.
+
+---
+
+## 3. Atualizar `server/storage.ts` para refletir o esquema
+
+Depois de consertar o schema, abra **server/storage.ts** e corrija os literais de objeto para corresponder aos tipos gerados:
+
+* Substitua todo acesso a `row.createdAt` por `row.createdAt!` (ou trate como possivelmente `undefined`) se marcou `createdAt` opcional.
+* Remova ou comente referências a `heroTitle` e `whatsapp` se você decidiu não incluí-los no schema, ou ajuste seu schema para tê-los.
+* Para objetos que montam literais, garanta que todos os campos obrigatórios de cada tipo estejam presentes.
+  Exemplo de ajuste:
+
+  ```diff
+  // Antes
+  const site = {
+    id: row.id,
+    name: row.name,
+  ```
+* heroTitle: row\.heroTitle,
+
+- heroTitle: row\.heroTitle ?? '',
+  address: row\.address,
+
+* whatsapp: row\.whatsapp,
+
+- whatsapp: row\.whatsapp ?? '',
+  updatedAt: row\.updatedAt,
+  };
+
+// Para categorias:
+const category = {
+id: row\.id,
+name: row\.name,
+
+* backgroundImage: row\.backgroundImage,
+
+- backgroundImage: row\.backgroundImage ?? null,
+
+* color: row\.color,
+
+- color: row\.color ?? '#000000',
+
+* active: row\.active,
+
+- active: row\.active ?? true,
+
+* // faltava order
+
+- order: row\.order ?? 0,
+  };
+
+````
+
+Faça isso para **cada** erro indicado no log—o TS vai apontar o local exato.
+
+---
+
+## 4. Garantir que o build continue a validar os tipos
+
+Agora que o schema e o código estão alinhados, o `npm run check` (que roda `tsc --noEmit`) deve passar sem erros. Para confirmar, execute localmente:
+
+```bash
+npm ci
+npm run check
+````
+
+Se ainda houver erros, siga os apontamentos do compilador até que o `check` retorne `Found 0 errors`.
+
+---
+
+## 5. Rebuild do Docker com multi-stage (lembrando da ordem certa)
+
+Use um **Dockerfile multi-stage** para não omitir devDependencies antes do build:
+
+```dockerfile
+# stage de build
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# stage de produção
+FROM node:20-alpine AS prod
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=build /app/dist ./dist
+EXPOSE 3100
+CMD ["node", "dist/index.js"]
+```
+
+* Primeiro instala tudo e **só então** roda `npm run build` (que inclui `tsc`, Vite e esbuild).
+* Depois, no estágio final, instala apenas deps de produção e copia a pasta `dist`.
+
+---
+
+## 6. Validar no container
+
+Para garantir que tudo entrou no lugar:
+
+```bash
+# build da imagem
+docker build -t rota-caicara .
+
+# rodar interativo para inspecionar
+docker run -it --rm rota-caicara sh
+
+# dentro do container:
+ls dist/public       # deve listar index.html e assets
+ls dist/index.js     # servidor compilado
+node dist/index.js   # iniciar servidor sem erros
+```
+
+Se a pasta `dist/public` existir e o servidor rodar sem exceções, a rota `/` deve agora servir o `index.html` corretamente (graças ao `serveStatic` + handler `app.get('*')`).
+
+---
+
+### Recapitulando os passos principais
+
+1. **tsconfig.json**: `rootDir: "."`, incluir `shared/**/*`.
+2. **shared/schema.ts**: adicionar colunas faltantes (`createdAt`, `order`, `color`, `whatsapp`, etc.) ou tornar opcionais.
+3. **server/storage.ts**: ajustar literais de objeto para incluir/omitir campos de acordo com o schema e tratar null/undefined.
+4. **Validar**: `npm run check` deve retornar 0 erros.
+5. **Docker multi-stage**: build completo antes de remover devDeps.
+6. **Testar no container**: conferir `dist` e servir `/` sem 404.
+
+Com essas alterações seu build TypeScript voltará a passar, e o Express servirá corretamente a rota raiz em produção.
