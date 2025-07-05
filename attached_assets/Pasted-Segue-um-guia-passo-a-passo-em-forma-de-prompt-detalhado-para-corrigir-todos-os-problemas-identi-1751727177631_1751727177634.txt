@@ -1,0 +1,116 @@
+Segue um guia passo a passo, em forma de “prompt” detalhado, para corrigir todos os problemas identificados no seu projeto:
+
+1. **Ajustar scripts de build no `package.json`**
+
+   * Na seção `"scripts"`, crie comandos separados para cliente e servidor:
+
+     ```jsonc
+     "build:client": "NODE_ENV=production vite build",
+     "build:server": "esbuild server/index.ts \
+       --bundle \
+       --platform=node \
+       --target=node18 \
+       --external:pg-native \
+       --external:better-sqlite3 \
+       --outfile=dist/index.js",
+     "build": "npm run check && npm run build:client && npm run build:server",
+     "build:production": "npm ci --omit=dev && npm run build"
+     ```
+   * Remova usos de `--production=false` e passe a usar `npm ci --omit=dev` para instalar somente dependências de produção.
+
+2. **Corrigir o `Dockerfile` para usar o novo script `build`**
+
+   * Substitua a linha
+
+     ```dockerfile
+     RUN npm run build:production
+     ```
+
+     por
+
+     ```dockerfile
+     RUN npm ci --omit=dev && npm run build
+     ```
+   * Garanta que o passo de remoção de devDependencies (`npm ci --omit=dev`) ocorra **antes** do `CMD`, para reduzir o tamanho da imagem.
+
+3. **Incluir `--bundle` no comando `esbuild`**
+
+   * No script `build:server`, já incluímos `--bundle`, mas confirme que **nenhum comando** esbuild no Docker ou em CI omita esse parâmetro, evitando o erro `Cannot use "external" without "bundle"`.
+
+4. **Modernizar flags do npm**
+
+   * Remova `npm install --production=false` de todos os scripts e adote `npm ci --omit=dev` (npm ≥10) ou `npm install --omit=dev` (npm 7–9).
+   * Atualize instruções de CI para limpar cache:
+
+     ```bash
+     npm ci --omit=dev
+     npm cache clean --force
+     ```
+
+5. **Otimizar o chunking do Vite**
+
+   * No `vite.config.ts`, substitua `manualChunks: undefined` por uma função que agrupe em pedaços menores. Exemplo:
+
+     ```ts
+     build: {
+       rollupOptions: {
+         output: {
+           manualChunks(id) {
+             if (id.includes('node_modules')) {
+               if (id.includes('react')) return 'vendor-react';
+               if (id.includes('@radix-ui')) return 'vendor-ui';
+               return 'vendor';
+             }
+           }
+         }
+       }
+     }
+     ```
+   * Considere usar `dynamic import()` em módulos de grande porte para melhorar o carregamento inicial.
+
+6. **Melhorar tratamento de erros no servidor**
+
+   * Em `server/index.ts`, remova qualquer `throw err` dentro de handlers de rota. Substitua por:
+
+     ```ts
+     console.error(err);
+     res.status(500).json({ error: 'Erro interno no servidor' });
+     ```
+   * Assegure-se de que o servidor continue rodando mesmo após erros de rota.
+
+7. **Revisar configurações do TypeScript**
+
+   * No `tsconfig.json`, defina `outDir: "./dist"`, `rootDir: "./server"` e exclua pastas `node_modules`, `dist` e `client` do build de servidor.
+   * Garanta que o código gerado seja emitido em `dist/index.js` sem arquivos TS residuais.
+
+8. **Aprimorar `.dockerignore`**
+
+   * Adicione padrões como `coverage/`, `npm-debug.log` e quaisquer pastas de relatório de testes que não precisem ir para a imagem.
+
+9. **Validar localmente antes de subir**
+
+   * Execute, na sua máquina, os comandos em ordem:
+
+     ```bash
+     npm ci --omit=dev
+     npm run build
+     npm start
+     ```
+   * Verifique se não há erros de importação e se páginas estáticas são servidas corretamente.
+
+10. **Rebuild e deploy**
+
+    * Suba o novo Dockerfile atualizado ao GitHub.
+    * No EasyPanel, dispare um novo deploy, monitore os logs de build e de runtime, e valide que:
+
+      * Não ocorra mais erro de `esbuild`.
+      * Os bundles do cliente sejam carregados sem exceder limites de tamanho.
+      * O servidor não caia em rotas com erros.
+
+Seguindo este roteiro você garantirá que:
+
+* O esbuild seja executado corretamente com bundling.
+* O Docker use apenas dependências de produção.
+* O Vite produza bundles otimizados.
+* O servidor lide graciosamente com exceções em produção.
+* Seu CI/CD seja mais rápido e confiável.
