@@ -112,7 +112,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
           {business.journalLink && (
             <button 
               onClick={handleJournalClick}
-              className="social-icon-circle social-journal"
+              className="social-icon-circle bg-green-100 hover:bg-green-200 text-green-600 hover:text-green-800 transition-colors"
               aria-label="Jornal"
             >
               <Newspaper />
