@@ -1,0 +1,215 @@
+O deploy deste site será realizado no Easypanel utilizando o repositório do GitHub, com construção via Nixpacks. Os comandos de instalação, build e start já estão configurados no Easypanel, assim como as variáveis de ambiente necessárias para o funcionamento do projeto.
+
+Relatório informativo:
+Fonte: https://github.com/workspacemrqz/RotaCaicara
+Construção: Dockerfile
+Caminho do dockerfile: Dockerfile
+
+Variáveis de ambiente:
+DATABASE_URL=postgres://mrqz:@Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable
+NODE_ENV=production
+SESSION_SECRET=8f9a2b1c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5
+PORT=3100
+
+
+
+LOGS DE IMPLANTAÇÃO:
+Commit: Assistant checkpoint: Optimize Dockerfile for EasyPanel deployment
+
+Assistant generated file changes:
+- Dockerfile: Optimize Dockerfile for better EasyPanel deployment
+
+---
+
+User prompt:
+
+tem como escolher pra fazer o deploy com dockerfile, é preferivel? mas dai não podemos usar o nixpacks
+
+Replit-Commit-Author: Assistant
+Replit-Commit-Session-Id: e418c825-b6d8-4815-8f11-395cfdac008e 
+##########################################
+### Download Github Archive Started...
+### Sat, 05 Jul 2025 13:47:30 GMT
+##########################################
+
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 927B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 1.7s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 309B done
+#3 DONE 0.0s
+
+#4 [ 1/10] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#4 resolve docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 done
+#4 ...
+
+#5 [internal] load build context
+#5 transferring context: 1.98MB 0.1s done
+#5 DONE 0.1s
+
+#4 [ 1/10] FROM docker.io/library/node:20-alpine@sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+#4 sha256:2506673f55362e86b6c8a2ab9c01541ae636887386c92d06e01286d3ddd83871 0B / 1.26MB 0.2s
+#4 sha256:98c4889b578e94078411d6c14fe8f5daa0303d43e82bbf84d5787ab657c42428 0B / 445B 0.2s
+#4 sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11 7.67kB / 7.67kB done
+#4 sha256:6d6b06f970b08f9ebbe65a5561c20e8623d6afa612ea035bbbe38fb78dd94b14 1.72kB / 1.72kB done
+#4 sha256:bfd94ebedbdada46a3d3447f6bc2de4d271021b3a45a76821cca6afa361ea94d 6.21kB / 6.21kB done
+#4 sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 1.05MB / 42.99MB 0.2s
+#4 sha256:2506673f55362e86b6c8a2ab9c01541ae636887386c92d06e01286d3ddd83871 1.26MB / 1.26MB 0.4s done
+#4 sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 19.92MB / 42.99MB 0.4s
+#4 sha256:98c4889b578e94078411d6c14fe8f5daa0303d43e82bbf84d5787ab657c42428 445B / 445B 0.4s done
+#4 sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 26.21MB / 42.99MB 0.5s
+#4 sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 39.85MB / 42.99MB 0.7s
+#4 sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 42.99MB / 42.99MB 0.8s done
+#4 extracting sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd
+#4 extracting sha256:5432aa916e0868c8c9385ef60226d5ef530f13fe7c28fc13c054de1df6d006cd 2.1s done
+#4 extracting sha256:2506673f55362e86b6c8a2ab9c01541ae636887386c92d06e01286d3ddd83871
+#4 extracting sha256:2506673f55362e86b6c8a2ab9c01541ae636887386c92d06e01286d3ddd83871 0.1s done
+#4 extracting sha256:98c4889b578e94078411d6c14fe8f5daa0303d43e82bbf84d5787ab657c42428 done
+#4 DONE 3.2s
+
+#6 [ 2/10] WORKDIR /app
+#6 DONE 0.2s
+
+#7 [ 3/10] RUN apk add --no-cache curl
+#7 0.108 fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+#7 0.814 fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+#7 1.437 (1/9) Installing brotli-libs (1.1.0-r2)
+#7 1.459 (2/9) Installing c-ares (1.34.5-r0)
+#7 1.465 (3/9) Installing libunistring (1.3-r0)
+#7 1.492 (4/9) Installing libidn2 (2.3.7-r0)
+#7 1.497 (5/9) Installing nghttp2-libs (1.65.0-r0)
+#7 1.503 (6/9) Installing libpsl (0.21.5-r3)
+#7 1.507 (7/9) Installing zstd-libs (1.5.7-r0)
+#7 1.516 (8/9) Installing libcurl (8.14.1-r1)
+#7 1.529 (9/9) Installing curl (8.14.1-r1)
+#7 1.538 Executing busybox-1.37.0-r18.trigger
+#7 1.567 OK: 15 MiB in 27 packages
+#7 DONE 1.7s
+
+#8 [ 4/10] COPY package*.json ./
+#8 DONE 0.0s
+
+#9 [ 5/10] RUN npm ci --include=dev && npm cache clean --force
+#9 6.544 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+#9 7.028 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+#9 14.97 
+#9 14.97 added 529 packages, and audited 530 packages in 15s
+#9 14.97 
+#9 14.97 71 packages are looking for funding
+#9 14.97   run `npm fund` for details
+#9 15.00 
+#9 15.00 5 moderate severity vulnerabilities
+#9 15.00 
+#9 15.00 To address all issues (including breaking changes), run:
+#9 15.00   npm audit fix --force
+#9 15.00 
+#9 15.00 Run `npm audit` for details.
+#9 15.01 npm notice
+#9 15.01 npm notice New major version of npm available! 10.8.2 -> 11.4.2
+#9 15.01 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+#9 15.01 npm notice To update run: npm install -g npm@11.4.2
+#9 15.01 npm notice
+#9 15.21 npm warn using --force Recommended protections disabled.
+#9 DONE 16.2s
+
+#10 [ 6/10] COPY . .
+#10 DONE 0.1s
+
+#11 [ 7/10] RUN npm run build
+#11 0.307 
+#11 0.307 > rest-express@1.0.0 build
+#11 0.307 > npm run check && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+#11 0.307 
+#11 0.521 
+#11 0.521 > rest-express@1.0.0 check
+#11 0.521 > tsc
+#11 0.521 
+#11 15.28 client/src/components/business-card.tsx(116,52): error TS2353: Object literal may only specify known properties, and '':hover'' does not exist in type 'Properties<string | number, string & {}>'.
+#11 15.28 client/src/components/footer.tsx(42,26): error TS2339: Property 'footerDescription' does not exist on type 'SiteSettings'.
+#11 15.28 client/src/components/footer.tsx(43,28): error TS2339: Property 'footerDescription' does not exist on type 'SiteSettings'.
+#11 15.28 client/src/lib/queryClient.ts(65,7): error TS2322: Type '({ queryKey }: { queryKey: any[]; }) => Promise<any>' is not assignable to type 'unique symbol | QueryFunction<unknown, readonly unknown[], never> | undefined'.
+#11 15.28   Type '({ queryKey }: { queryKey: any[]; }) => Promise<any>' is not assignable to type 'QueryFunction<unknown, readonly unknown[], never>'.
+#11 15.28     Types of parameters '__0' and 'context' are incompatible.
+#11 15.28       Type '{ client: QueryClient; queryKey: readonly unknown[]; signal: AbortSignal; meta: Record<string, unknown> | undefined; pageParam?: unknown; direction?: unknown; }' is not assignable to type '{ queryKey: any[]; }'.
+#11 15.28         Types of property 'queryKey' are incompatible.
+#11 15.28           The type 'readonly unknown[]' is 'readonly' and cannot be assigned to the mutable type 'any[]'.
+#11 15.28 client/src/pages/advertise.tsx(110,27): error TS2339: Property 'faq1Question' does not exist on type 'SiteSettings'.
+#11 15.28 client/src/pages/advertise.tsx(111,20): error TS2339: Property 'faq1Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(113,25): error TS2339: Property 'faq1Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(114,20): error TS2339: Property 'faq1Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(118,27): error TS2339: Property 'faq2Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(119,20): error TS2339: Property 'faq2Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(121,25): error TS2339: Property 'faq2Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(122,20): error TS2339: Property 'faq2Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(126,27): error TS2339: Property 'faq3Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(127,20): error TS2339: Property 'faq3Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(129,25): error TS2339: Property 'faq3Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(130,20): error TS2339: Property 'faq3Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(134,27): error TS2339: Property 'faq4Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(135,20): error TS2339: Property 'faq4Question' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(137,25): error TS2339: Property 'faq4Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(138,20): error TS2339: Property 'faq4Answer' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(149,24): error TS2339: Property 'advertiseHeadline' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(150,26): error TS2339: Property 'advertiseHeadline' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(154,24): error TS2339: Property 'advertiseSubtitle1' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(155,26): error TS2339: Property 'advertiseSubtitle1' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(159,24): error TS2339: Property 'advertiseSubtitle2' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/advertise.tsx(160,26): error TS2339: Property 'advertiseSubtitle2' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/home.tsx(13,11): error TS2339: Property 'featuredEnabled' does not exist on type 'SettingsContextType'.
+#11 15.29 client/src/pages/home.tsx(44,5): error TS2769: No overload matches this call.
+#11 15.29   Overload 1 of 3, '(options: DefinedInitialDataOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>, queryClient?: QueryClient | undefined): DefinedUseQueryResult<...>', gave the following error.
+#11 15.29     Object literal may only specify known properties, and 'cacheTime' does not exist in type 'DefinedInitialDataOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>'.
+#11 15.29   Overload 2 of 3, '(options: UndefinedInitialDataOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
+#11 15.29     Object literal may only specify known properties, and 'cacheTime' does not exist in type 'UndefinedInitialDataOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>'.
+#11 15.29   Overload 3 of 3, '(options: UseQueryOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
+#11 15.29     Object literal may only specify known properties, and 'cacheTime' does not exist in type 'UseQueryOptions<{ address: string | null; id: number; name: string; email: string | null; description: string; phone: string | null; active: boolean | null; whatsapp: string | null; website: string | null; ... 6 more ...; certified: boolean | null; }[], Error, { ...; }[], readonly unknown[]>'.
+#11 15.29 client/src/pages/home.tsx(116,24): error TS2339: Property 'headline1' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/home.tsx(117,26): error TS2339: Property 'headline1' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/home.tsx(126,24): error TS2339: Property 'headline3' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/home.tsx(127,26): error TS2339: Property 'headline3' does not exist on type 'SiteSettings'.
+#11 15.29 client/src/pages/home.tsx(206,46): error TS2339: Property 'length' does not exist on type 'never[] | NoInfer<TQueryFnData>'.
+#11 15.29   Property 'length' does not exist on type 'NoInfer<TQueryFnData>'.
+#11 15.29 client/src/pages/home.tsx(225,22): error TS2461: Type 'never[] | NoInfer<TQueryFnData>' is not an array type.
+#11 15.29 client/src/pages/home.tsx(225,45): error TS2461: Type 'never[] | NoInfer<TQueryFnData>' is not an array type.
+#11 15.29 client/src/pages/home.tsx(232,72): error TS2339: Property 'length' does not exist on type 'never[] | NoInfer<TQueryFnData>'.
+#11 15.29   Property 'length' does not exist on type 'NoInfer<TQueryFnData>'.
+#11 15.29 server/routes.ts(616,38): error TS2345: Argument of type '{ name: string; description: string; categoryId: number; phone: string; whatsapp: string; address: string; instagram: string; facebook: string; email: string; imageUrl: string; featured: boolean; active: boolean; }' is not assignable to parameter of type '{ name: string; description: string; journalLink: string; categoryId: number; address?: string | undefined; email?: string | undefined; phone?: string | undefined; active?: boolean | null | undefined; ... 6 more ...; certified?: boolean | ... 1 more ... | undefined; }'.
+#11 15.29   Property 'journalLink' is missing in type '{ name: string; description: string; categoryId: number; phone: string; whatsapp: string; address: string; instagram: string; facebook: string; email: string; imageUrl: string; featured: boolean; active: boolean; }' but required in type '{ name: string; description: string; journalLink: string; categoryId: number; address?: string | undefined; email?: string | undefined; phone?: string | undefined; active?: boolean | null | undefined; ... 6 more ...; certified?: boolean | ... 1 more ... | undefined; }'.
+#11 15.29 server/storage.ts(296,13): error TS2741: Property 'order' is missing in type '{ id: number; name: string; slug: string; icon: string; color: string; backgroundImage: null; active: boolean; }' but required in type '{ id: number; color: string | null; name: string; order: number | null; icon: string; slug: string; backgroundImage: string | null; active: boolean | null; }'.
+#11 15.29 server/storage.ts(407,7): error TS2353: Object literal may only specify known properties, and 'whatsapp' does not exist in type '{ address: string; id: number; email: string; siteName: string; locality: string; tagline1: string; phone: string; logoUrl: string; instagramUrl: string; whatsappUrl: string; facebookUrl: string; ... 19 more ...; updatedAt: Date | null; }'.
+#11 15.29 server/storage.ts(477,11): error TS2739: Type '{ id: number; name: string; slug: string; icon: string; backgroundImage: string | null; active: boolean; }' is missing the following properties from type '{ id: number; color: string | null; name: string; order: number | null; icon: string; slug: string; backgroundImage: string | null; active: boolean | null; }': color, order
+#11 15.29 server/vite.ts(57,26): error TS2339: Property 'handleUpgrade' does not exist on type 'WebSocketServer'.
+#11 15.29 server/vite.ts(58,34): error TS2339: Property 'handleUpgrade' does not exist on type 'WebSocketServer'.
+#11 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 2
+------
+ > [ 7/10] RUN npm run build:
+15.29 client/src/pages/home.tsx(225,45): error TS2461: Type 'never[] | NoInfer<TQueryFnData>' is not an array type.
+15.29 client/src/pages/home.tsx(232,72): error TS2339: Property 'length' does not exist on type 'never[] | NoInfer<TQueryFnData>'.
+15.29   Property 'length' does not exist on type 'NoInfer<TQueryFnData>'.
+15.29 server/routes.ts(616,38): error TS2345: Argument of type '{ name: string; description: string; categoryId: number; phone: string; whatsapp: string; address: string; instagram: string; facebook: string; email: string; imageUrl: string; featured: boolean; active: boolean; }' is not assignable to parameter of type '{ name: string; description: string; journalLink: string; categoryId: number; address?: string | undefined; email?: string | undefined; phone?: string | undefined; active?: boolean | null | undefined; ... 6 more ...; certified?: boolean | ... 1 more ... | undefined; }'.
+15.29   Property 'journalLink' is missing in type '{ name: string; description: string; categoryId: number; phone: string; whatsapp: string; address: string; instagram: string; facebook: string; email: string; imageUrl: string; featured: boolean; active: boolean; }' but required in type '{ name: string; description: string; journalLink: string; categoryId: number; address?: string | undefined; email?: string | undefined; phone?: string | undefined; active?: boolean | null | undefined; ... 6 more ...; certified?: boolean | ... 1 more ... | undefined; }'.
+15.29 server/storage.ts(296,13): error TS2741: Property 'order' is missing in type '{ id: number; name: string; slug: string; icon: string; color: string; backgroundImage: null; active: boolean; }' but required in type '{ id: number; color: string | null; name: string; order: number | null; icon: string; slug: string; backgroundImage: string | null; active: boolean | null; }'.
+15.29 server/storage.ts(407,7): error TS2353: Object literal may only specify known properties, and 'whatsapp' does not exist in type '{ address: string; id: number; email: string; siteName: string; locality: string; tagline1: string; phone: string; logoUrl: string; instagramUrl: string; whatsappUrl: string; facebookUrl: string; ... 19 more ...; updatedAt: Date | null; }'.
+15.29 server/storage.ts(477,11): error TS2739: Type '{ id: number; name: string; slug: string; icon: string; backgroundImage: string | null; active: boolean; }' is missing the following properties from type '{ id: number; color: string | null; name: string; order: number | null; icon: string; slug: string; backgroundImage: string | null; active: boolean | null; }': color, order
+15.29 server/vite.ts(57,26): error TS2339: Property 'handleUpgrade' does not exist on type 'WebSocketServer'.
+15.29 server/vite.ts(58,34): error TS2339: Property 'handleUpgrade' does not exist on type 'WebSocketServer'.
+------
+Dockerfile:20
+--------------------
+  18 |     
+  19 |     # Build the application
+  20 | >>> RUN npm run build
+  21 |     
+  22 |     # Remove dev dependencies to reduce image size
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 2
+##########################################
+### Error
+### Sat, 05 Jul 2025 13:48:10 GMT
+##########################################
