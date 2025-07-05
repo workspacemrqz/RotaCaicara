@@ -1,3 +1,4 @@
+
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
@@ -21,7 +22,7 @@ export async function setupVite(app: Express, server: Server) {
   const vite = await createViteServer({
     configFile: path.resolve(process.cwd(), "vite.config.ts"),
     server: { middlewareMode: true },
-    appType: "custom",
+    appType: "spa",
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {
@@ -43,25 +44,45 @@ export async function setupVite(app: Express, server: Server) {
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = await vite.transformIndexHtml(url, template);
 
-      const { render } = await vite.ssrLoadModule("/src/main.tsx");
-      const appHtml = await render();
-      const html = template.replace(`<!--ssr-outlet-->`, appHtml);
-
-      res.status(200).set({ "Content-Type": "text/html" }).end(html);
+      res.status(200).set({ "Content-Type": "text/html" }).end(template);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
     }
   });
+}
 
-  if (vite.ws && 'handleUpgrade' in vite.ws) {
-    (vite.ws as any).handleUpgrade(req, (req as any).socket, Buffer.alloc(0), (ws: any) => {
-      console.log("WebSocket upgrade successful");
-    });
-  }
-    // Add error handler to prevent crashes
-  server.on('error', (err) => {
-    console.error('Server error:', err);
+export async function configureVite(app: Express) {
+  const vite = await createViteServer({
+    configFile: path.resolve(process.cwd(), "vite.config.ts"),
+    server: { middlewareMode: true },
+    appType: "spa",
+    customLogger: {
+      ...viteLogger,
+      error: (msg, options) => {
+        if (msg.includes("WebSocket server error") || msg.includes("WebSocket connection closed")) {
+          return;
+        }
+        viteLogger.error(msg, options);
+      },
+    },
+  });
+
+  app.use(vite.middlewares);
+
+  app.use("*", async (req, res, next) => {
+    const url = req.originalUrl;
+
+    try {
+      const clientTemplate = path.resolve(process.cwd(), "client", "index.html");
+      let template = await fs.promises.readFile(clientTemplate, "utf-8");
+      template = await vite.transformIndexHtml(url, template);
+
+      res.status(200).set({ "Content-Type": "text/html" }).end(template);
+    } catch (e) {
+      vite.ssrFixStacktrace(e as Error);
+      next(e);
+    }
   });
 }
 
@@ -69,29 +90,54 @@ export function serveStatic(app: Express) {
   const distPath = path.resolve(process.cwd(), "dist", "public");
   const clientIndexPath = path.resolve(distPath, "index.html");
 
-  app.use(express.static(distPath));
-
-  app.use("*", (_req, res) => {
-    res.sendFile(clientIndexPath);
-  });
-}
-import express from "express";
-import path from "path";
-
-export async function configureVite(app: express.Application) {
-  try {
-    const { createServer: createViteServer } = await import("vite");
-
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-
-    app.use(vite.ssrFixStacktrace);
-    app.use(vite.middlewares);
-    console.log("Vite middleware configured successfully");
-  } catch (error) {
-    console.error("Failed to import or configure Vite:", error);
-    throw error;
+  // Verify build directory exists
+  if (!fs.existsSync(distPath)) {
+    throw new Error(
+      `Could not find the build directory: ${distPath}. Make sure to build the client first with 'npm run build'.`
+    );
   }
+
+  // Verify index.html exists
+  if (!fs.existsSync(clientIndexPath)) {
+    throw new Error(
+      `Could not find index.html in: ${clientIndexPath}. Make sure the client build completed successfully.`
+    );
+  }
+
+  console.log(`📁 Serving static files from: ${distPath}`);
+  console.log(`📄 SPA fallback file: ${clientIndexPath}`);
+
+  // Serve static files (CSS, JS, images, etc.) with proper caching
+  app.use(express.static(distPath, {
+    maxAge: process.env.NODE_ENV === "production" ? "1y" : "0",
+    etag: true,
+    lastModified: true,
+    index: false // Disable automatic index.html serving, we'll handle it explicitly
+  }));
+
+  // SPA fallback - serve index.html for all non-API routes
+  app.get("*", (req, res, next) => {
+    // Skip API routes and health check
+    if (req.path.startsWith("/api") || req.path === "/health") {
+      return next();
+    }
+
+    try {
+      res.sendFile(clientIndexPath, (err) => {
+        if (err) {
+          console.error("Error serving index.html:", err);
+          res.status(500).json({ 
+            error: "Failed to serve application", 
+            message: "Internal server error" 
+          });
+        }
+      });
+    } catch (error) {
+      console.error("Error in SPA fallback:", error);
+      res.status(500).json({ 
+        error: "Failed to serve application", 
+        message: "Internal server error" 
+      });
+    }
+  });
 }

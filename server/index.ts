@@ -1,3 +1,4 @@
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -74,28 +75,31 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
   });
 
-  // Check environment from NODE_ENV
-  const isProduction = process.env.NODE_ENV === "production";
+  // Determine environment - default to production if not set
+  const nodeEnv = process.env.NODE_ENV || "production";
+  const isProduction = nodeEnv === "production";
+  const isDevelopment = nodeEnv === "development";
 
-  if (isProduction) {
-    console.log("Production mode: serving static files");
-    serveStatic(app);
-  } else {
+  if (isDevelopment) {
     try {
       const { configureVite } = await import("./vite");
       await configureVite(app);
       console.log("Development mode: Vite configured successfully");
     } catch (error) {
       console.error("Failed to configure Vite in development:", error);
+      console.log("Falling back to static file serving");
       serveStatic(app);
     }
+  } else {
+    console.log(`${isProduction ? 'Production' : 'Static'} mode: serving static files`);
+    serveStatic(app);
   }
 
   const port = parseInt(process.env.PORT || "3100");
 
   server.listen(port, "0.0.0.0", () => {
-    console.log(`🚀 Server running on port ${port} in ${process.env.NODE_ENV || 'development'} mode`);
+    console.log(`🚀 Server running on port ${port} in ${nodeEnv} mode`);
     console.log(`📡 Accepting connections from all interfaces (0.0.0.0:${port})`);
-    console.log(`🔗 Health check available at: http://localhost:${port}/health`);
+    console.log(`🔗 Health check available at: http://0.0.0.0:${port}/health`);
   });
 })();
