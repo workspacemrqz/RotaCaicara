@@ -77,15 +77,18 @@ app.use((req, res, next) => {
   // Check environment from NODE_ENV
   const isProduction = process.env.NODE_ENV === "production";
 
-  if (!isProduction) {
+  if (isProduction) {
+    console.log("Production mode: serving static files");
+    serveStatic(app);
+  } else {
     try {
       const { configureVite } = await import("./vite");
       await configureVite(app);
+      console.log("Development mode: Vite configured successfully");
     } catch (error) {
-      console.log("Vite configuration skipped in production:", error instanceof Error ? error.message : 'Unknown error');
+      console.error("Failed to configure Vite in development:", error);
+      serveStatic(app);
     }
-  } else {
-    serveStatic(app);
   }
 
   const port = parseInt(process.env.PORT || "3100");

@@ -75,3 +75,23 @@ export function serveStatic(app: Express) {
     res.sendFile(clientIndexPath);
   });
 }
+import express from "express";
+import path from "path";
+
+export async function configureVite(app: express.Application) {
+  try {
+    const { createServer: createViteServer } = await import("vite");
+
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+
+    app.use(vite.ssrFixStacktrace);
+    app.use(vite.middlewares);
+    console.log("Vite middleware configured successfully");
+  } catch (error) {
+    console.error("Failed to import or configure Vite:", error);
+    throw error;
+  }
+}
