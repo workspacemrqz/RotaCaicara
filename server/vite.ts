@@ -54,7 +54,9 @@ export async function setupVite(app: Express, server: Server) {
     }
   });
 
-  server.on("upgrade", vite.ws.handleUpgrade);
+  if (vite.ws && vite.ws.handleUpgrade) {
+    server.on("upgrade", vite.ws.handleUpgrade);
+  }
     // Add error handler to prevent crashes
   server.on('error', (err) => {
     console.error('Server error:', err);
