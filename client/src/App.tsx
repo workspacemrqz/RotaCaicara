@@ -16,7 +16,7 @@ import NotFound from "@/pages/not-found";
 
 function Router() {
   useScrollToTop(); // Automatically scroll to top on route changes
-  
+
   return (
     <Switch>
       <Route path="/" component={Home} />

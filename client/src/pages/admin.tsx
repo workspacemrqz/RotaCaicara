@@ -646,18 +646,22 @@ function AuthenticatedAdmin({ onLogout }: { onLogout: () => void }) {
   // Queries
   const { data: businesses = [], isLoading: businessesLoading, error: businessesError } = useQuery<Business[]>({
     queryKey: ["/api/businesses"],
+    queryFn: () => apiRequest("GET", "/api/businesses"),
   });
 
   const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+    queryFn: () => apiRequest("GET", "/api/categories"),
   });
 
   const { data: businessRegistrations = [], isLoading: registrationsLoading, error: registrationsError } = useQuery<BusinessRegistration[]>({
     queryKey: ["/api/admin/business-registrations"],
+    queryFn: () => apiRequest("GET", "/api/admin/business-registrations"),
   });
 
   const { data: analytics = [], isLoading: analyticsLoading, error: analyticsError } = useQuery<Analytics[]>({
     queryKey: ["/api/admin/analytics"],
+    queryFn: () => apiRequest("GET", "/api/admin/analytics"),
   });
 
   // State management
