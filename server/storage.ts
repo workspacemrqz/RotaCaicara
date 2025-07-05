@@ -120,8 +120,351 @@ export interface IStorage {
   getAnalytics(): Promise<Analytics[]>;
 }
 
-// Use MemStorage for compatibility with $10 deployment
-// Legacy MemStorage class - replaced by DatabaseStorage
+// DatabaseStorage class for production use
+class DatabaseStorage implements IStorage {
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    console.log('🗂️ DatabaseStorage: Fetching categories from database...');
+    try {
+      const result = await db.select().from(categories)
+        .where(eq(categories.active, true))
+        .orderBy(asc(categories.order), asc(categories.name));
+      console.log(`✅ DatabaseStorage: Retrieved ${result.length} categories from database`);
+      return result;
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching categories:', error);
+      throw error;
+    }
+  }
+
+  async getCategoryBySlug(slug: string): Promise<Category | undefined> {
+    const result = await db.select().from(categories)
+      .where(eq(categories.slug, slug))
+      .limit(1);
+    return result[0];
+  }
+
+  async createCategory(category: InsertCategory): Promise<Category> {
+    const categoryData = {
+      name: category.name,
+      slug: category.slug,
+      icon: category.icon || 'circle',
+      color: category.color || '#006C84',
+      backgroundImage: category.backgroundImage || null,
+      active: category.active !== false
+    };
+
+    const result = await db.insert(categories).values(categoryData).returning();
+    return result[0];
+  }
+
+  async updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category> {
+    const result = await db.update(categories)
+      .set(category)
+      .where(eq(categories.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Category with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteCategory(id: number): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, id));
+  }
+
+  // Businesses
+  async getBusinesses(): Promise<Business[]> {
+    console.log('🏢 DatabaseStorage: Fetching businesses from database...');
+    try {
+      const result = await db.select().from(businesses)
+        .where(eq(businesses.active, true))
+        .orderBy(desc(businesses.featured), asc(businesses.name));
+      console.log(`✅ DatabaseStorage: Retrieved ${result.length} businesses from database`);
+      return result;
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching businesses:', error);
+      throw error;
+    }
+  }
+
+  async getBusinessesByCategory(categoryId: number): Promise<Business[]> {
+    return await db.select().from(businesses)
+      .where(and(eq(businesses.categoryId, categoryId), eq(businesses.active, true)))
+      .orderBy(desc(businesses.featured), asc(businesses.name));
+  }
+
+  async getFeaturedBusinesses(): Promise<Business[]> {
+    return await db.select().from(businesses)
+      .where(and(eq(businesses.featured, true), eq(businesses.active, true)))
+      .orderBy(asc(businesses.name));
+  }
+
+  async getBusiness(id: number): Promise<Business | undefined> {
+    const result = await db.select().from(businesses)
+      .where(eq(businesses.id, id))
+      .limit(1);
+    return result[0];
+  }
+
+  async createBusiness(business: InsertBusiness): Promise<Business> {
+    const result = await db.insert(businesses).values(business).returning();
+    return result[0];
+  }
+
+  async updateBusiness(id: number, business: Partial<InsertBusiness>): Promise<Business> {
+    const result = await db.update(businesses)
+      .set(business)
+      .where(eq(businesses.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Business with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteBusiness(id: number): Promise<void> {
+    await db.delete(businesses).where(eq(businesses.id, id));
+  }
+
+  async searchBusinesses(query: string): Promise<Business[]> {
+    return await db.select().from(businesses)
+      .where(and(
+        eq(businesses.active, true),
+        sql`${businesses.name} ILIKE ${`%${query}%`} OR ${businesses.description} ILIKE ${`%${query}%`}`
+      ))
+      .orderBy(desc(businesses.featured), asc(businesses.name));
+  }
+
+  // Business Registrations
+  async createBusinessRegistration(registration: InsertBusinessRegistration): Promise<BusinessRegistration> {
+    const result = await db.insert(businessRegistrations).values(registration).returning();
+    return result[0];
+  }
+
+  async getBusinessRegistrations(): Promise<BusinessRegistration[]> {
+    return await db.select().from(businessRegistrations)
+      .orderBy(desc(businessRegistrations.createdAt));
+  }
+
+  async updateBusinessRegistration(id: number, registration: Partial<InsertBusinessRegistration>): Promise<BusinessRegistration> {
+    const result = await db.update(businessRegistrations)
+      .set(registration)
+      .where(eq(businessRegistrations.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Registration with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteBusinessRegistration(id: number): Promise<void> {
+    await db.delete(businessRegistrations).where(eq(businessRegistrations.id, id));
+  }
+
+  // Admin Panel Methods
+  async getBanners(): Promise<Banner[]> {
+    return await db.select().from(banners)
+      .where(eq(banners.active, true))
+      .orderBy(desc(banners.order));
+  }
+
+  async createBanner(banner: InsertBanner): Promise<Banner> {
+    const result = await db.insert(banners).values(banner).returning();
+    return result[0];
+  }
+
+  async updateBanner(id: number, banner: Partial<InsertBanner>): Promise<Banner> {
+    const result = await db.update(banners)
+      .set(banner)
+      .where(eq(banners.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Banner with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteBanner(id: number): Promise<void> {
+    await db.delete(banners).where(eq(banners.id, id));
+  }
+
+  async getSiteSettings(): Promise<SiteSetting> {
+    console.log('⚙️ DatabaseStorage: Fetching site settings...');
+    try {
+      const result = await db.select().from(siteSettings).limit(1);
+      if (result[0]) {
+        console.log('✅ DatabaseStorage: Site settings found');
+        return result[0];
+      }
+
+      console.log('⚠️ DatabaseStorage: No site settings found, creating default...');
+      const defaultSettings: typeof siteSettings.$inferInsert = {
+        siteName: 'Rota Caiçara',
+        locality: 'São Sebastião',
+        heroTitle: 'Descubra os sabores únicos de São Sebastião',
+        heroSubtitle: 'Conheça os melhores estabelecimentos locais e viva experiências gastronômicas autênticas',
+        whatsappNumber: '(12) 99999-9999',
+        contactEmail: 'contato@rotacaicara.com.br',
+        instagramUrl: '@rotacaicara',
+        facebookUrl: 'facebook.com/rotacaicara',
+        primaryColor: '#2D5A27',
+        secondaryColor: '#F4A460',
+        accentColor: '#8B4513'
+      };
+
+      const [newSetting] = await db.insert(siteSettings)
+        .values(defaultSettings)
+        .returning();
+
+      console.log('✅ DatabaseStorage: Default site settings created');
+      return newSetting;
+    } catch (error) {
+      console.error('❌ DatabaseStorage: Error fetching site settings:', error);
+      throw error;
+    }
+  }
+
+  async updateSiteSettings(settingsUpdate: Partial<InsertSiteSetting>): Promise<SiteSetting> {
+    try {
+      const [existing] = await db.select().from(siteSettings).limit(1);
+
+      if (existing) {
+        const [updated] = await db
+          .update(siteSettings)
+          .set({ ...settingsUpdate, updatedAt: new Date() })
+          .where(eq(siteSettings.id, existing.id))
+          .returning();
+        return updated;
+      } else {
+        const [created] = await db
+          .insert(siteSettings)
+          .values(settingsUpdate)
+          .returning();
+        return created;
+      }
+    } catch (error) {
+      console.error('Error updating site settings:', error);
+      throw error;
+    }
+  }
+
+  async getTestimonials(): Promise<Testimonial[]> {
+    return await db.select().from(testimonials)
+      .where(eq(testimonials.active, true))
+      .orderBy(desc(testimonials.createdAt));
+  }
+
+  async createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial> {
+    const result = await db.insert(testimonials).values(testimonial).returning();
+    return result[0];
+  }
+
+  async updateTestimonial(id: number, testimonial: Partial<InsertTestimonial>): Promise<Testimonial> {
+    const result = await db.update(testimonials)
+      .set(testimonial)
+      .where(eq(testimonials.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Testimonial with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteTestimonial(id: number): Promise<void> {
+    await db.delete(testimonials).where(eq(testimonials.id, id));
+  }
+
+  async getFaqs(): Promise<Faq[]> {
+    return await db.select().from(faqs)
+      .where(eq(faqs.active, true))
+      .orderBy(asc(faqs.order));
+  }
+
+  async createFaq(faq: InsertFaq): Promise<Faq> {
+    const result = await db.insert(faqs).values(faq).returning();
+    return result[0];
+  }
+
+  async updateFaq(id: number, faq: Partial<InsertFaq>): Promise<Faq> {
+    const result = await db.update(faqs)
+      .set(faq)
+      .where(eq(faqs.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`FAQ with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteFaq(id: number): Promise<void> {
+    await db.delete(faqs).where(eq(faqs.id, id));
+  }
+
+  async getPromotions(): Promise<Promotion[]> {
+    return await db.select().from(promotions)
+      .where(eq(promotions.active, true))
+      .orderBy(desc(promotions.createdAt));
+  }
+
+  async createPromotion(promotion: InsertPromotion): Promise<Promotion> {
+    const result = await db.insert(promotions).values(promotion).returning();
+    return result[0];
+  }
+
+  async updatePromotion(id: number, promotion: Partial<InsertPromotion>): Promise<Promotion> {
+    const result = await db.update(promotions)
+      .set(promotion)
+      .where(eq(promotions.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`Promotion with id ${id} not found`);
+    return result[0];
+  }
+
+  async deletePromotion(id: number): Promise<void> {
+    await db.delete(promotions).where(eq(promotions.id, id));
+  }
+
+  async getNews(): Promise<News[]> {
+    return await db.select().from(news)
+      .where(eq(news.active, true))
+      .orderBy(desc(news.order), desc(news.createdAt));
+  }
+
+  async createNews(newsItem: InsertNews): Promise<News> {
+    const result = await db.insert(news).values(newsItem).returning();
+    return result[0];
+  }
+
+  async updateNews(id: number, newsItem: Partial<InsertNews>): Promise<News> {
+    const result = await db.update(news)
+      .set(newsItem)
+      .where(eq(news.id, id))
+      .returning();
+    if (!result[0]) throw new Error(`News item with id ${id} not found`);
+    return result[0];
+  }
+
+  async deleteNews(id: number): Promise<void> {
+    await db.delete(news).where(eq(news.id, id));
+  }
+
+  async logAdminAction(action: string, tableName?: string, recordId?: number, oldValues?: any, newValues?: any): Promise<void> {
+    await db.insert(adminLogs).values({
+      action,
+      tableName: tableName || null,
+      recordId: recordId || null,
+      oldValues: oldValues ? JSON.stringify(oldValues) : null,
+      newValues: newValues ? JSON.stringify(newValues) : null,
+    });
+  }
+
+  async getAdminLogs(): Promise<AdminLog[]> {
+    return await db.select().from(adminLogs)
+      .orderBy(desc(adminLogs.createdAt))
+      .limit(100);
+  }
+
+  async trackAnalytics(data: InsertAnalytics): Promise<void> {
+    await db.insert(analytics).values(data);
+  }
+
+  async getAnalytics(): Promise<Analytics[]> {
+    return await db.select().from(analytics)
+      .orderBy(desc(analytics.visitedAt))
+      .limit(1000);
+  }
+}
+
+// Legacy MemStorage class - kept for fallback compatibility
 class MemStorage implements IStorage {
   private categories: Map<number, Category>;
   private businesses: Map<number, Business>;

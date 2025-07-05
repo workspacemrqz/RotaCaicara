@@ -76,9 +76,14 @@ app.use((req, res, next) => {
 
   // Check environment from NODE_ENV
   const isProduction = process.env.NODE_ENV === "production";
-  
+
   if (!isProduction) {
-    await setupVite(app, server);
+    try {
+      const { configureVite } = await import("./vite");
+      await configureVite(app);
+    } catch (error) {
+      console.log("Vite configuration skipped in production:", error instanceof Error ? error.message : 'Unknown error');
+    }
   } else {
     serveStatic(app);
   }
