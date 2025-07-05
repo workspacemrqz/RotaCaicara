@@ -1,0 +1,169 @@
+O deploy deste site será realizado no Easypanel utilizando o repositório do GitHub, com construção via Nixpacks. Os comandos de instalação, build e start já estão configurados no Easypanel, assim como as variáveis de ambiente necessárias para o funcionamento do projeto.
+
+Relatório informativo:
+Fonte: https://github.com/workspacemrqz/RotaCaicara
+Construção: Nixpacks
+Versão: 1.34.1
+Observação: O Nixpacks requer:
+Comando de Instalação: npm install
+Comando de Build: npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+Comando de Início: npm start
+
+Variáveis de ambiente:
+DATABASE_URL=postgres://mrqz:@Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable
+NODE_ENV=production
+SESSION_SECRET=8f9a2b1c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5
+PORT=3100
+
+
+
+LOGS DE IMPLANTAÇÃO:
+Commit: Assistant checkpoint: Update default port to 3100
+
+Assistant generated file changes:
+- server/index.ts: Change default port from 5000 to 3100
+
+---
+
+User prompt:
+
+Altere nos arquivos necessarios para porta 3100 entao
+
+Replit-Commit-Author: Assistant
+Replit-Commit-Session-Id: e418c825-b6d8-4815-8f11-395cfdac008e 
+##########################################
+### Download Github Archive Started...
+### Sat, 05 Jul 2025 13:21:43 GMT
+##########################################
+
+
+╔══════════════════════════════ Nixpacks v1.34.1 ══════════════════════════════╗
+║ setup      │ nodejs_18, npm-9_x, openssl                                     ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ caddy      │ pkgs: caddy                                                     ║
+║            │ cmds: caddy fmt --overwrite /assets/Caddyfile                   ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ install    │ npm install                                                     ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ build      │ npx vite build && npx esbuild server/index.ts --platform=node   ║
+║            │ --packages=external --bundle --format=esm --outdir=dist         ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ start      │ npm start                                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+Saved output to:
+  /etc/easypanel/projects/sites/site-rotacaicara/code/
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.62kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for ghcr.io/railwayapp/nixpacks:ubuntu-1741046653
+#2 DONE 0.4s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [stage-0  1/15] FROM ghcr.io/railwayapp/nixpacks:ubuntu-1741046653@sha256:ed406b77fb751927991b8655e76c33a4521c4957c2afeab293be7c63c2a373d2
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 2.17MB 0.1s done
+#5 DONE 0.1s
+
+#6 [stage-0  6/15] RUN nix-env -if .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix && nix-collect-garbage -d
+#6 CACHED
+
+#7 [stage-0  4/15] RUN nix-env -if .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix && nix-collect-garbage -d
+#7 CACHED
+
+#8 [stage-0  5/15] COPY .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix .nixpacks/nixpkgs-ffeebf0acf3ae8b29f8c7049cd911b9636efd7e7.nix
+#8 CACHED
+
+#9 [stage-0  2/15] WORKDIR /app/
+#9 CACHED
+
+#10 [stage-0  3/15] COPY .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix
+#10 CACHED
+
+#11 [stage-0  7/15] COPY .nixpacks/assets /assets/
+#11 CACHED
+
+#12 [stage-0  8/15] COPY . /app/.
+#12 DONE 0.1s
+
+#13 [stage-0  9/15] RUN  caddy fmt --overwrite /assets/Caddyfile
+#13 DONE 0.4s
+
+#14 [stage-0 10/15] COPY . /app/.
+#14 DONE 0.2s
+
+#15 [stage-0 11/15] RUN --mount=type=cache,id=QtKIKeQvrk-/root/npm,target=/root/.npm npm install
+#15 11.47 
+#15 11.47 added 419 packages, and audited 420 packages in 11s
+#15 11.47 
+#15 11.47 56 packages are looking for funding
+#15 11.47   run `npm fund` for details
+#15 11.47 
+#15 11.47 found 0 vulnerabilities
+#15 DONE 12.0s
+
+#16 [stage-0 12/15] COPY . /app/.
+#16 DONE 0.1s
+
+#17 [stage-0 13/15] RUN --mount=type=cache,id=QtKIKeQvrk-node_modules/cache,target=/app/node_modules/.cache npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+#17 1.618 npm warn exec The following package was not found and will be installed: vite@6.3.5
+#17 8.792 failed to load config from /app/vite.config.ts
+#17 8.794 error during build:
+#17 8.794 Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /app/node_modules/.vite-temp/vite.config.ts.timestamp-1751721726552-cff2d88b74427.mjs
+#17 8.794     at new NodeError (node:internal/errors:405:5)
+#17 8.794     at packageResolve (node:internal/modules/esm/resolve:916:9)
+#17 8.794     at moduleResolve (node:internal/modules/esm/resolve:973:20)
+#17 8.794     at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+#17 8.794     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:404:12)
+#17 8.794     at ModuleLoader.resolve (node:internal/modules/esm/loader:373:25)
+#17 8.794     at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+#17 8.794     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:76:39)
+#17 8.794     at link (node:internal/modules/esm/module_job:75:36)
+#17 8.808 npm notice
+#17 8.808 npm notice New major version of npm available! 10.8.2 -> 11.4.2
+#17 8.808 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+#17 8.808 npm notice To update run: npm install -g npm@11.4.2
+#17 8.808 npm notice
+#17 ERROR: process "/bin/bash -ol pipefail -c npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist" did not complete successfully: exit code: 1
+------
+ > [stage-0 13/15] RUN --mount=type=cache,id=QtKIKeQvrk-node_modules/cache,target=/app/node_modules/.cache npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist:
+8.794     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:404:12)
+8.794     at ModuleLoader.resolve (node:internal/modules/esm/loader:373:25)
+8.794     at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+8.794     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:76:39)
+8.794     at link (node:internal/modules/esm/module_job:75:36)
+8.808 npm notice
+8.808 npm notice New major version of npm available! 10.8.2 -> 11.4.2
+8.808 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+8.808 npm notice To update run: npm install -g npm@11.4.2
+8.808 npm notice
+------
+
+ 3 warnings found (use docker --debug to expand):
+ - UndefinedVar: Usage of undefined variable '$NIXPACKS_PATH' (line 24)
+ - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ARG "SESSION_SECRET") (line 13)
+ - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "SESSION_SECRET") (line 14)
+Dockerfile:30
+--------------------
+  28 |     # build phase
+  29 |     COPY . /app/.
+  30 | >>> RUN --mount=type=cache,id=QtKIKeQvrk-node_modules/cache,target=/app/node_modules/.cache npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  31 |     
+  32 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/bash -ol pipefail -c npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist" did not complete successfully: exit code: 1
+##########################################
+### Error
+### Sat, 05 Jul 2025 13:22:06 GMT
+##########################################
+
+Command failed with exit code 1: docker buildx build --network host -f /etc/easypanel/projects/sites/site-rotacaicara/code/.nixpacks/Dockerfile -t easypanel/sites/site-rotacaicara --label 'keep=true' --build-arg 'DATABASE_URL=postgres://mrqz:@Workspacen8n@easypanel.evolutionmanagerevolutia.space:5434/rotacaicara?sslmode=disable' --build-arg 'NODE_ENV=production' --build-arg 'SESSION_SECRET=8f9a2b1c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5' --build-arg 'PORT=3100' --build-arg 'GIT_SHA=6ed76d3f7722afe2c70d4b3a237b4f812970309a' /etc/easypanel/projects/sites/site-rotacaicara/code/
