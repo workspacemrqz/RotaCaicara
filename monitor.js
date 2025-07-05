@@ -4,8 +4,8 @@
  * Continuously monitors site health and logs issues
  */
 
-const http = require('http');
-const util = require('util');
+import http from 'http';
+import util from 'util';
 
 const BASE_URL = 'http://localhost:5000';
 const MONITOR_INTERVAL = 30000; // 30 seconds
@@ -143,8 +143,8 @@ function startMonitoring() {
   });
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   startMonitoring();
 }
 
-module.exports = { startMonitoring, log };
+export { startMonitoring, log };

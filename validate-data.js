@@ -4,8 +4,8 @@
  * Validates database structure and data integrity
  */
 
-const http = require('http');
-const util = require('util');
+import http from 'http';
+import util from 'util';
 
 const BASE_URL = 'http://localhost:5000';
 
@@ -228,11 +228,11 @@ async function validateDataIntegrity() {
 }
 
 // Run validation
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   validateDataIntegrity().catch(error => {
     log('error', 'Validation runner failed', error);
     process.exit(1);
   });
 }
 
-module.exports = { validateDataIntegrity, log };
+export { validateDataIntegrity, log };

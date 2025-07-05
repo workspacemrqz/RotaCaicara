@@ -4,10 +4,12 @@
  * Tests all functionalities and data integrity
  */
 
-const http = require('http');
-const https = require('https');
-const util = require('util');
+import { createRequire } from 'module';
+import http from 'http';
+import https from 'https';
+import util from 'util';
 
+const require = createRequire(import.meta.url);
 const BASE_URL = 'http://localhost:5000';
 
 // Utility functions
@@ -414,11 +416,11 @@ async function runAllTests() {
 }
 
 // Run the tests
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   runAllTests().catch(error => {
     log('error', 'Test runner failed', error);
     process.exit(1);
   });
 }
 
-module.exports = { runAllTests, log };
+export { runAllTests, log };
