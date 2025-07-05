@@ -38,6 +38,21 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for EasyPanel monitoring
+  app.get("/health", (req, res) => {
+    res.json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV || 'development',
+      port: process.env.PORT || '3100'
+    });
+  });
+
+  // Simple root endpoint
+  app.get("/api/status", (req, res) => {
+    res.json({ message: "Rota Caiçara API is running!" });
+  });
+
   // Middleware to log all requests
   app.use((req, res, next) => {
     console.log(`🔵 [${new Date().toISOString()}] ${req.method} ${req.url}`, {

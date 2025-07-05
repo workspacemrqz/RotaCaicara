@@ -767,6 +767,37 @@ class MemStorage implements IStorage {
     this.promotions.delete(id);
   }
 
+  async getNews(): Promise<News[]> {
+    return Array.from(this.newsItems.values()).filter((p) => p.active);
+  }
+
+  async createNews(newsItem: InsertNews): Promise<News> {
+    const id = this.currentNewsId++;
+    const newNews: News = {
+      ...newsItem,
+      id,
+      description: newsItem.description || null,
+      imageUrl: newsItem.imageUrl || null,
+      publishedAt: newsItem.publishedAt || null,
+      createdAt: new Date(),
+      active: newsItem.active !== false,
+    };
+    this.newsItems.set(id, newNews);
+    return newNews;
+  }
+
+  async updateNews(id: number, newsItem: Partial<InsertNews>): Promise<News> {
+    const existing = this.newsItems.get(id);
+    if (!existing) throw new Error("Promotion not found");
+    const updated = { ...existing, ...newsItem };
+    this.newsItems.set(id, updated);
+    return updated;
+  }
+
+  async deleteNews(id: number): Promise<void> {
+    this.newsItems.delete(id);
+  }
+
   async logAdminAction(
     action: string,
     tableName?: string,
@@ -794,8 +825,7 @@ class MemStorage implements IStorage {
       .sort(
         (a, b) =>
           new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime(),
-      )
-      .slice(0, 100);
+      );
   }
 
   async trackAnalytics(data: InsertAnalytics): Promise<void> {
@@ -816,54 +846,7 @@ class MemStorage implements IStorage {
       .sort(
         (a, b) =>
           new Date(b.visitedAt!).getTime() - new Date(a.visitedAt!).getTime(),
-      )
-      .slice(0, 1000);
-  }
-
-  async getNews(): Promise<News[]> {
-    return Array.from(this.newsItems.values())
-      .filter((news) => news.active)
-      .sort((a, b) => {
-        if (a.order !== b.order) {
-          return (b.order || 0) - (a.order || 0);
-        }
-        return (
-          new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
-        );
-      });
-  }
-
-  async createNews(newsItem: InsertNews): Promise<News> {
-    const id = this.currentNewsId++;
-    const news: News = {
-      ...newsItem,
-      id,
-      description: newsItem.description || null,
-      imageUrl: newsItem.imageUrl || null,
-      publishedAt: newsItem.publishedAt || null,
-      createdAt: new Date(),
-      active: newsItem.active !== false,
-      order: newsItem.order || 0,
-    };
-    this.newsItems.set(id, news);
-    return news;
-  }
-
-  async updateNews(id: number, newsItem: Partial<InsertNews>): Promise<News> {
-    const existing = this.newsItems.get(id);
-    if (!existing) {
-      throw new Error(`News item with id ${id} not found`);
-    }
-    const updated: News = { ...existing, ...newsItem };
-    this.newsItems.set(id, updated);
-    return updated;
-  }
-
-  async deleteNews(id: number): Promise<void> {
-    if (!this.newsItems.has(id)) {
-      throw new Error(`News item with id ${id} not found`);
-    }
-    this.newsItems.delete(id);
+      );
   }
 }
 
